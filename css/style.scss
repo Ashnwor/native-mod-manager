@@ -1,0 +1,16 @@
+$topNavbarHeight: 7vh;
+
+.hover-1p1p {
+    transition: transform 200ms ease;
+    &:hover {
+        transform: scale(1.1);
+        transition: transform 200ms ease;
+    }
+}
+
+#topNavbar {
+    height: $topNavbarHeight;
+}
+#modList {
+    margin-top: $topNavbarHeight;
+}

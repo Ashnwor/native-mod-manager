@@ -7,11 +7,21 @@
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Mod Manager</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.min.css">
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+    <nav id="topNavbar" class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <a class="navbar-brand" href="#">Mod Manager</a>
+        <a class="navbar-nav ml-auto hover-1p1p" href="#"><img src="./images/settings.svg"></a>
     </nav>
+
+    <ul id="modList" class="list-group">
+      <li class="list-group-item">Test Item 1</li>
+      <li class="list-group-item">Test Item 2</li>
+      <li class="list-group-item">Test Item 3</li>
+      <li class="list-group-item">Test Item 4</li>
+      <li class="list-group-item">Test Item 5</li>
+    </ul>
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
   </body>
