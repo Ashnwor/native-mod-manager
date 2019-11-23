@@ -21,4 +21,16 @@
 #modList {
   margin-top: 7vh;
 }
+
+#leftList {
+  display: inline-block;
+  width: 70%;
+  height: 93vh;
+}
+
+#rightList {
+  display: inline-block;
+  width: 30%;
+  height: 93vh;
+}
 /*# sourceMappingURL=style.css.map */

@@ -11,6 +11,20 @@ $topNavbarHeight: 7vh;
 #topNavbar {
     height: $topNavbarHeight;
 }
+
 #modList {
     margin-top: $topNavbarHeight;
+}
+
+#leftList {
+    display: inline-block;
+    width: 70%;
+    height: 100vh - $topNavbarHeight;
+}
+
+#rightList {
+    display: inline-block;
+    width: 30%;
+    height: 100vh - $topNavbarHeight;
+
 }
