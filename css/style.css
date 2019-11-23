@@ -18,19 +18,18 @@
   height: 7vh;
 }
 
-#modList {
+#leftList {
+  position: absolute;
+  float: left;
+  width: 70%;
+  height: 93vh;
   margin-top: 7vh;
 }
 
-#leftList {
-  display: inline-block;
-  width: 70%;
-  height: 93vh;
-}
-
 #rightList {
-  display: inline-block;
+  float: right;
   width: 30%;
   height: 93vh;
+  margin-top: 7vh;
 }
 /*# sourceMappingURL=style.css.map */

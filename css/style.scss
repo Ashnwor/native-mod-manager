@@ -13,18 +13,20 @@ $topNavbarHeight: 7vh;
 }
 
 #modList {
-    margin-top: $topNavbarHeight;
+   // margin-top: $topNavbarHeight;
 }
 
 #leftList {
-    display: inline-block;
+    position: absolute;
+    float: left;
     width: 70%;
     height: 100vh - $topNavbarHeight;
+    margin-top: $topNavbarHeight;
 }
 
 #rightList {
-    display: inline-block;
+    float: right;
     width: 30%;
     height: 100vh - $topNavbarHeight;
-
+    margin-top: $topNavbarHeight;
 }
