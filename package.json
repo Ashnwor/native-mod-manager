@@ -1,6 +1,6 @@
 {
   "name": "native-mod-manager",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Native Mod Manager for Linux",
   "main": "main.js",
   "scripts": {
@@ -16,6 +16,8 @@
   "author": "Ashnwor",
   "license": "GPL-3.0",
   "devDependencies": {
-    "electron": "^7.1.1"
-  }
+    "electron": "^7.1.1",
+    "electron-icon-builder": "^1.0.1"
+  },
+  "dependencies": {}
 }
