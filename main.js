@@ -11,9 +11,11 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    frame: false,
     icon: __dirname + '/images/icons/png/48x48.png',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true
     }
   })
   // and load the index.html of the app.
