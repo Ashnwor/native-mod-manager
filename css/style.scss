@@ -1,3 +1,4 @@
+@import url('../fonts/RobotoCondensed-Bold.ttf');
 $topNavbarHeight: 7vh;
 
 .hover-1p1p {
@@ -29,4 +30,17 @@ $topNavbarHeight: 7vh;
     width: 30%;
     height: calc(100vh - 30px) - $topNavbarHeight;
     //margin-top: $topNavbarHeight;
+}
+
+.robotoCondensed-700 {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+}
+
+.colorWhite {
+    color: white;
+    &:hover {
+        color: white;
+        text-decoration: none;
+    }
 }
