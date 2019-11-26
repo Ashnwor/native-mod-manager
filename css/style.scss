@@ -1,5 +1,7 @@
 @import url('../fonts/RobotoCondensed-Bold.ttf');
 $topNavbarHeight: 7vh;
+$navBtnBgColor: #6c757d;
+$navBtnBgColorHov: #5a6268;
 
 .hover-1p1p {
     transition: transform 200ms ease;
@@ -43,4 +45,32 @@ $topNavbarHeight: 7vh;
         color: white;
         text-decoration: none;
     }
+}
+
+.dropdownStyle {
+    border-radius: 0!important;
+    height: 8vh;
+    background-color: $navBtnBgColor;
+}
+
+.nav-item-sq {
+    background-color: $navBtnBgColor;
+    height: 8vh;
+    width: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .15s ease-in-out;
+    &:hover {
+        background-color: $navBtnBgColorHov;
+        transition: background-color .15s ease-in-out;
+    }
+}
+
+.navPadding {
+    padding: 0;
+}
+
+.navTextCenter {
+    padding: auto;
 }

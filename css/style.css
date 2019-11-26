@@ -1,3 +1,4 @@
+@import url("../fonts/RobotoCondensed-Bold.ttf");
 .hover-1p1p {
   -webkit-transition: -webkit-transform 200ms ease;
   transition: -webkit-transform 200ms ease;
@@ -43,5 +44,42 @@
 .colorWhite:hover {
   color: white;
   text-decoration: none;
+}
+
+.dropdownStyle {
+  border-radius: 0 !important;
+  height: 8vh;
+  background-color: #6c757d;
+}
+
+.nav-item-sq {
+  background-color: #6c757d;
+  height: 8vh;
+  width: 5vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: background-color .15s ease-in-out;
+  transition: background-color .15s ease-in-out;
+}
+
+.nav-item-sq:hover {
+  background-color: #5a6268;
+  -webkit-transition: background-color .15s ease-in-out;
+  transition: background-color .15s ease-in-out;
+}
+
+.navPadding {
+  padding: 0;
+}
+
+.navTextCenter {
+  padding: auto;
 }
 /*# sourceMappingURL=style.css.map */
