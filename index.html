@@ -1,51 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Mod Manager</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.min.css">
-    <script>window.$ = window.jQuery = require('./js/jquery.min.js');</script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.min.css" />
+    <script>
+      window.$ = window.jQuery = require("./js/jquery.min.js");
+    </script>
     <script src="js/popperjs.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>  
+    <script src="js/bootstrap.min.js"></script>
   </head>
   <body>
     <nav id="topNavbar" class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <a class="navbar-brand" href="#">Mod Manager</a>
-        <a class="navbar-nav ml-auto hover-1p1p" href="#"><img src="./images/settings.svg"></a>
+      <a class="navbar-brand" href="#">Mod Manager</a>
+      <a class="navbar-nav ml-auto hover-1p1p" href="#"
+        ><img src="./images/settings.svg"
+      /></a>
     </nav>
-<span id="leftList">
-    <ul id="modList" class="list-group">
-      <li class="list-group-item">Test Item 1</li>
-      <li class="list-group-item">Test Item 2</li>
-      <li class="list-group-item">Test Item 3</li>
-      <li class="list-group-item">Test Item 4</li>
-      <li class="list-group-item">Test Item 5</li>
-    </ul>
-</span
-
-><span id="rightList">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown Menu
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Test Menu 1</a>
-          <a class="dropdown-item" href="#">Test Menu 2</a>
-          <a class="dropdown-item" href="#">Test Menu 3</a>
+    <span id="leftList">
+      <ul id="modList" class="list-group">
+        <li class="list-group-item">Test Item 1</li>
+        <li class="list-group-item">Test Item 2</li>
+        <li class="list-group-item">Test Item 3</li>
+        <li class="list-group-item">Test Item 4</li>
+        <li class="list-group-item">Test Item 5</li>
+      </ul> </span
+    ><span id="rightList">
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Dropdown Menu
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Test Menu 1</a>
+            <a class="dropdown-item" href="#">Test Menu 2</a>
+            <a class="dropdown-item" href="#">Test Menu 3</a>
+          </div>
         </div>
-      </div>
-      <div class="nav-item-sq ml-auto"><a class="navbar-nav robotoCondensed-700 colorWhite hover-1p1p" href="#">RUN</a></div>
-    </nav>
-    <ul class="list-group">
+        <div class="nav-item-sq ml-auto">
+          <a
+            class="navbar-nav robotoCondensed-700 colorWhite hover-1p1p"
+            href="#"
+            >RUN</a
+          >
+        </div>
+      </nav>
+      <ul class="list-group">
         <li class="list-group-item">Test Item 1</li>
         <li class="list-group-item">Test Item 2</li>
         <li class="list-group-item">Test Item 3</li>
         <li class="list-group-item">Test Item 4</li>
         <li class="list-group-item">Test Item 5</li>
       </ul>
-</span>
+    </span>
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
   </body>
