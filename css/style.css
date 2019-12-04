@@ -23,13 +23,14 @@
   position: absolute;
   float: left;
   width: 70%;
-  height: calc(100vh - 30px)-7vh;
+  height: calc((100vh - 30px) - $topNavbarHeight);
 }
 
 #rightList {
   float: right;
   width: 30%;
-  height: calc(100vh - 30px)-7vh;
+  height: calc((100vh - 30px) - 7vh);
+  border-left: 1px solid #6c757d;
 }
 
 .robotoCondensed-700 {
