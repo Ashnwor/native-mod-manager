@@ -1,10 +1,23 @@
 // Modules to control application life and create native browser window
+const appName = 'nativeModManager'
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
-
+const fs = require('fs')
+const uname = require('username')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let username
+// get username
+(async () => {
+  username = await uname();
+  const dir = `/home/${username}/.local/share`
+  console.log(fs.readdirSync(dir))
+  if (!fs.existsSync(`${dir}/${appName}`)){
+    fs.mkdirSync(`${dir}/${appName}`);
+}
+})();
+
 
 function createWindow () {
   // Create the browser window.
