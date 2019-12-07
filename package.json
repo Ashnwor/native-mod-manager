@@ -20,6 +20,7 @@
     "electron-icon-builder": "^1.0.1"
   },
   "dependencies": {
-    "custom-electron-titlebar": "^3.1.0"
+    "custom-electron-titlebar": "^3.1.0",
+    "username": "^5.1.0"
   }
 }
