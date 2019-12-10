@@ -11,11 +11,13 @@ let username
 // get username
 (async () => {
   username = await uname();
+  if (process.platform === 'linux') {
   const dir = `/home/${username}/.local/share`
   console.log(fs.readdirSync(dir))
   if (!fs.existsSync(`${dir}/${appName}`)){
     fs.mkdirSync(`${dir}/${appName}`);
 }
+  }
 })();
 
 
