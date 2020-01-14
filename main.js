@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const appName = "nativeModManager";
+const appName = "arcus";
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const fs = require("fs");

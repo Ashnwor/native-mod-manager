@@ -1,17 +1,18 @@
 {
-  "name": "native-mod-manager",
+  "name": "arcus",
   "version": "0.0.1",
   "description": "Native Mod Manager for Linux",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/Ashnwor/native-mod-manager",
+  "repository": "https://github.com/Ashnwor/arcus",
   "keywords": [
     "native",
     "linux",
     "mod",
-    "manager"
+    "manager",
+    "arcus"
   ],
   "author": "Ashnwor",
   "license": "GPL-3.0",
