@@ -16,6 +16,16 @@ let username;
     console.log(fs.readdirSync(dir));
     if (!fs.existsSync(`${dir}/${appName}`)) {
       fs.mkdirSync(`${dir}/${appName}`);
+      let someObject = {
+        one: "test"
+      }
+      fs.writeFile(`${dir}/${appName}/config.json`, JSON.stringify(someObject), (err) => {
+        if (err) throw err
+        console.log('The file has been saved!')
+        const conf = fs.readFileSync(`${dir}/${appName}/config.json`, 'utf8');
+        console.log(JSON.parse(conf));
+
+      })
     }
   }
 })();
