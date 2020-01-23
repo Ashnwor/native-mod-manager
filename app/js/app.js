@@ -1,7 +1,8 @@
 const appName = "arcus";
 const fs = require("fs");
 const uname = require("username");
-const con = require('electron').remote.getGlobal('console')
+const con = require('electron').remote.getGlobal('console');
+const {dialog} = require('electron').remote;
 let username;
 // get username
 (async () => {
@@ -11,11 +12,11 @@ let username;
     con.log(fs.readdirSync(dir));
     if (!fs.existsSync(`${dir}/${appName}`)) {
       con.log('First time setup');
-      firstTime = true;
       fs.mkdirSync(`${dir}/${appName}`);
+      let selectedFolder = dialog.showOpenDialogSync({ properties: ['openDirectory']})[0];
       let someObject = {
-        skyrim: "test"
-      }
+        skyrim: selectedFolder
+      }  
       fs.writeFile(`${dir}/${appName}/config.json`, JSON.stringify(someObject), (err) => {
         if (err) throw err
         con.log('The file has been saved!')

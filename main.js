@@ -1,11 +1,9 @@
 const appName = "arcus";
 const { app, BrowserWindow } = require("electron");
-const { dialog } = require('electron')
 const path = require("path");
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -29,7 +27,3 @@ app.on("window-all-closed", function() {
 app.on("activate", function() {
   if (mainWindow === null) createWindow();
 });
-// console.log('test');
-// if (firstTime === true) {
-//   console.log(dialog.showOpenDialogSync({ properties: ['openDirectory', 'multiSelections'] }))
-// }
