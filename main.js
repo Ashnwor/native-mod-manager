@@ -1,8 +1,9 @@
-const appName = "arcus";
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
-const { ipcMain } = require("electron");
-let mainWindow, selectWindow;
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+const { ipcMain } = require('electron');
+
+let mainWindow;
+let selectWindow;
 
 function createSelectWindow() {
   selectWindow = new BrowserWindow({
@@ -10,40 +11,40 @@ function createSelectWindow() {
     height: 480,
     frame: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
-  selectWindow.loadFile("./app/main.html");
-  selectWindow.on("closed", () => {
+  selectWindow.loadFile('./app/main.html');
+  selectWindow.on('closed', () => {
     selectWindow = null;
-  } );
+  });
 }
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     frame: false,
-    icon: __dirname + "/app/images/icons/png/48x48.png",
+    icon: `${__dirname}/app/images/icons/png/48x48.png`,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true
-    }
+      preload: path.join(`${__dirname}/preload.js`),
+      nodeIntegration: true,
+    },
   });
-  mainWindow.loadFile("./app/main.html");
-  mainWindow.on("closed", function() {
+  mainWindow.loadFile('./app/main.html');
+  mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
-app.on("ready", createMainWindow);
+app.on('ready', createMainWindow);
 
-ipcMain.on("open-game-select", () => {
+ipcMain.on('open-game-select', () => {
   createSelectWindow();
 });
 
-app.on("window-all-closed", function() {
-  if (process.platform !== "darwin") app.quit();
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
 });
 
-app.on("activate", function() {
+app.on('activate', () => {
   if (mainWindow === null) createMainWindow();
 });

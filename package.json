@@ -18,9 +18,13 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^7.1.1",
-    "electron-icon-builder": "^1.0.1"
+    "electron-icon-builder": "^1.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0"
   },
   "dependencies": {
+    "electron": "^7.1.1",
     "custom-electron-titlebar": "^3.1.0",
     "username": "^5.1.0"
   }
