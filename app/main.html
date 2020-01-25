@@ -1,121 +1,122 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Arcus</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.min.css" />
-    <script>
-      window.$ = window.jQuery = require("./js/import/jquery.min.js");
-    </script>
-    <script src="js/import/popperjs.min.js"></script>
-    <script src="js/import/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
-  </head>
-  <body>
-    <nav id="topNavbar" class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <a class="navbar-brand" href="#">Arcus</a>
-      <a class="navbar-nav ml-auto hover-1p1p" href="#"
-        ><img src="./images/settings.svg"
-      /></a>
-    </nav>
-    <span id="leftList">
-      <ul id="modList" class="list-group">
-        <li class="list-group-item">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="testItem1"
-            />
-            <label class="custom-control-label" for="testItem1"
-            >Test Item 1</label>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="testItem2"
-            />
-            <label class="custom-control-label" for="testItem2"
-              >Test Item 2</label
-            >
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="testItem3"
-            />
-            <label class="custom-control-label" for="testItem3"
-              >Test Item 3</label
-            >
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="testItem4"
-            />
-            <label class="custom-control-label" for="testItem4"
-              >Test Item 4</label
-            >
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="testItem5"
-            />
-            <label class="custom-control-label" for="testItem5"
-              >Test Item 5</label
-            >
-          </div>
-        </li>
-      </ul> </span
-    ><span id="rightList">
-      <nav class="navbar navbar-expand-sm bg-dark navbar-dark navPadding">
-        <div class="dropdown">
-          <button
-            class="btn btn-secondary dropdown-toggle dropdownStyle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Dropdown Menu
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Test Menu 1</a>
-            <a class="dropdown-item" href="#">Test Menu 2</a>
-            <a class="dropdown-item" href="#">Test Menu 3</a>
-          </div>
-        </div>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Arcus</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/style.min.css" />
+		<script>
+			window.$ = window.jQuery = require('./js/import/jquery.min.js');
+		</script>
+		<script src="js/import/popperjs.min.js"></script>
+		<script src="js/import/bootstrap.min.js"></script>
+		<script src="js/app.js"></script>
+	</head>
+	<body>
+		<nav id="topNavbar" class="navbar navbar-expand-sm bg-dark navbar-dark">
+			<a class="navbar-brand" href="#">Arcus</a>
+			<a class="navbar-nav ml-auto hover-1p1p" href="#"
+				><img src="./images/settings.svg"
+			/></a>
+		</nav>
+		<span id="leftList">
+			<ul id="modList" class="list-group">
+				<li class="list-group-item">
+					<div class="custom-control custom-checkbox">
+						<input
+							type="checkbox"
+							class="custom-control-input"
+							id="testItem1"
+						/>
+						<label class="custom-control-label" for="testItem1"
+							>Test Item 1</label
+						>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="custom-control custom-checkbox">
+						<input
+							type="checkbox"
+							class="custom-control-input"
+							id="testItem2"
+						/>
+						<label class="custom-control-label" for="testItem2"
+							>Test Item 2</label
+						>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="custom-control custom-checkbox">
+						<input
+							type="checkbox"
+							class="custom-control-input"
+							id="testItem3"
+						/>
+						<label class="custom-control-label" for="testItem3"
+							>Test Item 3</label
+						>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="custom-control custom-checkbox">
+						<input
+							type="checkbox"
+							class="custom-control-input"
+							id="testItem4"
+						/>
+						<label class="custom-control-label" for="testItem4"
+							>Test Item 4</label
+						>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="custom-control custom-checkbox">
+						<input
+							type="checkbox"
+							class="custom-control-input"
+							id="testItem5"
+						/>
+						<label class="custom-control-label" for="testItem5"
+							>Test Item 5</label
+						>
+					</div>
+				</li>
+			</ul> </span
+		><span id="rightList">
+			<nav class="navbar navbar-expand-sm bg-dark navbar-dark navPadding">
+				<div class="dropdown">
+					<button
+						class="btn btn-secondary dropdown-toggle dropdownStyle"
+						type="button"
+						id="dropdownMenuButton"
+						data-toggle="dropdown"
+						aria-haspopup="true"
+						aria-expanded="false"
+					>
+						Dropdown Menu
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<a class="dropdown-item" href="#">Test Menu 1</a>
+						<a class="dropdown-item" href="#">Test Menu 2</a>
+						<a class="dropdown-item" href="#">Test Menu 3</a>
+					</div>
+				</div>
 
-        <a
-          class="navbar-nav robotoCondensed-700 colorWhite nav-item-sq ml-auto"
-          href="#"
-          ><span class="hover-1p1p">RUN</span></a
-        >
-      </nav>
-      <ul class="list-group">
-        <li class="list-group-item">Test Item 1</li>
-        <li class="list-group-item">Test Item 2</li>
-        <li class="list-group-item">Test Item 3</li>
-        <li class="list-group-item">Test Item 4</li>
-        <li class="list-group-item">Test Item 5</li>
-      </ul>
-    </span>
-    <!-- You can also require other files to run in this process -->
-    <script src="../renderer.js"></script>
-  </body>
+				<a
+					class="navbar-nav robotoCondensed-700 colorWhite nav-item-sq ml-auto"
+					href="#"
+					><span class="hover-1p1p">RUN</span></a
+				>
+			</nav>
+			<ul class="list-group">
+				<li class="list-group-item">Test Item 1</li>
+				<li class="list-group-item">Test Item 2</li>
+				<li class="list-group-item">Test Item 3</li>
+				<li class="list-group-item">Test Item 4</li>
+				<li class="list-group-item">Test Item 5</li>
+			</ul>
+		</span>
+		<!-- You can also require other files to run in this process -->
+		<script src="../renderer.js"></script>
+	</body>
 </html>

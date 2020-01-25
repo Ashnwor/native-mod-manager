@@ -5,7 +5,8 @@
 // selectively enable features needed in the rendering
 // process.
 const customTitlebar = require('custom-electron-titlebar');
- 
-new customTitlebar.Titlebar({
-    backgroundColor: customTitlebar.Color.fromHex('#444')
+
+const custTitlebar = new customTitlebar.Titlebar({
+	backgroundColor: customTitlebar.Color.fromHex('#444')
 });
+custTitlebar();

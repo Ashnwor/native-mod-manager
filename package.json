@@ -1,31 +1,33 @@
 {
-  "name": "arcus",
-  "version": "0.0.1",
-  "description": "Native Mod Manager for Linux",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "repository": "https://github.com/Ashnwor/arcus",
-  "keywords": [
-    "native",
-    "linux",
-    "mod",
-    "manager",
-    "arcus"
-  ],
-  "author": "Ashnwor",
-  "license": "GPL-3.0",
-  "devDependencies": {
-    "electron": "^7.1.1",
-    "electron-icon-builder": "^1.0.1",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.0"
-  },
-  "dependencies": {
-    "electron": "^7.1.1",
-    "custom-electron-titlebar": "^3.1.0",
-    "username": "^5.1.0"
-  }
+	"name": "arcus",
+	"version": "0.0.1",
+	"description": "Native Mod Manager for Linux",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron ."
+	},
+	"repository": "https://github.com/Ashnwor/arcus",
+	"keywords": [
+		"native",
+		"linux",
+		"mod",
+		"manager",
+		"arcus"
+	],
+	"author": "Ashnwor",
+	"license": "GPL-3.0",
+	"devDependencies": {
+		"electron": "^7.1.1",
+		"electron-icon-builder": "^1.0.1",
+		"eslint": "^6.8.0",
+		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-config-prettier": "^6.9.0",
+		"eslint-plugin-import": "^2.20.0",
+		"prettier": "^1.19.1"
+	},
+	"dependencies": {
+		"electron": "^7.1.1",
+		"custom-electron-titlebar": "^3.1.0",
+		"username": "^5.1.0"
+	}
 }
