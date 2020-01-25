@@ -30,7 +30,7 @@ function createMainWindow() {
 			nodeIntegration: true
 		}
 	});
-	mainWindow.loadFile('./app/main.html');
+	mainWindow.loadFile('./app/pages/main.html');
 	mainWindow.on('closed', () => {
 		mainWindow = null;
 	});
