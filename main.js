@@ -14,7 +14,7 @@ function createSelectWindow() {
 			nodeIntegration: true
 		}
 	});
-	selectWindow.loadFile('./app/main.html');
+	selectWindow.loadFile('./app/pages/select.html');
 	selectWindow.on('closed', () => {
 		selectWindow = null;
 	});
