@@ -1,9 +1,24 @@
 const appName = "arcus";
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
-let mainWindow;
+const { ipcMain } = require("electron");
+let mainWindow, selectWindow;
 
-function createWindow() {
+function createSelectWindow() {
+  selectWindow = new BrowserWindow({
+    width: 640,
+    height: 480,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+  selectWindow.loadFile("./app/main.html");
+  selectWindow.on("closed", () => {
+    selectWindow = null;
+  } );
+}
+function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -14,16 +29,21 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  mainWindow.loadFile("./app/index.html");
+  mainWindow.loadFile("./app/main.html");
   mainWindow.on("closed", function() {
     mainWindow = null;
   });
 }
-app.on("ready", createWindow);
+app.on("ready", createMainWindow);
+
+ipcMain.on("open-game-select", () => {
+  createSelectWindow();
+});
+
 app.on("window-all-closed", function() {
   if (process.platform !== "darwin") app.quit();
 });
 
 app.on("activate", function() {
-  if (mainWindow === null) createWindow();
+  if (mainWindow === null) createMainWindow();
 });
