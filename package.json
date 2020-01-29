@@ -4,7 +4,8 @@
 	"description": "Native Mod Manager for Linux",
 	"main": "main.js",
 	"scripts": {
-		"start": "electron ."
+		"start": "electron .",
+		"devStart": "rm -rf ~/.local/share/arcus && electron ."
 	},
 	"repository": "https://github.com/Ashnwor/arcus",
 	"keywords": [
