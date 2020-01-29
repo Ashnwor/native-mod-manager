@@ -1,11 +1,10 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { ipcMain } = require('electron');
 
 let mainWindow;
 let selectWindow;
 
-function createSelectWindow() {
+let createSelectWindow = () => {
 	selectWindow = new BrowserWindow({
 		width: 640,
 		height: 480,
@@ -18,8 +17,9 @@ function createSelectWindow() {
 	selectWindow.on('closed', () => {
 		selectWindow = null;
 	});
-}
-function createMainWindow() {
+};
+
+let createMainWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 1280,
 		height: 720,
@@ -34,8 +34,17 @@ function createMainWindow() {
 	mainWindow.on('closed', () => {
 		mainWindow = null;
 	});
-}
+};
+
 app.on('ready', createMainWindow);
+
+app.on('window-all-closed', () => {
+	if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('activate', () => {
+	if (mainWindow === null) createMainWindow();
+});
 
 ipcMain.on('open-game-select', () => {
 	createSelectWindow();
@@ -43,11 +52,4 @@ ipcMain.on('open-game-select', () => {
 
 ipcMain.on('close-select', () => {
 	selectWindow.close();
-});
-app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('activate', () => {
-	if (mainWindow === null) createMainWindow();
 });

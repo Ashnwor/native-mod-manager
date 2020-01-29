@@ -4,6 +4,7 @@ const fs = require('fs');
 const { ipcRenderer } = require('electron');
 const con = require('electron').remote.getGlobal('console');
 const { dialog } = require('electron').remote;
+
 let username;
 
 (async () => {
