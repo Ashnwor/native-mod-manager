@@ -1,12 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html style="overflow: hidden;" lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<title>Document</title>
+		<title>Arcus</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../css/style.min.css" />
+		<script>
+			window.$ = window.jQuery = require('../js/import/jquery.min.js');
+		</script>
+		<script src="../js/import/popperjs.min.js"></script>
+		<script src="../js/import/bootstrap.min.js"></script>
 	</head>
-	<body style="background-color: black;">
+	<body>
+		<nav
+			id="topNavbar"
+			class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top"
+			style="margin-top: 30px;"
+		>
+			<a class="navbar-brand" href="#">Select Game Directory</a>
+		</nav>
+		<div id="selectContainer">
+			<div class="verticalCenter fillHorizontal">
+				<input id="path" type="text" /><button id="browse" type="button">
+					Browse
+				</button>
+			</div>
+		</div>
+		<nav
+			id="topNavbar"
+			class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom"
+			style="margin-top: 30px;"
+		></nav>
+
+		<script src="../js/select.js"></script>
 		<script src="../../renderer.js"></script>
 	</body>
 </html>

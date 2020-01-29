@@ -1,4 +1,8 @@
 @import url("../fonts/RobotoCondensed-Bold.ttf");
+body {
+  height: 100vh;
+}
+
 .hover-1p1p {
   -webkit-transition: -webkit-transform 200ms ease;
   transition: -webkit-transform 200ms ease;
@@ -23,7 +27,7 @@
   position: absolute;
   float: left;
   width: 70%;
-  height: calc((100vh - 30px) - $topNavbarHeight);
+  height: calc((100vh - 7vh) - 30px);
 }
 
 #rightList {
@@ -66,14 +70,14 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-transition: background-color .15s ease-in-out;
-  transition: background-color .15s ease-in-out;
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
 }
 
 .nav-item-sq:hover {
   background-color: #5a6268;
-  -webkit-transition: background-color .15s ease-in-out;
-  transition: background-color .15s ease-in-out;
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
 }
 
 .navPadding {
@@ -82,5 +86,34 @@
 
 .navTextCenter {
   padding: auto;
+}
+
+#selectContainer {
+  position: relative;
+  display: inline-block;
+  width: 100vw;
+  height: calc((100vh - 7vh) - 30px);
+  overflow: hidden;
+}
+
+.verticalCenter {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+
+.fillHorizontal {
+  width: 100vw;
+}
+
+#path {
+  width: 60vw;
+  margin-left: 10vw;
+}
+
+#browse {
+  margin-left: 5vw;
 }
 /*# sourceMappingURL=style.css.map */

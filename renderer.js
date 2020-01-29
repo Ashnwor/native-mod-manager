@@ -9,4 +9,5 @@ const customTitlebar = require('custom-electron-titlebar');
 const custTitlebar = new customTitlebar.Titlebar({
 	backgroundColor: customTitlebar.Color.fromHex('#444')
 });
-custTitlebar();
+
+custTitlebar;
