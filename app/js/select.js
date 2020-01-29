@@ -7,6 +7,8 @@ const { dialog } = require('electron').remote;
 
 let username;
 
+ipcRenderer.send('hide-main');
+
 (async () => {
 	username = await uname();
 })();
@@ -32,6 +34,7 @@ document.getElementById('done').addEventListener('click', () => {
 			const conf = fs.readFileSync(`${dir}/${appName}/config.json`, 'utf8');
 			con.log(JSON.parse(conf));
 		});
+		ipcRenderer.send('show-main');
 		ipcRenderer.send('close-select');
 	}
 });

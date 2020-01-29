@@ -46,6 +46,14 @@ app.on('activate', () => {
 	if (mainWindow === null) createMainWindow();
 });
 
+ipcMain.on('hide-main', () => {
+	mainWindow.hide();
+});
+
+ipcMain.on('show-main', () => {
+	mainWindow.show();
+});
+
 ipcMain.on('open-game-select', () => {
 	createSelectWindow();
 });
