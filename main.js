@@ -41,6 +41,9 @@ ipcMain.on('open-game-select', () => {
 	createSelectWindow();
 });
 
+ipcMain.on('close-select', () => {
+	selectWindow.close();
+});
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });

@@ -1,6 +1,7 @@
 const appName = 'arcus';
 const uname = require('username');
 const fs = require('fs');
+const { ipcRenderer } = require('electron');
 const con = require('electron').remote.getGlobal('console');
 const { dialog } = require('electron').remote;
 let username;
@@ -30,5 +31,6 @@ document.getElementById('done').addEventListener('click', () => {
 			const conf = fs.readFileSync(`${dir}/${appName}/config.json`, 'utf8');
 			con.log(JSON.parse(conf));
 		});
+		ipcRenderer.send('close-select');
 	}
 });
