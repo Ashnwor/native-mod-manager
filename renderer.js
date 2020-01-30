@@ -4,10 +4,6 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
-const customTitlebar = require('custom-electron-titlebar');
-
-const custTitlebar = new customTitlebar.Titlebar({
-	backgroundColor: customTitlebar.Color.fromHex('#444')
-});
-
-custTitlebar;
+window.$ = window.jQuery;
+window.titlebarFrame();
+console.log(window.getUsername);

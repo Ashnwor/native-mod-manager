@@ -10,7 +10,7 @@ let createSelectWindow = () => {
 		height: 480,
 		frame: false,
 		webPreferences: {
-			nodeIntegration: true
+			preload: path.join(`${__dirname}/preload.js`)
 		}
 	});
 	selectWindow.loadFile('./app/pages/select.html');
@@ -26,8 +26,7 @@ let createMainWindow = () => {
 		frame: false,
 		icon: `${__dirname}/app/images/icons/png/48x48.png`,
 		webPreferences: {
-			preload: path.join(`${__dirname}/preload.js`),
-			nodeIntegration: true
+			preload: path.join(`${__dirname}/preload.js`)
 		}
 	});
 	mainWindow.loadFile('./app/pages/main.html');

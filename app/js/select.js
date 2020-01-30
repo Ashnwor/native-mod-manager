@@ -1,20 +1,7 @@
-const appName = 'arcus';
-const uname = require('username');
-const fs = require('fs');
-const { ipcRenderer } = require('electron');
-const con = require('electron').remote.getGlobal('console');
-const { dialog } = require('electron').remote;
-
-let username;
-
-ipcRenderer.send('hide-main');
-
-(async () => {
-	username = await uname();
-})();
+window.ipcRenderer.send('hide-main');
 
 document.getElementById('browse').addEventListener('click', () => {
-	let selectedFolder = dialog.showOpenDialogSync({
+	let selectedFolder = window.dialog.showOpenDialogSync({
 		properties: ['openDirectory']
 	})[0];
 	document.getElementById('path').value = selectedFolder;
@@ -23,18 +10,25 @@ document.getElementById('browse').addEventListener('click', () => {
 document.getElementById('done').addEventListener('click', () => {
 	if (document.getElementById('path').value !== '') {
 		// TODO: Validate given path
-		con.log('Working');
+		window.con.log('Working');
 		const game = {
 			skyrim: document.getElementById('path').value
 		};
-		const dir = `/home/${username}/.local/share`;
-		fs.writeFile(`${dir}/${appName}/config.json`, JSON.stringify(game), err => {
-			if (err) throw err;
-			con.log('The file has been saved!');
-			const conf = fs.readFileSync(`${dir}/${appName}/config.json`, 'utf8');
-			con.log(JSON.parse(conf));
-		});
-		ipcRenderer.send('show-main');
-		ipcRenderer.send('close-select');
+		const dir = `/home/${window.getUsername}/.local/share`;
+		window.fs.writeFile(
+			`${dir}/${window.appName}/config.json`,
+			JSON.stringify(game),
+			err => {
+				if (err) throw err;
+				window.con.log('The file has been saved!');
+				const conf = window.fs.readFileSync(
+					`${dir}/${window.appName}/config.json`,
+					'utf8'
+				);
+				window.con.log(JSON.parse(conf));
+			}
+		);
+		window.ipcRenderer.send('show-main');
+		window.ipcRenderer.send('close-select');
 	}
 });
