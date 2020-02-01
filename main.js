@@ -1,8 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const uname = require('username');
 
 let mainWindow;
 let selectWindow;
+let username;
+
+(async () => {
+	username = await uname();
+})();
 
 let createSelectWindow = () => {
 	selectWindow = new BrowserWindow({
@@ -15,7 +21,15 @@ let createSelectWindow = () => {
 	});
 	selectWindow.loadFile('./app/pages/select.html');
 	selectWindow.on('closed', () => {
-		selectWindow = null;
+		const appName = 'arcus';
+		const fs = require('fs');
+		const dir = `/home/${username}/.local/share`;
+		if (!fs.existsSync(`${dir}/${appName}/config.json`)) {
+			console.log('here');
+			createSelectWindow();
+		} else {
+			selectWindow = null;
+		}
 	});
 };
 
