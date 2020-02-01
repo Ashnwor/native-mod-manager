@@ -1,8 +1,10 @@
 window.ipcRenderer.send('hide-main');
 
+let selectedGame = 'skyrimSE';
 document.getElementById('browse').addEventListener('click', () => {
 	let selectedFolder = window.dialog.showOpenDialogSync({
-		properties: ['openDirectory']
+		properties: ['openDirectory'],
+		defaultPath: `/home/${window.getUsername}/.steam/steam/steamapps/common/Skyrim Special Edition`
 	})[0];
 	document.getElementById('path').value = selectedFolder;
 });
@@ -12,7 +14,7 @@ document.getElementById('done').addEventListener('click', () => {
 		// TODO: Validate given path
 		window.con.log('Working');
 		const game = {
-			skyrim: document.getElementById('path').value
+			[selectedGame]: document.getElementById('path').value
 		};
 		const dir = `/home/${window.getUsername}/.local/share`;
 		window.fs.writeFile(
