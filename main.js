@@ -86,5 +86,6 @@ ipcMain.on('open-game-select', () => {
 });
 
 ipcMain.on('close-select', () => {
-	selectWindow.close();
+	selectWindow.destroy();
+	mainWindow.webContents.send('continue-after-select');
 });
