@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const uname = require('username');
+const { dialog } = require('electron');
 
 let mainWindow;
 let selectWindow;
@@ -20,15 +21,28 @@ let createSelectWindow = () => {
 		}
 	});
 	selectWindow.loadFile('./app/pages/select.html');
+
 	selectWindow.on('closed', () => {
+		selectWindow = null;
+	});
+
+	selectWindow.on('close', event => {
+		event.preventDefault();
 		const appName = 'arcus';
 		const fs = require('fs');
 		const dir = `/home/${username}/.local/share`;
 		if (!fs.existsSync(`${dir}/${appName}/config.json`)) {
-			console.log('here');
-			createSelectWindow();
-		} else {
-			selectWindow = null;
+			let options = {
+				buttons: ['Yes', 'No'],
+				message:
+					'If you quit now, your preferences will not be saved and application will quit altogether'
+			};
+			dialog.showMessageBox(selectWindow, options).then(result => {
+				if (result.response === 0) {
+					selectWindow.destroy();
+					mainWindow.destroy();
+				}
+			});
 		}
 	});
 };
