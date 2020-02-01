@@ -2,7 +2,7 @@ window.ipcRenderer.send('hide-main');
 
 document.getElementById('browse').addEventListener('click', () => {
 	let selectedFolder = window.dialog.showOpenDialogSync({
-		properties: ['openDirectory']
+		properties: ['openDirectory', 'showHiddenFiles']
 	})[0];
 	document.getElementById('path').value = selectedFolder;
 });
