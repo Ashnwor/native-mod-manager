@@ -55,7 +55,6 @@ if (window.platform === 'linux') {
 		if (config.skseFound === true) {
 			debug(`skseFound: ${config.skseFound}`);
 			writeConfig();
-			newDropdownEl('launchSKSE', 'Launch SKSE'); // Temporarily here
 			config.dropdownMenuItems = {
 				skse: { id: 'launchSKSE', title: 'Launch SKSE' }
 			};
@@ -64,7 +63,6 @@ if (window.platform === 'linux') {
 			// TODO: Add an item to dropdown menu to start script extender
 		} else if (config.skseFound === false) {
 			debug(`skseFound: ${config.skseFound}`);
-			newDropdownEl('installSKSE', 'Install SKSE'); // Temporarily here
 			debug(config);
 			// TODO: Add an item to dropdown menu to install script extender
 		}
