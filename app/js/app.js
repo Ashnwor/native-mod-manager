@@ -19,7 +19,7 @@ const getConfig = () => {
 const writeConfig = () => {
 	window.fs.writeFileSync(
 		`${dir}/${window.appName}/config.json`,
-		JSON.stringify(config),
+		JSON.stringify(config, null, 4),
 		err => {
 			if (err) throw err;
 			debug('The file has been saved!');
@@ -28,6 +28,7 @@ const writeConfig = () => {
 	getConfig();
 };
 
+// First start
 if (window.platform === 'linux') {
 	dir = `/home/${window.getUsername}/.local/share`;
 
@@ -54,12 +55,26 @@ if (window.platform === 'linux') {
 		if (config.skseFound === true) {
 			debug(`skseFound: ${config.skseFound}`);
 			writeConfig();
-			newDropdownEl('launchSKSE', 'Launch SKSE');
+			newDropdownEl('launchSKSE', 'Launch SKSE'); // Temporarily here
+			config.dropdownMenuItems = {
+				skse: { id: 'launchSKSE', title: 'Launch SKSE' }
+			};
+			writeConfig();
 			debug(config);
 			// TODO: Add an item to dropdown menu to start script extender
 		} else if (config.skseFound === false) {
 			debug(`skseFound: ${config.skseFound}`);
+			newDropdownEl('installSKSE', 'Install SKSE'); // Temporarily here
+			debug(config);
 			// TODO: Add an item to dropdown menu to install script extender
 		}
 	});
 }
+
+// import dropdown menu items
+getConfig();
+newDropdownEl(
+	config.dropdownMenuItems.skse.id,
+	config.dropdownMenuItems.skse.title
+);
+newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
