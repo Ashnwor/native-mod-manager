@@ -1,35 +1,63 @@
+const debug = debugThis => window.globalDebug(debugThis);
+
 if (window.platform === 'linux') {
 	const dir = `/home/${window.getUsername}/.local/share`;
 
 	if (!window.fs.existsSync(`${dir}/${window.appName}`)) {
-		window.con.log('First time setup');
+		debug('First time setup');
 		window.fs.mkdirSync(`${dir}/${window.appName}`);
 		window.ipcRenderer.send('open-game-select');
 	}
 
 	window.ipcRenderer.on('continue-after-select', () => {
-		let skseFound = false;
-		const conf = window.fs.readFileSync(
+		let conf = window.fs.readFileSync(
 			`${dir}/${window.appName}/config.json`,
 			'utf8'
 		);
+		let config = JSON.parse(conf);
+		config.skseFound = false;
+		dirArr = window.fs.readdirSync(config['skyrimSE']);
 
-		config = JSON.parse(conf);
-		dirArr = window.fs.readdirSync(config['skyrim']);
+		window.fs.writeFile(
+			`${dir}/${window.appName}/config.json`,
+			JSON.stringify(config),
+			err => {
+				if (err) throw err;
+				debug('The file has been saved!');
+			}
+		);
+
+		conf = window.fs.readFileSync(
+			`${dir}/${window.appName}/config.json`,
+			'utf8'
+		);
+		debug(config);
 
 		for (i = 0; i < dirArr.length; i += 1) {
 			if (dirArr[i].slice(0, 6) === 'skse64') {
-				skseFound = true;
+				config.skseFound = true;
 				// TODO: Add dropdown menu to start script extender
 				break;
 			}
 		}
 
-		if (skseFound === true) {
-			window.con.log('skseFound:', skseFound);
+		if (config.skseFound === true) {
+			debug(`skseFound: ${config.skseFound}`);
+			window.fs.writeFile(
+				`${dir}/${window.appName}/config.json`,
+				JSON.stringify(config),
+				err => {
+					if (err) throw err;
+					debug('The file has been saved!');
+				}
+			);
+			conf = window.fs.readFileSync(
+				`${dir}/${window.appName}/config.json`,
+				'utf8'
+			);
 			// TODO: Add an item to dropdown menu to start script extender
-		} else if (skseFound === false) {
-			window.con.log('skseFound:', skseFound);
+		} else if (config.skseFound === false) {
+			debug(`skseFound: ${config.skseFound}`);
 			// TODO: Add an item to dropdown menu to install script extender
 		}
 	});
