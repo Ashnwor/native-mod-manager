@@ -17,7 +17,7 @@ const getConfig = () => {
 };
 
 const writeConfig = () => {
-	window.fs.writeFile(
+	window.fs.writeFileSync(
 		`${dir}/${window.appName}/config.json`,
 		JSON.stringify(config),
 		err => {

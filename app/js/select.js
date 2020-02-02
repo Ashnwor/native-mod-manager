@@ -17,7 +17,7 @@ document.getElementById('done').addEventListener('click', () => {
 			[selectedGame]: document.getElementById('path').value
 		};
 		const dir = `/home/${window.getUsername}/.local/share`;
-		window.fs.writeFile(
+		window.fs.writeFileSync(
 			`${dir}/${window.appName}/config.json`,
 			JSON.stringify(game),
 			err => {
