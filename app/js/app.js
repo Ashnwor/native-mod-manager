@@ -25,6 +25,7 @@ const writeConfig = () => {
 			debug('The file has been saved!');
 		}
 	);
+	getConfig();
 };
 
 if (window.platform === 'linux') {
