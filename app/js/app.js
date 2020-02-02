@@ -1,5 +1,13 @@
 const debug = debugThis => window.globalDebug(debugThis);
 
+const newDropdownEl = () => {
+	const dropdownMenu = document.getElementById('dropdownMenu');
+	const drowdownEl = document.createElement('a');
+	drowdownEl.classList.add('dropdown-item');
+	drowdownEl.innerText = 'TEST';
+	dropdownMenu.appendChild(drowdownEl);
+};
+
 if (window.platform === 'linux') {
 	const dir = `/home/${window.getUsername}/.local/share`;
 
@@ -55,6 +63,7 @@ if (window.platform === 'linux') {
 				`${dir}/${window.appName}/config.json`,
 				'utf8'
 			);
+			newDropdownEl();
 			// TODO: Add an item to dropdown menu to start script extender
 		} else if (config.skseFound === false) {
 			debug(`skseFound: ${config.skseFound}`);
