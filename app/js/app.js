@@ -1,4 +1,6 @@
-const debug = debugThis => window.globalDebug(debugThis);
+let dir;
+let rawConfig;
+debug = debugThis => window.globalDebug(debugThis);
 
 const newDropdownEl = (id, label) => {
 	const dropdownMenu = document.getElementById('dropdownMenu');
@@ -9,8 +11,24 @@ const newDropdownEl = (id, label) => {
 	dropdownMenu.appendChild(dropdownEl);
 };
 
+const getConfig = () => {
+	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
+	config = JSON.parse(rawConfig);
+};
+
+const writeConfig = () => {
+	window.fs.writeFile(
+		`${dir}/${window.appName}/config.json`,
+		JSON.stringify(config),
+		err => {
+			if (err) throw err;
+			debug('The file has been saved!');
+		}
+	);
+};
+
 if (window.platform === 'linux') {
-	const dir = `/home/${window.getUsername}/.local/share`;
+	dir = `/home/${window.getUsername}/.local/share`;
 
 	if (!window.fs.existsSync(`${dir}/${window.appName}`)) {
 		debug('First time setup');
@@ -19,27 +37,9 @@ if (window.platform === 'linux') {
 	}
 
 	window.ipcRenderer.on('continue-after-select', () => {
-		let conf = window.fs.readFileSync(
-			`${dir}/${window.appName}/config.json`,
-			'utf8'
-		);
-		let config = JSON.parse(conf);
+		getConfig();
 		config.skseFound = false;
 		dirArr = window.fs.readdirSync(config['skyrimSE']);
-
-		window.fs.writeFile(
-			`${dir}/${window.appName}/config.json`,
-			JSON.stringify(config),
-			err => {
-				if (err) throw err;
-				debug('The file has been saved!');
-			}
-		);
-
-		conf = window.fs.readFileSync(
-			`${dir}/${window.appName}/config.json`,
-			'utf8'
-		);
 		debug(config);
 
 		for (i = 0; i < dirArr.length; i += 1) {
@@ -52,19 +52,9 @@ if (window.platform === 'linux') {
 
 		if (config.skseFound === true) {
 			debug(`skseFound: ${config.skseFound}`);
-			window.fs.writeFile(
-				`${dir}/${window.appName}/config.json`,
-				JSON.stringify(config),
-				err => {
-					if (err) throw err;
-					debug('The file has been saved!');
-				}
-			);
-			conf = window.fs.readFileSync(
-				`${dir}/${window.appName}/config.json`,
-				'utf8'
-			);
+			writeConfig();
 			newDropdownEl('launchSKSE', 'Launch SKSE');
+			debug(config);
 			// TODO: Add an item to dropdown menu to start script extender
 		} else if (config.skseFound === false) {
 			debug(`skseFound: ${config.skseFound}`);
