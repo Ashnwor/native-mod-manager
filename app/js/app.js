@@ -71,8 +71,23 @@ if (window.platform === 'linux') {
 
 // import dropdown menu items
 getConfig();
+const skyrimSEid = 489830;
+const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
+const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+
+debug(pluginsDir);
+const pluginsFile = window.fs.readFileSync(`${pluginsDir}/Plugins.txt`, 'utf8');
+
+let lines = [];
+pluginsFile.split(/\r?\n/).forEach(line => {
+	lines.push(line);
+});
+
+debug(lines);
 newDropdownEl(
 	config.dropdownMenuItems.skse.id,
 	config.dropdownMenuItems.skse.title
 );
+
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
+// /home/ashnwor/.steam/steam/steamapps/compatdata/489830/pfx/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition
