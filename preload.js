@@ -14,10 +14,10 @@ let username;
 const globalDebug = debugThis => {
 	if (isDebugON === true) {
 		if (typeof debugThis === 'object') {
-			window.con.log('DEBUG:');
+			window.con.log('\x1b[31m' + 'DEBUG:' + '\x1b[0m');
 			window.con.log(debugThis);
 		} else {
-			window.con.log(`DEBUG: ${debugThis}`);
+			window.con.log('\x1b[31m' + 'DEBUG:' + '\x1b[0m', debugThis);
 		}
 	}
 };
