@@ -18,18 +18,17 @@
 	"author": "Ashnwor",
 	"license": "GPL-3.0",
 	"devDependencies": {
-		"electron": "^7.1.1",
-		"electron-icon-builder": "^1.0.1",
+		"electron": "^7.1.11",
+		"electron-icon-builder": "^1.0.2",
 		"eslint": "^6.8.0",
 		"eslint-config-airbnb-base": "^14.0.0",
-		"eslint-config-prettier": "^6.9.0",
-		"eslint-plugin-import": "^2.20.0",
+		"eslint-config-prettier": "^6.10.0",
+		"eslint-plugin-import": "^2.20.1",
 		"prettier": "^1.19.1"
 	},
 	"dependencies": {
 		"bootstrap": "^4.4.1",
-		"custom-electron-titlebar": "^3.1.0",
-		"electron": "^7.1.1",
+		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
 		"popper.js": "^1.16.1",
 		"username": "^5.1.0"
