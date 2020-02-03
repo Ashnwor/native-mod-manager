@@ -4,8 +4,8 @@
 	"description": "Native Mod Manager for Linux",
 	"main": "main.js",
 	"scripts": {
-		"start": "electron .",
-		"devStart": "rm -rf ~/.local/share/arcus && electron ."
+		"start": "electron --disable-gpu .",
+		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu ."
 	},
 	"repository": "https://github.com/Ashnwor/arcus",
 	"keywords": [
