@@ -128,11 +128,14 @@ if (window.platform === 'linux') {
 			};
 			writeConfig();
 			debug(config);
-			// TODO: Add an item to dropdown menu to start script extender
 		} else if (config.skseFound === false) {
+			writeConfig();
+			config.dropdownMenuItems = {
+				skse: { id: 'installSKSE', title: 'Install SKSE' }
+			};
+			writeConfig();
 			debug(`skseFound: ${config.skseFound}`);
 			debug(config);
-			// TODO: Add an item to dropdown menu to install script extender
 		}
 	}
 }
