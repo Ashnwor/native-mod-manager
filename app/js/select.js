@@ -1,5 +1,3 @@
-window.ipcRenderer.send('hide-main');
-
 let selectedGame = 'skyrimSE';
 document.getElementById('browse').addEventListener('click', () => {
 	let selectedFolder = window.dialog.showOpenDialogSync({
@@ -12,7 +10,6 @@ document.getElementById('browse').addEventListener('click', () => {
 document.getElementById('done').addEventListener('click', () => {
 	if (document.getElementById('path').value !== '') {
 		// TODO: Validate given path
-		window.con.log('Working');
 		const game = {
 			[selectedGame]: document.getElementById('path').value
 		};

@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const uname = require('username');
 const { dialog } = require('electron');
-
+const fs = require('fs');
 let mainWindow;
 let selectWindow;
 let username;
@@ -63,8 +63,6 @@ let createMainWindow = () => {
 	});
 };
 
-app.on('ready', createMainWindow);
-
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });
@@ -78,7 +76,7 @@ ipcMain.on('hide-main', () => {
 });
 
 ipcMain.on('show-main', () => {
-	mainWindow.show();
+	createMainWindow();
 });
 
 ipcMain.on('open-game-select', () => {
@@ -87,5 +85,13 @@ ipcMain.on('open-game-select', () => {
 
 ipcMain.on('close-select', () => {
 	selectWindow.destroy();
-	mainWindow.webContents.send('continue-after-select');
 });
+
+let dir = `/home/ashnwor/.local/share`;
+if (!fs.existsSync(`${dir}/arcus`)) {
+	console.log('First time setup');
+	fs.mkdirSync(`${dir}/arcus`);
+	app.on('ready', createSelectWindow);
+} else {
+	app.on('ready', createMainWindow);
+}
