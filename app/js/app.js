@@ -20,8 +20,9 @@ const writeConfig = () => {
 };
 
 const getPlugins = () => {
+	const rightMenu = document.getElementById('rightMenuList');
+	rightMenu.innerHTML = '';
 	const newRightMenuEl = (label, check) => {
-		const rightMenu = document.getElementById('rightMenuList');
 		const newListEl = document.createElement('li');
 		const newDiv = document.createElement('div');
 		const checkboxEl = document.createElement('input');
