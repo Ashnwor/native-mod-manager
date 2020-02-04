@@ -140,6 +140,10 @@ if (window.platform === 'linux') {
 			debug(`skseFound: ${config.skseFound}`);
 			debug(config);
 		}
+		config.dropdownMenuItems.lastSelected = {
+			id: config.dropdownMenuItems.skse.id,
+			label: config.dropdownMenuItems.skse.title
+		};
 	}
 }
 
