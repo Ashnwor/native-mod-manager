@@ -94,6 +94,9 @@ const newDropdownEl = (id, label) => {
 	dropdownEl.innerText = label;
 	dropdownEl.onclick = () => {
 		document.getElementById('dropdownLabel').innerText = label;
+		getConfig();
+		config.dropdownMenuItems.lastSelected = { id: id, label: label };
+		writeConfig();
 	};
 	dropdownMenu.appendChild(dropdownEl);
 };
@@ -143,6 +146,9 @@ if (window.platform === 'linux') {
 // import dropdown menu items
 getConfig();
 getPlugins();
+
+document.getElementById('dropdownLabel').innerText =
+	config.dropdownMenuItems.lastSelected.label;
 
 newDropdownEl(
 	config.dropdownMenuItems.skse.id,
