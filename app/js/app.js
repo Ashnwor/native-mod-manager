@@ -60,7 +60,7 @@ const getPlugins = () => {
 			}` === 'esp'
 		) {
 			debug(`${line} PLUGIN, ACTIVE`);
-			newRightMenuEl(line, true);
+			newRightMenuEl(line.replace('*', ''), true);
 		}
 	};
 
