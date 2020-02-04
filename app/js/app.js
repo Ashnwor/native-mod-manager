@@ -20,11 +20,25 @@ const writeConfig = () => {
 };
 
 const getPlugins = () => {
-	const newRightMenuEl = label => {
+	const newRightMenuEl = (label, check) => {
 		const rightMenu = document.getElementById('rightMenuList');
 		const newListEl = document.createElement('li');
+		const newDiv = document.createElement('div');
+		const checkboxEl = document.createElement('input');
+		const text = document.createElement('label');
+		newDiv.classList.add('custom-control');
+		newDiv.classList.add('custom-checkbox');
+		checkboxEl.type = 'checkbox';
+		checkboxEl.classList.add('custom-control-input');
+		checkboxEl.id = label;
+		checkboxEl.checked = check;
+		text.classList.add('custom-control-label');
+		text.htmlFor = label;
+		text.innerText = label;
 		newListEl.classList.add('list-group-item');
-		newListEl.innerText = label;
+		newDiv.appendChild(checkboxEl);
+		newDiv.appendChild(text);
+		newListEl.appendChild(newDiv);
 		rightMenu.appendChild(newListEl);
 	};
 
@@ -32,20 +46,21 @@ const getPlugins = () => {
 		if (line[0] === '#') {
 			debug(`${line} COMMENT`);
 		} else if (
-			line[0] != '*' &&
+			line[0] !== '*' &&
 			`${line[line.length - 3]}${line[line.length - 2]}${
 				line[line.length - 1]
 			}` === 'esp'
 		) {
 			debug(`${line} PLUGIN, NOT ACTIVE`);
-			newRightMenuEl(line);
+			newRightMenuEl(line, false);
 		} else if (
-			line[0] != '*' &&
+			line[0] === '*' &&
 			`${line[line.length - 3]}${line[line.length - 2]}${
 				line[line.length - 1]
 			}` === 'esp'
 		) {
 			debug(`${line} PLUGIN, ACTIVE`);
+			newRightMenuEl(line, true);
 		}
 	};
 
