@@ -105,9 +105,9 @@ const newDropdownEl = (id, label) => {
 // First start
 //if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
-if (process.platform === 'darwin') {
+if (window.platform === 'darwin') {
 	dir = `/Users/ashnwor/Library/Application Support`;
-} else if (process.platform === 'linux') {
+} else if (window.platform === 'linux') {
 	dir = `/home/ashnwor/.local/share`;
 }
 if (firstStart === true) {

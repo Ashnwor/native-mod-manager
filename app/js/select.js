@@ -1,9 +1,9 @@
 let selectedGame = 'skyrimSE';
 document.getElementById('browse').addEventListener('click', () => {
 	let defaultPath;
-	if (process.platform === 'darwin') {
+	if (window.platform === 'darwin') {
 		defaultPath = `/Users/${window.getUsername}/Library/Application Support/Steam/steamapps/common/Skyrim Special Edition`;
-	} else if (process.platform === 'linux') {
+	} else if (window.platform === 'linux') {
 		defaultPath = `/home/${window.getUsername}/.steam/steam/steamapps/common/Skyrim Special Edition`;
 	}
 	let selectedFolder = window.dialog.showOpenDialogSync({
@@ -21,9 +21,9 @@ document.getElementById('done').addEventListener('click', () => {
 		};
 		let dir;
 
-		if (process.platform === 'darwin') {
+		if (window.platform === 'darwin') {
 			dir = `/Users/${window.getUsername}/Library/Application Support`;
-		} else if (process.platform === 'linux') {
+		} else if (window.platform === 'linux') {
 			dir = `/home/${window.getUsername}/.local/share`;
 		}
 
