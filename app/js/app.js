@@ -1,5 +1,7 @@
 let dir;
 let rawConfig;
+let rightMenu;
+let lines;
 debug = debugThis => window.globalDebug(debugThis);
 
 const getConfig = () => {
@@ -19,52 +21,87 @@ const writeConfig = () => {
 	getConfig();
 };
 
-const getPlugins = () => {
-	const rightMenu = document.getElementById('rightMenuList');
-	rightMenu.innerHTML = '';
-	const newRightMenuEl = (label, check) => {
-		const newListEl = document.createElement('li');
-		const newDiv = document.createElement('div');
-		const checkboxEl = document.createElement('input');
-		const text = document.createElement('label');
-		newDiv.classList.add('custom-control');
-		newDiv.classList.add('custom-checkbox');
-		checkboxEl.type = 'checkbox';
-		checkboxEl.classList.add('custom-control-input');
-		checkboxEl.id = label;
-		checkboxEl.checked = check;
-		text.classList.add('custom-control-label');
-		text.htmlFor = label;
-		text.innerText = label;
-		newListEl.classList.add('list-group-item');
-		newDiv.appendChild(checkboxEl);
-		newDiv.appendChild(text);
-		newListEl.appendChild(newDiv);
-		rightMenu.appendChild(newListEl);
-	};
-
-	const isItPlugin = line => {
-		if (line[0] === '#') {
-			debug(`${line} COMMENT`);
-		} else if (
-			line[0] !== '*' &&
-			`${line[line.length - 3]}${line[line.length - 2]}${
-				line[line.length - 1]
-			}` === 'esp'
-		) {
-			debug(`${line} PLUGIN, NOT ACTIVE`);
-			newRightMenuEl(line.replace('.esp', ''), false);
-		} else if (
-			line[0] === '*' &&
-			`${line[line.length - 3]}${line[line.length - 2]}${
-				line[line.length - 1]
-			}` === 'esp'
-		) {
-			debug(`${line} PLUGIN, ACTIVE`);
-			newRightMenuEl(line.replace('*', '').replace('.esp', ''), true);
+const newRightMenuEl = (label, check) => {
+	const newListEl = document.createElement('li');
+	const newDiv = document.createElement('div');
+	const checkboxEl = document.createElement('input');
+	const text = document.createElement('label');
+	newDiv.classList.add('custom-control');
+	newDiv.classList.add('custom-checkbox');
+	checkboxEl.type = 'checkbox';
+	checkboxEl.classList.add('custom-control-input');
+	checkboxEl.id = label;
+	checkboxEl.checked = check;
+	checkboxEl.addEventListener('click', () => {
+		debug(`${checkboxEl.id}: ${checkboxEl.checked}`);
+		if (checkboxEl.checked === false) {
+			debug(`${checkboxEl.id}: disabled`);
+			for (i = 0; i < lines.length; i += 1) {
+				if (lines[i] === checkboxEl.id) {
+					lines[i] = checkboxEl.id.replace('*', '');
+					writePlugins(lines);
+					break;
+				}
+			}
+		} else {
+			debug(`${checkboxEl.id}: enabled`);
+			for (i = 0; i < lines.length; i += 1) {
+				if (lines[i] === checkboxEl.id) {
+					lines[i] = `*${checkboxEl.id}`;
+					writePlugins(lines);
+					break;
+				}
+			}
 		}
-	};
+	});
+	text.classList.add('custom-control-label');
+	text.htmlFor = label;
+	text.innerText = label.replace('*', '').replace('.esp', '');
+	newListEl.classList.add('list-group-item');
+	newDiv.appendChild(checkboxEl);
+	newDiv.appendChild(text);
+	newListEl.appendChild(newDiv);
+	rightMenu.appendChild(newListEl);
+};
 
+const isItPlugin = line => {
+	if (line[0] === '#') {
+		debug(`${line} COMMENT`);
+	} else if (
+		line[0] !== '*' &&
+		`${line[line.length - 3]}${line[line.length - 2]}${
+			line[line.length - 1]
+		}` === 'esp'
+	) {
+		debug(`${line} PLUGIN, NOT ACTIVE`);
+		newRightMenuEl(line, false);
+	} else if (
+		line[0] === '*' &&
+		`${line[line.length - 3]}${line[line.length - 2]}${
+			line[line.length - 1]
+		}` === 'esp'
+	) {
+		debug(`${line} PLUGIN, ACTIVE`);
+		newRightMenuEl(line, true);
+	}
+};
+
+const writePlugins = arr => {
+	const skyrimSEid = 489830;
+	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
+	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+	debug(pluginsDir);
+	const pluginsFile = `${pluginsDir}/Plugins.txt`;
+
+	window.fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
+		console.log(err ? 'Error :' + err : 'ok');
+	});
+	getPlugins();
+};
+
+const getPlugins = () => {
+	rightMenu = document.getElementById('rightMenuList');
+	rightMenu.innerHTML = '';
 	// Get this from preload in relation to selected game
 	const skyrimSEid = 489830;
 	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
@@ -76,12 +113,11 @@ const getPlugins = () => {
 		'utf8'
 	);
 
-	let lines = [];
+	lines = [];
 	pluginsFile.split(/\r?\n/).forEach(line => {
 		lines.push(line);
 	});
 	debug(lines);
-
 	for (i = 0; i < lines.length; i += 1) {
 		isItPlugin(lines[i]);
 	}
