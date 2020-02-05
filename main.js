@@ -6,6 +6,7 @@ const fs = require('fs');
 let mainWindow;
 let selectWindow;
 let username;
+let dir;
 let firstStart = false;
 
 (async () => {
@@ -31,7 +32,12 @@ let createSelectWindow = () => {
 		event.preventDefault();
 		const appName = 'arcus';
 		const fs = require('fs');
-		const dir = `/home/${username}/.local/share`;
+		let dir;
+		if (process.platform === 'darwin') {
+			dir = `/Users/ashnwor/Library/Application Support`;
+		} else if (process.platform === 'linux') {
+			dir = `/home/ashnwor/.local/share`;
+		}
 		if (!fs.existsSync(`${dir}/${appName}/config.json`)) {
 			let options = {
 				buttons: ['Yes', 'No'],
@@ -89,7 +95,12 @@ ipcMain.on('close-select', () => {
 	selectWindow.destroy();
 });
 
-let dir = `/home/ashnwor/.local/share`;
+if (process.platform === 'darwin') {
+	dir = `/Users/ashnwor/Library/Application Support`;
+} else if (process.platform === 'linux') {
+	dir = `/home/ashnwor/.local/share`;
+}
+
 if (!fs.existsSync(`${dir}/arcus`)) {
 	console.log('First time setup');
 	fs.mkdirSync(`${dir}/arcus`);
