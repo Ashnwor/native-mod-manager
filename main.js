@@ -6,6 +6,7 @@ const fs = require('fs');
 let mainWindow;
 let selectWindow;
 let username;
+let firstStart = false;
 
 (async () => {
 	username = await uname();
@@ -77,10 +78,11 @@ ipcMain.on('hide-main', () => {
 
 ipcMain.on('show-main', () => {
 	createMainWindow();
+	firstStart = true;
 });
 
-ipcMain.on('open-game-select', () => {
-	createSelectWindow();
+ipcMain.on('isFirstStart', event => {
+	event.returnValue = firstStart;
 });
 
 ipcMain.on('close-select', () => {
