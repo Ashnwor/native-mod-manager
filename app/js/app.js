@@ -53,7 +53,7 @@ const getPlugins = () => {
 			}` === 'esp'
 		) {
 			debug(`${line} PLUGIN, NOT ACTIVE`);
-			newRightMenuEl(line, false);
+			newRightMenuEl(line.replace('.esp', ''), false);
 		} else if (
 			line[0] === '*' &&
 			`${line[line.length - 3]}${line[line.length - 2]}${
@@ -61,7 +61,7 @@ const getPlugins = () => {
 			}` === 'esp'
 		) {
 			debug(`${line} PLUGIN, ACTIVE`);
-			newRightMenuEl(line.replace('*', ''), true);
+			newRightMenuEl(line.replace('*', '').replace('.esp', ''), true);
 		}
 	};
 
