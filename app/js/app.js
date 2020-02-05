@@ -142,9 +142,9 @@ const newDropdownEl = (id, label) => {
 //if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
 if (window.platform === 'darwin') {
-	dir = `/Users/ashnwor/Library/Application Support`;
+	dir = `/Users/${window.getUsername}/Library/Application Support`;
 } else if (window.platform === 'linux') {
-	dir = `/home/ashnwor/.local/share`;
+	dir = `/home/${window.getUsername}/.local/share`;
 }
 if (firstStart === true) {
 	debug('First time setup');

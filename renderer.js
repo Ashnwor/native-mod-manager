@@ -6,4 +6,3 @@
 // process.
 window.$ = window.jQuery;
 window.titlebarFrame();
-console.log(window.getUsername);

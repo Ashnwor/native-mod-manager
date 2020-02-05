@@ -36,10 +36,8 @@ window.appName = appName;
 window.fs = fs;
 window.con = con;
 
-(async () => {
-	username = await uname();
-	window.getUsername = username;
-})();
+username = uname.sync();
+window.getUsername = username;
 
 window.titlebarFrame = () => {
 	customTitlebar = require('custom-electron-titlebar');

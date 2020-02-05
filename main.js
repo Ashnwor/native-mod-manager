@@ -9,10 +9,6 @@ let username;
 let dir;
 let firstStart = false;
 
-(async () => {
-	username = await uname();
-})();
-
 let createSelectWindow = () => {
 	selectWindow = new BrowserWindow({
 		width: 640,
@@ -95,10 +91,11 @@ ipcMain.on('close-select', () => {
 	selectWindow.destroy();
 });
 
+username = uname.sync();
 if (process.platform === 'darwin') {
-	dir = `/Users/ashnwor/Library/Application Support`;
+	dir = `/Users/${username}/Library/Application Support`;
 } else if (process.platform === 'linux') {
-	dir = `/home/ashnwor/.local/share`;
+	dir = `/home/${username}/.local/share`;
 }
 
 if (!fs.existsSync(`${dir}/arcus`)) {
