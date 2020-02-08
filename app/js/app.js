@@ -138,6 +138,41 @@ const newDropdownEl = (id, label) => {
 	dropdownMenu.appendChild(dropdownEl);
 };
 
+const genRunScript = skse => {
+	let runArr = [];
+	runArr[0] = '#!/bin/bash';
+	runArr[1] = '#Run game or given command in environment';
+	runArr[2] = '';
+	runArr[3] = `cd "${config.skyrimSE}"`;
+	if (skse === true) {
+		// for true: generate for skse64
+		runArr[4] = `DEF_CMD=("${config.skyrimSE}/skse64_loader.exe")`;
+	} else {
+		// for false: generate for skyrim
+		runArr[4] = `DEF_CMD=("${config.skyrimSE}/SkyrimSE.exe")`;
+	}
+	runArr[5] = `PATH="/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/bin/:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/bin:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/bin:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl" \\ `;
+	runArr[6] = `TERM="xterm" \\`;
+	runArr[7] = `WINEDEBUG="-all" \\`;
+	runArr[8] = `        LD_PRELOAD="/usr/$LIB/libgamemodeauto.so.0::/home/ashnwor/.local/share/Steam/ubuntu12_32/gameoverlayrenderer.so:/home/ashnwor/.local/share/Steam/ubuntu12_64/gameoverlayrenderer.so" \\`;
+	runArr[9] = `        WINEDLLPATH="/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/lib64//wine:/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/lib//wine" \\`;
+	runArr[10] = `        LD_LIBRARY_PATH="/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/lib64/:/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/lib/:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib/libfakeroot:/usr/lib32:/usr/lib/openmpi:/usr/lib/popcorntime/0.3.10:/usr/lib:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/lib:/home/ashnwor/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib:" \\`;
+	runArr[11] = `	      WINEPREFIX="/home/ashnwor/.local/share/Steam/steamapps/compatdata/489830/pfx/" \\`;
+	runArr[12] = `	      WINEESYNC="1" \\`;
+	runArr[13] = `        SteamGameId="489830" \\`;
+	runArr[14] = `	      SteamAppId="489830" \\`;
+	runArr[15] = `	      WINEDLLOVERRIDES="xaudio2_7=n,b;steam.exe=b;mfplay=n;dxvk_config=n;d3d11=n;d3d10=n;d3d10core=n;d3d10_1=n" \\`;
+	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/ashnwor/.local/share/Steam" \\`;
+	const add = '"${@:-${DEF_CMD[@]}}"';
+	runArr[17] = `	      "/home/ashnwor/.local/share/Steam/steamapps/common/Proton 4.11/dist/bin/wine" steam.exe ${add}`;
+	debug(runArr);
+	debug(runArr[17]);
+
+	window.fs.writeFileSync('run', runArr.join('\n'), function(err) {
+		console.log(err ? 'Error :' + err : 'ok');
+	});
+};
+
 // First start
 //if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
@@ -199,4 +234,5 @@ newDropdownEl(
 );
 
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
+genRunScript(true);
 // /home/ashnwor/.steam/steam/steamapps/compatdata/489830/pfx/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition
