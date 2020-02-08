@@ -7,7 +7,7 @@ const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
 const { ipcRenderer } = require('electron');
 const { dialog } = require('electron').remote;
-const { exec } = require('shelljs');
+const { spawn } = require('child_process');
 let customTitlebar;
 let custTitlebar;
 let username;
@@ -30,7 +30,7 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
-window.exec = exec;
+window.spawn = spawn;
 window.platform = process.platform;
 window.dialog = dialog;
 window.ipcRenderer = ipcRenderer;

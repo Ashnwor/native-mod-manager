@@ -241,9 +241,25 @@ newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
 genRunScript(true);
 // /home/ashnwor/.steam/steam/steamapps/compatdata/489830/pfx/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition
 
+let isRunning = false;
 document.getElementById('run').addEventListener('click', () => {
-	debug('RUNNNIIIINNNNNGGGG');
-	if (window.platform === 'linux') {
-		window.exec('steam steam://rungameid/489830');
+	if (isRunning === true) {
+		debug('Already running');
+	}
+	if (isRunning === false) {
+		if (window.platform === 'linux') {
+			const child = window.spawn('./run', { stdio: 'inherit' });
+			debug(`Process PID: ${child.pid}`);
+			if (child.pid !== null) {
+				isRunning = true;
+				debug(`isRunning: ${isRunning}`);
+			}
+
+			child.on('exit', function(code, signal) {
+				debug(`Process finished with code: ${code}`);
+				isRunning = false;
+				debug(`isRunning: ${isRunning}`);
+			});
+		}
 	}
 });
