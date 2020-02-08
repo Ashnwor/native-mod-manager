@@ -31,7 +31,6 @@
 		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
 		"popper.js": "^1.16.1",
-		"shelljs": "^0.8.3",
 		"username": "^5.1.0"
 	}
 }
