@@ -188,6 +188,10 @@ if (firstStart === true) {
 	dirArr = window.fs.readdirSync(config['skyrimSE']);
 	debug(config);
 
+	config.isSteam = true;
+	// TODO: Check if the game is in steam folder
+	// This will needed when running the game
+
 	for (i = 0; i < dirArr.length; i += 1) {
 		if (dirArr[i].slice(0, 6) === 'skse64') {
 			config.skseFound = true;
@@ -236,3 +240,10 @@ newDropdownEl(
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
 genRunScript(true);
 // /home/ashnwor/.steam/steam/steamapps/compatdata/489830/pfx/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition
+
+document.getElementById('run').addEventListener('click', () => {
+	debug('RUNNNIIIINNNNNGGGG');
+	if (window.platform === 'linux') {
+		window.exec('steam steam://rungameid/489830');
+	}
+});
