@@ -163,8 +163,7 @@ const genRunScript = skse => {
 	runArr[14] = `	      SteamAppId="489830" \\`;
 	runArr[15] = `	      WINEDLLOVERRIDES="xaudio2_7=n,b;steam.exe=b;mfplay=n;dxvk_config=n;d3d11=n;d3d10=n;d3d10core=n;d3d10_1=n" \\`;
 	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/${window.getUsername}/.local/share/Steam" \\`;
-	const add = '"${@:-${DEF_CMD[@]}}"';
-	runArr[17] = `	      "/home/${window.getUsername}/.local/share/Steam/steamapps/common/Proton 4.11/dist/bin/wine" steam.exe ${add}`;
+	runArr[17] = `	      "/home/${window.getUsername}/.local/share/Steam/steamapps/common/Proton 4.11/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
 
