@@ -166,10 +166,17 @@ const genRunScript = skse => {
 	runArr[17] = `	      "/home/${window.getUsername}/.local/share/Steam/steamapps/common/Proton 4.11/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
-
-	window.fs.writeFileSync('run', runArr.join('\n'), function(err) {
-		console.log(err ? 'Error :' + err : 'ok');
-	});
+	if (skse === true) {
+		window.fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
+			console.log(err ? 'Error :' + err : 'ok');
+		});
+		window.execSync('chmod +x runSKSE');
+	} else if (skse === false) {
+		window.fs.writeFileSync('runSkyrim', runArr.join('\n'), function(err) {
+			console.log(err ? 'Error :' + err : 'ok');
+		});
+		window.execSync('chmod +x runSkyrim');
+	}
 };
 
 // First start
@@ -237,16 +244,30 @@ newDropdownEl(
 );
 
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
-genRunScript(true);
+
+if (window.platform === 'linux') {
+	// TODO: Will change the way of genRunScript works later
+	genRunScript(true); // generate run script for skse
+	genRunScript(false); // generate run script for skyrimse
+}
 
 let isRunning = false;
 document.getElementById('run').addEventListener('click', () => {
+	getConfig();
 	if (isRunning === true) {
 		debug('Already running');
 	}
 	if (isRunning === false) {
 		if (window.platform === 'linux') {
-			const child = window.spawn('./run', { stdio: 'inherit' });
+			let child;
+			// TODO: Support for custom dropdown menu items
+			if (config.dropdownMenuItems.lastSelected.id === 'launchSKSE') {
+				child = window.spawn('./runSKSE', { stdio: 'inherit' });
+			} else if (
+				config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE'
+			) {
+				child = window.spawn('./runSkyrim', { stdio: 'inherit' });
+			}
 			debug(`Process PID: ${child.pid}`);
 			if (child.pid !== null) {
 				isRunning = true;
