@@ -1,6 +1,10 @@
 @import url("../fonts/RobotoCondensed-Bold.ttf");
 body {
   height: 100vh;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .hover-1p1p {

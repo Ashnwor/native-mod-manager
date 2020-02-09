@@ -5,7 +5,9 @@ $navBtnBgColorHov: #5a6268;
 
 body {
 	height: 100vh;
+	user-select: none;
 }
+
 .hover-1p1p {
 	transition: transform 200ms ease;
 	&:hover {
