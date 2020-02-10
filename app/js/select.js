@@ -29,17 +29,18 @@ document.getElementById('done').addEventListener('click', () => {
 
 		window.fs.writeFileSync(
 			`${dir}/${window.appName}/config.json`,
-			JSON.stringify(game),
+			JSON.stringify(game, null, 4),
 			err => {
 				if (err) throw err;
-				window.con.log('The file has been saved!');
-				const conf = window.fs.readFileSync(
-					`${dir}/${window.appName}/config.json`,
-					'utf8'
-				);
-				window.con.log(JSON.parse(conf));
+				debug('The file has been saved!');
 			}
 		);
+		const conf = window.fs.readFileSync(
+			`${dir}/${window.appName}/config.json`,
+			'utf8'
+		);
+		debug(JSON.parse(conf));
+
 		window.ipcRenderer.send('show-main');
 		window.ipcRenderer.send('close-select');
 	}
