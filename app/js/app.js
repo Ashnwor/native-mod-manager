@@ -217,7 +217,6 @@ const genProtonMap = () => {
 			'utf8'
 		);
 		debug(JSON.parse(map));
-		debug(protonMap.common);
 	}
 };
 
