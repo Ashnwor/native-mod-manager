@@ -179,6 +179,48 @@ const genRunScript = skse => {
 	}
 };
 
+const genProtonMap = () => {
+	let id = -1;
+	const protonMap = {};
+	protonMap.common = {};
+	if (window.platform === 'linux') {
+		const steamAppsCommon = `/home/${window.getUsername}/.steam/steam/steamapps/common`;
+		window.fs.readdirSync(steamAppsCommon).forEach(file => {
+			debug(file);
+			if (file.includes('Proton') === true) {
+				protonMap.common[id + 1] = { name: file };
+				id += 1;
+			}
+		});
+		const compatibilitytools = `/home/${window.getUsername}/.steam/steam/compatibilitytools.d`;
+		if (window.fs.existsSync(compatibilitytools) === true) {
+			protonMap.compatibilitytools = {};
+			id = -1;
+			window.fs.readdirSync(compatibilitytools).forEach(file => {
+				debug(file);
+				if (file.includes('Proton') === true) {
+					protonMap.compatibilitytools[id + 1] = { name: file };
+					id += 1;
+				}
+			});
+		}
+		window.fs.writeFileSync(
+			`${dir}/${window.appName}/protonMap.json`,
+			JSON.stringify(protonMap, null, 4),
+			err => {
+				if (err) throw err;
+				debug('The file has been saved!');
+			}
+		);
+		const map = window.fs.readFileSync(
+			`${dir}/${window.appName}/protonMap.json`,
+			'utf8'
+		);
+		debug(JSON.parse(map));
+		debug(protonMap.common);
+	}
+};
+
 // First start
 //if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
@@ -251,6 +293,7 @@ if (window.platform === 'linux') {
 	genRunScript(false); // generate run script for skyrimse
 }
 
+genProtonMap();
 let isRunning = false;
 document.getElementById('run').addEventListener('click', () => {
 	getConfig();
