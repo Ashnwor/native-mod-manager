@@ -28,6 +28,22 @@ body {
 	//margin-top: $topNavbarHeight;
 }
 
+#leftListPreferences {
+	position: absolute;
+	float: left;
+	width: 25%;
+	height: calc((100vh - #{$topNavbarHeight}) - 30px);
+	margin-top: calc(#{$topNavbarHeight} + 30px);
+}
+
+#rightListPreferences {
+	position: absolute;
+	right: 0;
+	width: 75%;
+	height: calc((100vh - #{$topNavbarHeight}) - 30px);
+	margin-top: calc(#{$topNavbarHeight} + 30px);
+}
+
 #rightList {
 	float: right;
 	width: 30%;
@@ -107,4 +123,19 @@ body {
 
 .dropdown-item {
 	cursor: pointer;
+}
+
+.menuText {
+	transition: margin-left 0.5s ease-in;
+}
+
+.preferencesMenuItem {
+	cursor: pointer;
+	&:hover {
+		background-color: #b3b3b3;
+	}
+	&:hover > .menuText {
+		margin-left: 0.5vw;
+		transition: margin-left 0.5s ease-in;
+	}
 }

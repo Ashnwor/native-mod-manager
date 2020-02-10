@@ -34,6 +34,22 @@ body {
   height: calc((100vh - 7vh) - 30px);
 }
 
+#leftListPreferences {
+  position: absolute;
+  float: left;
+  width: 25%;
+  height: calc((100vh - 7vh) - 30px);
+  margin-top: calc(7vh + 30px);
+}
+
+#rightListPreferences {
+  position: absolute;
+  right: 0;
+  width: 75%;
+  height: calc((100vh - 7vh) - 30px);
+  margin-top: calc(7vh + 30px);
+}
+
 #rightList {
   float: right;
   width: 30%;
@@ -123,5 +139,24 @@ body {
 
 .dropdown-item {
   cursor: pointer;
+}
+
+.menuText {
+  -webkit-transition: margin-left 0.5s ease-in;
+  transition: margin-left 0.5s ease-in;
+}
+
+.preferencesMenuItem {
+  cursor: pointer;
+}
+
+.preferencesMenuItem:hover {
+  background-color: #b3b3b3;
+}
+
+.preferencesMenuItem:hover > .menuText {
+  margin-left: 0.5vw;
+  -webkit-transition: margin-left 0.5s ease-in;
+  transition: margin-left 0.5s ease-in;
 }
 /*# sourceMappingURL=style.css.map */
