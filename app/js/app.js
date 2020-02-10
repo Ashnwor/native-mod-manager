@@ -188,8 +188,14 @@ const genProtonMap = () => {
 		window.fs.readdirSync(steamAppsCommon).forEach(file => {
 			debug(file);
 			if (file.includes('Proton') === true) {
-				protonMap.common[id + 1] = { name: file };
-				id += 1;
+				if (
+					window.fs.existsSync(
+						`/home/${window.getUsername}/.steam/steam/steamapps/common/${file}/proton`
+					)
+				) {
+					protonMap.common[id + 1] = { name: file };
+					id += 1;
+				}
 			}
 		});
 		const compatibilitytools = `/home/${window.getUsername}/.steam/steam/compatibilitytools.d`;
@@ -199,8 +205,14 @@ const genProtonMap = () => {
 			window.fs.readdirSync(compatibilitytools).forEach(file => {
 				debug(file);
 				if (file.includes('Proton') === true) {
-					protonMap.compatibilitytools[id + 1] = { name: file };
-					id += 1;
+					if (
+						window.fs.existsSync(
+							`/home/${window.getUsername}/.steam/steam/compatibilitytools.d/${file}/proton`
+						)
+					) {
+						protonMap.compatibilitytools[id + 1] = { name: file };
+						id += 1;
+					}
 				}
 			});
 		}
