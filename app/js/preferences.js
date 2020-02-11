@@ -106,7 +106,7 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 		let option = document.createElement('option');
 		option.value = obj[i]['label'];
 		option.dataset.location = obj[i]['prefix'];
-		option.innerText = `${obj[i]['prefix']} ${obj[i]['label']}`;
+		option.innerText = `${obj[i]['prefix']}: ${obj[i]['label']}`;
 		selection.appendChild(option);
 	}
 
@@ -122,11 +122,15 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 
 const protonMenu = () => {
 	// Version Select
+	getConfig();
 	createSelect(
 		'protonVersions',
 		'Version',
 		parseProton(JSON.parse(protonMap)),
-		{ location: 'common', text: 'Proton 4.11' }
+		{
+			location: config.protonVersion.location,
+			text: config.protonVersion.version
+		}
 	);
 	createBottomNav();
 	document.getElementById('done').addEventListener('click', () => {
