@@ -9,6 +9,20 @@ let username;
 let dir;
 let firstStart = false;
 
+let createPrefWindow = () => {
+	prefWindow = new BrowserWindow({
+		width: 1280,
+		height: 720,
+		frame: false,
+		webPreferences: { preload: path.join(`${__dirname}/preload.js`) }
+	});
+	prefWindow.loadFile('./app/pages/preferences.html');
+
+	prefWindow.on('closed', () => {
+		prefWindow = null;
+	});
+};
+
 let createSelectWindow = () => {
 	selectWindow = new BrowserWindow({
 		width: 640,
@@ -89,6 +103,14 @@ ipcMain.on('isFirstStart', event => {
 
 ipcMain.on('close-select', () => {
 	selectWindow.destroy();
+});
+
+ipcMain.on('open-prefs', () => {
+	createPrefWindow();
+});
+
+ipcMain.on('gen-run-script', () => {
+	mainWindow.webContents.send('gen-run-script');
 });
 
 username = uname.sync();

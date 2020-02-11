@@ -39,7 +39,7 @@ body {
   float: left;
   width: 25%;
   height: calc((100vh - 7vh) - 30px);
-  margin-top: calc(7vh + 30px);
+  margin-top: calc(7vh);
 }
 
 #rightListPreferences {
@@ -47,7 +47,7 @@ body {
   right: 0;
   width: 75%;
   height: calc((100vh - 7vh) - 30px);
-  margin-top: calc(7vh + 30px);
+  margin-top: calc(7vh);
 }
 
 #rightList {

@@ -33,7 +33,7 @@ body {
 	float: left;
 	width: 25%;
 	height: calc((100vh - #{$topNavbarHeight}) - 30px);
-	margin-top: calc(#{$topNavbarHeight} + 30px);
+	margin-top: calc(#{$topNavbarHeight});
 }
 
 #rightListPreferences {
@@ -41,7 +41,7 @@ body {
 	right: 0;
 	width: 75%;
 	height: calc((100vh - #{$topNavbarHeight}) - 30px);
-	margin-top: calc(#{$topNavbarHeight} + 30px);
+	margin-top: calc(#{$topNavbarHeight});
 }
 
 #rightList {
