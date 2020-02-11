@@ -14,7 +14,8 @@ let createPrefWindow = () => {
 		width: 1280,
 		height: 720,
 		frame: false,
-		webPreferences: { preload: path.join(`${__dirname}/preload.js`) }
+		webPreferences: { preload: path.join(`${__dirname}/preload.js`) },
+		parent: mainWindow
 	});
 	prefWindow.loadFile('./app/pages/preferences.html');
 
@@ -30,7 +31,8 @@ let createSelectWindow = () => {
 		frame: false,
 		webPreferences: {
 			preload: path.join(`${__dirname}/preload.js`)
-		}
+		},
+		parent: mainWindow
 	});
 	selectWindow.loadFile('./app/pages/select.html');
 
