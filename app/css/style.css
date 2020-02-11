@@ -159,4 +159,13 @@ body {
   -webkit-transition: margin-left 0.5s ease-in;
   transition: margin-left 0.5s ease-in;
 }
+
+#run:hover > .hover-1p1p {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+  -webkit-transition: -webkit-transform 0.5s ease-in;
+  transition: -webkit-transform 0.5s ease-in;
+  transition: transform 0.5s ease-in;
+  transition: transform 0.5s ease-in, -webkit-transform 0.5s ease-in;
+}
 /*# sourceMappingURL=style.css.map */
