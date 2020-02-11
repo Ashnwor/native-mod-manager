@@ -66,6 +66,7 @@ const createBottomNav = () => {
 	const doneButton = document.createElement('button');
 	doneButton.id = 'done';
 	doneButton.type = 'button';
+	doneButton.classList.add('btn', 'btn-primary');
 	doneButton.innerText = 'DONE';
 	doneButtonA.appendChild(doneButton);
 	bottomNav.appendChild(doneButtonA);
