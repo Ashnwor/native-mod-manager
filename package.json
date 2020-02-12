@@ -15,8 +15,25 @@
 		"manager",
 		"arcus"
 	],
-	"author": "Ashnwor",
+	"author": {
+		"name": "İlyas Akın",
+		"email": "ashnwor@gmail.com"
+	},
 	"license": "GPL-3.0",
+	"build": {
+		"appId": "com.ash.arcus",
+		"linux": {
+			"target": "pacman"
+		},
+		"protocols": [
+			{
+				"name": "arcus",
+				"schemes": [
+					"arcus"
+				]
+			}
+		]
+	},
 	"devDependencies": {
 		"electron": "^7.1.11",
 		"electron-icon-builder": "^1.0.2",
