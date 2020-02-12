@@ -158,18 +158,18 @@ const genRunScript = skse => {
 		// for false: generate for skyrim
 		runArr[4] = `DEF_CMD=("${config.skyrimSE}/SkyrimSE.exe")`;
 	}
-	runArr[5] = `PATH="${runnerPath}/dist/bin/:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/bin:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/bin:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/bin" \\`;
+	runArr[5] = `PATH="${runnerPath}/dist/bin/:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/amd64/bin:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/amd64/usr/bin:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/bin" \\`;
 	runArr[6] = `TERM="xterm" \\`;
 	runArr[7] = `WINEDEBUG="-all" \\`;
-	runArr[8] = `        LD_PRELOAD="/usr/$LIB/libgamemodeauto.so.0::/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/gameoverlayrenderer.so:/home/${window.getUsername}/.local/share/Steam/ubuntu12_64/gameoverlayrenderer.so" \\`;
+	runArr[8] = `        LD_PRELOAD="/usr/$LIB/libgamemodeauto.so.0::/home/${window.getUsername}/.steam/steam/ubuntu12_32/gameoverlayrenderer.so:/home/${window.getUsername}/.steam/steam/ubuntu12_64/gameoverlayrenderer.so" \\`;
 	runArr[9] = `        WINEDLLPATH="${runnerPath}/dist/lib64//wine:${runnerPath}/dist/lib//wine" \\`;
-	runArr[10] = `        LD_LIBRARY_PATH="${runnerPath}/dist/lib64/:${runnerPath}/dist/lib/:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib/libfakeroot:/usr/lib32:/usr/lib/openmpi:/usr/lib:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/lib:/home/${window.getUsername}/.local/share/Steam/ubuntu12_32/steam-runtime/usr/lib:" \\`;
-	runArr[11] = `	      WINEPREFIX="/home/${window.getUsername}/.local/share/Steam/steamapps/compatdata/489830/pfx/" \\`;
+	runArr[10] = `        LD_LIBRARY_PATH="${runnerPath}/dist/lib64/:${runnerPath}/dist/lib/:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_32:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib/libfakeroot:/usr/lib32:/usr/lib/openmpi:/usr/lib:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib:" \\`;
+	runArr[11] = `	      WINEPREFIX="/home/${window.getUsername}/.steam/steam/steamapps/compatdata/489830/pfx/" \\`;
 	runArr[12] = `	      WINEESYNC="1" \\`;
 	runArr[13] = `        SteamGameId="489830" \\`;
 	runArr[14] = `	      SteamAppId="489830" \\`;
 	runArr[15] = `	      WINEDLLOVERRIDES="xaudio2_7=n,b;steam.exe=b;mfplay=n;dxvk_config=n;d3d11=n;d3d10=n;d3d10core=n;d3d10_1=n" \\`;
-	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/${window.getUsername}/.local/share/Steam" \\`;
+	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/${window.getUsername}/.steam/steam" \\`;
 	runArr[17] = `	      "${runnerPath}/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
