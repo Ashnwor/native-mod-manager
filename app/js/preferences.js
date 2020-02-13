@@ -39,13 +39,20 @@ const parseProton = obj => {
 		debug(obj['common'][i]['name']);
 		arr.push({ prefix: 'common', label: obj['common'][i]['name'] });
 	}
-	for (i = 0; i <= Object.keys(obj['compatibilitytools']).length - 1; i += 1) {
-		debug(obj['compatibilitytools'][i]['name']);
-		arr.push({
-			prefix: 'compatibilitytools',
-			label: obj['compatibilitytools'][i]['name']
-		});
+	if (obj['compatibilitytools'] !== undefined) {
+		for (
+			i = 0;
+			i <= Object.keys(obj['compatibilitytools']).length - 1;
+			i += 1
+		) {
+			debug(obj['compatibilitytools'][i]['name']);
+			arr.push({
+				prefix: 'compatibilitytools',
+				label: obj['compatibilitytools'][i]['name']
+			});
+		}
 	}
+
 	return arr;
 };
 
@@ -91,7 +98,11 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 		optionDefault = document.createElement('option');
 		optionDefault.selected = true;
 		optionDefault.value = defaultValue['text'];
-		optionDefault.dataset.location = obj[i]['prefix'];
+		try {
+			optionDefault.dataset.location = obj[i]['prefix'];
+		} catch {
+			optionDefault.dataset.location = 'common';
+		}
 		optionDefault.innerText = `${defaultValue['location']}: ${defaultValue['text']}`;
 		selection.appendChild(optionDefault);
 	}

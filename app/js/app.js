@@ -145,7 +145,14 @@ const genRunScript = skse => {
 		runnerPath = `/home/${window.getUsername}/.steam/steam/steamapps/common/${config.protonVersion.version}`;
 	} else if (config.protonVersion.location === 'compatibilitytools') {
 		runnerPath = `/home/${window.getUsername}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`;
+	} else if (config.protonVersion.location === 'null') {
+		window.dialog.showErrorBox(
+			'Proton',
+			'No proton version selected. Please select a proton version from preferences'
+		);
+		return;
 	}
+
 	let runArr = [];
 	runArr[0] = '#!/bin/bash';
 	runArr[1] = '#Run game or given command in environment';
@@ -287,6 +294,8 @@ if (firstStart === true) {
 		id: config.dropdownMenuItems.skse.id,
 		label: config.dropdownMenuItems.skse.title
 	};
+
+	config.protonVersion = { location: null, text: null };
 	writeConfig();
 }
 //}
