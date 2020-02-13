@@ -3,11 +3,42 @@ const path = require('path');
 const uname = require('username');
 const { dialog } = require('electron');
 const fs = require('fs');
-let mainWindow;
+const { url } = require('url');
+let mainWindow = null;
 let selectWindow;
 let username;
 let dir;
 let firstStart = false;
+let deeplinkingUrl = process.argv.slice(1);
+deeplinkingUrl = deeplinkingUrl[deeplinkingUrl.length - 1];
+console.log(deeplinkingUrl);
+let checkUrl;
+
+try {
+	checkUrl = new URL(deeplinkingUrl);
+} catch (err) {
+	console.log(`EITHER NO URL PROVIDED OR INVALID URL`);
+	checkUrl = null;
+}
+
+if (checkUrl !== null) {
+	if (checkUrl.protocol === 'nxm:') {
+		console.log('Valid');
+	}
+}
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+	app.quit();
+} else {
+	app.on('second-instance', () => {
+		if (mainWindow) {
+			if (mainWindow.isMinimized()) mainWindow.restore();
+			mainWindow.focus();
+		}
+	});
+}
 
 let createPrefWindow = () => {
 	prefWindow = new BrowserWindow({
@@ -90,6 +121,7 @@ app.on('activate', () => {
 	if (mainWindow === null) createMainWindow();
 });
 
+console.log(app.setAsDefaultProtocolClient('nxm'));
 ipcMain.on('hide-main', () => {
 	mainWindow.hide();
 });
