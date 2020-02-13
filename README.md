@@ -11,4 +11,4 @@ Arcus is a tool that aims to be a native mod manager for Linux & Mac. Currently 
 - Run the game in a virtual file system like the one that present on Mod Organizer 2 
 
 ##
-![GitHub](https://img.shields.io/github/license/Ashnwor/arcus)
+![GitHub](https://img.shields.io/github/license/Ashnwor/arcus) [![Build Status](https://travis-ci.com/Ashnwor/arcus.svg?branch=master)](https://travis-ci.com/Ashnwor/arcus)
