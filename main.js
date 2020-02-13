@@ -102,7 +102,6 @@ let createMainWindow = () => {
 		width: 1280,
 		height: 720,
 		frame: false,
-		icon: `${__dirname}/app/images/icons/png/48x48.png`,
 		webPreferences: {
 			preload: path.join(`${__dirname}/preload.js`)
 		}
