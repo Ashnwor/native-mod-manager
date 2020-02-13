@@ -1,3 +1,4 @@
+debug = debugThis => window.globalDebug(debugThis);
 let selectedGame = 'skyrimSE';
 document.getElementById('browse').addEventListener('click', () => {
 	let defaultPath;
