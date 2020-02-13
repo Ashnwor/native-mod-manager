@@ -7,7 +7,7 @@
 		"start": "electron --disable-gpu .",
 		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu .",
 		"dist": "electron-builder",
-		"buildArch": "rm -f dist/*.pacman && npx electron-builder && pacman -U dist/arcus-*.pacman --noconfirm"
+		"buildArch": "rm -f dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm"
 	},
 	"repository": "https://github.com/Ashnwor/arcus",
 	"keywords": [
@@ -25,7 +25,10 @@
 	"build": {
 		"appId": "com.ash.arcus",
 		"linux": {
-			"target": "pacman"
+			"target": [
+				"appImage",
+				"tar.xz"
+			]
 		},
 		"protocols": [
 			{
