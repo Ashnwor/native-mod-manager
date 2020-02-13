@@ -5,7 +5,8 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "electron --disable-gpu .",
-		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu ."
+		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu .",
+		"buildArch": "rm -f dist/*.pacman && sudo npx electron-builder && sudo pacman -U dist/arcus-*.pacman --noconfirm"
 	},
 	"repository": "https://github.com/Ashnwor/arcus",
 	"keywords": [
