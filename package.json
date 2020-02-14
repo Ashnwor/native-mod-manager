@@ -1,5 +1,5 @@
 {
-	"name": "arcus",
+	"name": "arcusmm",
 	"version": "0.0.1",
 	"description": "Native Mod Manager for Linux",
 	"main": "main.js",
@@ -23,7 +23,7 @@
 	},
 	"license": "GPL-3.0",
 	"build": {
-		"appId": "com.ash.arcus",
+		"appId": "com.ash.arcusmm",
 		"linux": {
 			"target": [
 				"pacman",
@@ -33,7 +33,7 @@
 		},
 		"protocols": [
 			{
-				"name": "arcus",
+				"name": "arcusmm",
 				"schemes": [
 					"nxm"
 				]
