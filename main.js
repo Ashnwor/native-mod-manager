@@ -3,7 +3,7 @@ const path = require('path');
 const uname = require('username');
 const { dialog } = require('electron');
 const fs = require('fs');
-const { url } = require('url');
+const querystring = require('querystring');
 let mainWindow = null;
 let selectWindow;
 let username;
@@ -24,6 +24,27 @@ try {
 if (checkUrl !== null) {
 	if (checkUrl.protocol === 'nxm:') {
 		console.log('Valid');
+		const pathArr = checkUrl.pathname.split('/').filter(function(el) {
+			return el != '';
+		});
+		const game = checkUrl.host;
+		const modID = pathArr[1];
+		const fileID = pathArr[3];
+		let key;
+		let expires;
+		let userID;
+		console.log(`game: ${game}`);
+		console.log(`modID: ${modID}`);
+		console.log(`fileID: ${fileID}`);
+		checkUrl.searchParams.forEach((value, name, searchParams) => {
+			if (name === 'key') key = value;
+			if (name === 'expires') expires = value;
+			if (name === 'user_id') userID = value;
+		});
+		console.log(`key: ${key}`);
+		console.log(`expires: ${expires}`);
+		console.log(`user_id: ${userID}`);
+		console.log(pathArr);
 	}
 }
 
