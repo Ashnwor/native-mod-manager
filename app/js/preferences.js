@@ -58,6 +58,11 @@ const parseProton = obj => {
 
 debug(parseProton(JSON.parse(protonMap)));
 
+const cleanRightList = () => {
+	const rightList = document.getElementById('rightMenuList');
+	rightList.innerHTML = '';
+};
+
 const createBottomNav = () => {
 	const bottomNav = document.createElement('nav');
 	bottomNav.id = 'bottomNav';
@@ -79,6 +84,38 @@ const createBottomNav = () => {
 	bottomNav.appendChild(doneButtonA);
 	document.body.appendChild(bottomNav);
 };
+
+removeBottomNav = () => {
+	const bottomNav = document.getElementById('bottomNav');
+	if (bottomNav) document.body.removeChild(bottomNav);
+};
+
+const createInput = (id, text, placeholder) => {
+	const rightList = document.getElementById('rightMenuList');
+	const outerDiv = document.createElement('div');
+	outerDiv.classList.add('input-group', 'mb-3');
+	outerDiv.style = 'margin-bottom: 0px!important;';
+	const innerDiv = document.createElement('div');
+	innerDiv.classList.add('input-group-prepend');
+	const label = document.createElement('span');
+	label.classList.add('input-group-text');
+	label.id = id;
+	label.innerText = text;
+	const textInput = document.createElement('input');
+	textInput.type = 'text';
+	textInput.classList.add('form-control');
+	textInput.placeholder = placeholder;
+	textInput.setAttribute('aria-label', 'apikey');
+	textInput.setAttribute('aria-describedby', id);
+	innerDiv.appendChild(label);
+	outerDiv.appendChild(innerDiv);
+	outerDiv.appendChild(textInput);
+	const listItem = document.createElement('li');
+	listItem.classList.add('list-group-item');
+	listItem.appendChild(outerDiv);
+	rightList.appendChild(listItem);
+};
+
 const createSelect = (id, lbl, obj, defaultValue) => {
 	const outerDiv = document.createElement('div');
 	outerDiv.classList.add('input-group', 'mb-3');
@@ -132,6 +169,8 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 };
 
 const protonMenu = () => {
+	cleanRightList();
+	removeBottomNav();
 	// Version Select
 	getConfig();
 	createSelect(
@@ -159,4 +198,20 @@ const protonMenu = () => {
 	});
 };
 
+const apiKeyMenu = () => {
+	cleanRightList();
+	removeBottomNav();
+	createInput('apikey', 'Api Key', 'Api Key');
+	createBottomNav();
+};
+
+// Menu event listeners
+document
+	.getElementById('protonMenu')
+	.addEventListener('click', () => protonMenu());
+
+document
+	.getElementById('apiKeyMenu')
+	.addEventListener('click', () => apiKeyMenu());
+// First item on menu
 protonMenu();
