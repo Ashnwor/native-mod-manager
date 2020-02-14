@@ -39,7 +39,7 @@ const parseProton = obj => {
 		debug(obj['common'][i]['name']);
 		arr.push({ prefix: 'common', label: obj['common'][i]['name'] });
 	}
-	if (obj['compatibilitytools'] !== undefined) {
+	if (obj['compatibilitytools']) {
 		for (
 			i = 0;
 			i <= Object.keys(obj['compatibilitytools']).length - 1;
@@ -131,7 +131,7 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 	selection.id = id;
 
 	let optionDefault;
-	if (defaultValue !== undefined) {
+	if (defaultValue) {
 		optionDefault = document.createElement('option');
 		optionDefault.selected = true;
 		optionDefault.value = defaultValue['text'];
@@ -145,10 +145,7 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 	}
 
 	for (i = 0; i <= obj.length - 1; i += 1) {
-		if (
-			(defaultValue !== undefined) &
-			(optionDefault.value === obj[i]['label'])
-		) {
+		if (defaultValue & (optionDefault.value === obj[i]['label'])) {
 			continue;
 		}
 		let option = document.createElement('option');
