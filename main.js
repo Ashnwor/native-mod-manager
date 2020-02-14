@@ -11,7 +11,7 @@ let dir;
 let firstStart = false;
 let deeplinkingUrl = process.argv.slice(1);
 deeplinkingUrl = deeplinkingUrl[deeplinkingUrl.length - 1];
-console.log(deeplinkingUrl);
+if (deeplinkingUrl) console.log(deeplinkingUrl);
 let checkUrl;
 
 try {
