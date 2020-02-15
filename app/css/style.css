@@ -173,6 +173,16 @@ body {
   color: white;
 }
 
+.cardListWindow {
+  max-height: 15vh;
+}
+
+.downloadListItem {
+  padding-top: 0;
+  padding-bottom: 0;
+  border: 0;
+}
+
 #run:hover > .hover-1p1p {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);

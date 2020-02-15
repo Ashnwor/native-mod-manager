@@ -152,6 +152,16 @@ body {
 	}
 }
 
+.cardListWindow {
+	max-height: 15vh;
+}
+
+.downloadListItem {
+	padding-top: 0;
+	padding-bottom: 0;
+	border: 0;
+}
+
 #run {
 	&:hover > .hover-1p1p {
 		transform: scale(1.1);
