@@ -140,6 +140,18 @@ body {
 	}
 }
 
+.downloadsBtn {
+	padding: 0;
+	width: 100vw;
+	height: 5vh;
+	background-color: #343a40;
+	border-radius: 0;
+	color: white;
+	&:hover {
+		color: white;
+	}
+}
+
 #run {
 	&:hover > .hover-1p1p {
 		transform: scale(1.1);

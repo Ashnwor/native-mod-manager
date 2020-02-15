@@ -9,6 +9,15 @@ let selectWindow;
 let username;
 let dir;
 let firstStart = false;
+
+// Create folders that will be used in downloading process
+// might change this later
+if (process.platform === 'linux') {
+	if (!fs.existsSync('/tmp/arcus')) fs.mkdirSync('/tmp/arcus');
+} else if (process.platform === 'darwin') {
+	if (!fs.existsSync('/var/TMP/arcus')) fs.mkdirSync('/var/TMP/arcus');
+}
+
 let deeplinkingUrl = process.argv.slice(1);
 deeplinkingUrl = deeplinkingUrl[deeplinkingUrl.length - 1];
 if (deeplinkingUrl) console.log(deeplinkingUrl);
@@ -45,6 +54,24 @@ if (checkUrl !== null) {
 		console.log(`expires: ${expires}`);
 		console.log(`user_id: ${userID}`);
 		console.log(pathArr);
+
+		const download = {
+			game: game,
+			modID: modID,
+			fileID: fileID,
+			key: key,
+			expires: expires,
+			userID: userID
+		};
+
+		fs.writeFileSync(
+			`/tmp/arcus/download_${game}_${modID}_${fileID}.json`,
+			JSON.stringify(download, null, 4),
+			err => {
+				if (err) throw err;
+				console.log('The file has been saved!');
+			}
+		);
 	}
 }
 

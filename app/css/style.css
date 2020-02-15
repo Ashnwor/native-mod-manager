@@ -160,6 +160,19 @@ body {
   transition: margin-left 0.5s ease-in;
 }
 
+.downloadsBtn {
+  padding: 0;
+  width: 100vw;
+  height: 5vh;
+  background-color: #343a40;
+  border-radius: 0;
+  color: white;
+}
+
+.downloadsBtn:hover {
+  color: white;
+}
+
 #run:hover > .hover-1p1p {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
