@@ -181,6 +181,7 @@ body {
   padding-top: 0;
   padding-bottom: 0;
   border: 0;
+  border-radius: 0 !important;
 }
 
 #run:hover > .hover-1p1p {
