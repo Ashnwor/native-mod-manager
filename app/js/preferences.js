@@ -99,14 +99,12 @@ const createInput = (id, text, placeholder) => {
 	innerDiv.classList.add('input-group-prepend');
 	const label = document.createElement('span');
 	label.classList.add('input-group-text');
-	label.id = id;
 	label.innerText = text;
 	const textInput = document.createElement('input');
+	textInput.id = id;
 	textInput.type = 'text';
 	textInput.classList.add('form-control');
 	textInput.placeholder = placeholder;
-	textInput.setAttribute('aria-label', 'apikey');
-	textInput.setAttribute('aria-describedby', id);
 	innerDiv.appendChild(label);
 	outerDiv.appendChild(innerDiv);
 	outerDiv.appendChild(textInput);
@@ -199,7 +197,24 @@ const apiKeyMenu = () => {
 	cleanRightList();
 	removeBottomNav();
 	createInput('apikey', 'Api Key', 'Api Key');
+	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
+		document.getElementById('apikey').value = window.fs.readFileSync(
+			`${dir}/${window.appName}/apikey`,
+			'utf8'
+		);
+	}
 	createBottomNav();
+	document.getElementById('done').addEventListener('click', () => {
+		debug(document.getElementById('apikey').value);
+		window.fs.writeFileSync(
+			`${dir}/${window.appName}/apikey`,
+			document.getElementById('apikey').value,
+			err => {
+				if (err) throw err;
+				debug('The file has been saved!');
+			}
+		);
+	});
 };
 
 // Menu event listeners
