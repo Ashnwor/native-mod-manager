@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-import { join } from 'path';
-import { sync } from 'username';
-import { existsSync, mkdirSync } from 'fs';
+const { join } = require('path');
+const { sync } = require('username');
+const { existsSync, mkdirSync } = require('fs');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 
 const username = sync();
 let mainWindow = null;
