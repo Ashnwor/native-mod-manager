@@ -1,11 +1,13 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const uname = require('username');
-const { dialog } = require('electron');
-const fs = require('fs');
+/* eslint-disable no-console */
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { join } from 'path';
+import { sync } from 'username';
+import { existsSync, mkdirSync } from 'fs';
+
+const username = sync();
 let mainWindow = null;
 let selectWindow;
-let username;
+let prefWindow;
 let dir;
 let firstStart = false;
 let deeplinkingUrl = process.argv.slice(1);
@@ -13,6 +15,7 @@ deeplinkingUrl = deeplinkingUrl[deeplinkingUrl.length - 1];
 if (deeplinkingUrl) console.log(deeplinkingUrl);
 let checkUrl;
 
+// get information from nxm protocol
 const parseNXM = url => {
 	let download;
 	try {
@@ -24,9 +27,7 @@ const parseNXM = url => {
 	if (checkUrl !== null) {
 		if (checkUrl.protocol === 'nxm:') {
 			console.log('Valid');
-			const pathArr = checkUrl.pathname.split('/').filter(function(el) {
-				return el != '';
-			});
+			const pathArr = checkUrl.pathname.split('/').filter(el => el !== '');
 			const game = checkUrl.host;
 			const modID = pathArr[1];
 			const fileID = pathArr[3];
@@ -36,7 +37,7 @@ const parseNXM = url => {
 			console.log(`game: ${game}`);
 			console.log(`modID: ${modID}`);
 			console.log(`fileID: ${fileID}`);
-			checkUrl.searchParams.forEach((value, name, searchParams) => {
+			checkUrl.searchParams.forEach((value, name) => {
 				if (name === 'key') key = value;
 				if (name === 'expires') expires = value;
 				if (name === 'user_id') userID = value;
@@ -47,12 +48,12 @@ const parseNXM = url => {
 			console.log(pathArr);
 
 			download = {
-				game: game,
-				modID: modID,
-				fileID: fileID,
-				key: key,
-				expires: expires,
-				userID: userID
+				game,
+				modID,
+				fileID,
+				key,
+				expires,
+				userID,
 			};
 		}
 	}
@@ -64,26 +65,24 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
 	app.quit();
 } else {
-	app.on('second-instance', (event, argv, workingDir) => {
+	app.on('second-instance', (event, argv) => {
 		console.log(argv[argv.length - 1]);
 		if (mainWindow) {
 			if (mainWindow.isMinimized()) mainWindow.restore();
 			mainWindow.focus();
-			mainWindow.webContents.send(
-				'request-download',
-				parseNXM(argv[argv.length - 1])
-			);
+			// send data to mainWindow ipcRenderer
+			mainWindow.webContents.send('request-download', parseNXM(argv[argv.length - 1]));
 		}
 	});
 }
 
-let createPrefWindow = () => {
+const createPrefWindow = () => {
 	prefWindow = new BrowserWindow({
 		width: 1280,
 		height: 720,
 		frame: false,
-		webPreferences: { preload: path.join(`${__dirname}/preload.js`) },
-		parent: mainWindow
+		webPreferences: { preload: join(`${__dirname}/preload.js`) },
+		parent: mainWindow,
 	});
 	prefWindow.loadFile('./app/pages/preferences.html');
 
@@ -92,15 +91,15 @@ let createPrefWindow = () => {
 	});
 };
 
-let createSelectWindow = () => {
+const createSelectWindow = () => {
 	selectWindow = new BrowserWindow({
 		width: 640,
 		height: 480,
 		frame: false,
 		webPreferences: {
-			preload: path.join(`${__dirname}/preload.js`)
+			preload: join(`${__dirname}/preload.js`),
 		},
-		parent: mainWindow
+		parent: mainWindow,
 	});
 	selectWindow.loadFile('./app/pages/select.html');
 
@@ -111,18 +110,16 @@ let createSelectWindow = () => {
 	selectWindow.on('close', event => {
 		event.preventDefault();
 		const appName = 'arcus';
-		const fs = require('fs');
-		let dir;
 		if (process.platform === 'darwin') {
 			dir = `/Users/ashnwor/Library/Application Support`;
 		} else if (process.platform === 'linux') {
 			dir = `/home/ashnwor/.local/share`;
 		}
-		if (!fs.existsSync(`${dir}/${appName}/config.json`)) {
-			let options = {
+		if (!existsSync(`${dir}/${appName}/config.json`)) {
+			const options = {
 				buttons: ['Yes', 'No'],
 				message:
-					'If you quit now, your preferences will not be saved and application will quit altogether'
+					'If you quit now, your preferences will not be saved and application will quit altogether',
 			};
 			dialog.showMessageBox(selectWindow, options).then(result => {
 				if (result.response === 0) {
@@ -134,14 +131,14 @@ let createSelectWindow = () => {
 	});
 };
 
-let createMainWindow = () => {
+const createMainWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 1280,
 		height: 720,
 		frame: false,
 		webPreferences: {
-			preload: path.join(`${__dirname}/preload.js`)
-		}
+			preload: join(`${__dirname}/preload.js`),
+		},
 	});
 	mainWindow.loadFile('./app/pages/main.html');
 	mainWindow.on('closed', () => {
@@ -197,16 +194,15 @@ ipcMain.on('gen-run-script', () => {
 	mainWindow.webContents.send('gen-run-script');
 });
 
-username = uname.sync();
 if (process.platform === 'darwin') {
 	dir = `/Users/${username}/Library/Application Support`;
 } else if (process.platform === 'linux') {
 	dir = `/home/${username}/.local/share`;
 }
 
-if (!fs.existsSync(`${dir}/arcus`)) {
+if (!existsSync(`${dir}/arcus`)) {
 	console.log('First time setup');
-	fs.mkdirSync(`${dir}/arcus`);
+	mkdirSync(`${dir}/arcus`);
 	app.on('ready', createSelectWindow);
 } else {
 	app.on('ready', createMainWindow);

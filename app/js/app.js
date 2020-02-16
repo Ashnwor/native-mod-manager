@@ -2,7 +2,9 @@ let dir;
 let rawConfig;
 let rightMenu;
 let lines;
-debug = debugThis => window.globalDebug(debugThis);
+let config;
+let i;
+const debug = debugThis => window.globalDebug(debugThis);
 
 const getConfig = () => {
 	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
@@ -10,15 +12,65 @@ const getConfig = () => {
 };
 
 const writeConfig = () => {
-	window.fs.writeFileSync(
-		`${dir}/${window.appName}/config.json`,
-		JSON.stringify(config, null, 4),
-		err => {
-			if (err) throw err;
-			debug('The file has been saved!');
-		}
-	);
+	window.fs.writeFileSync(`${dir}/${window.appName}/config.json`, JSON.stringify(config, null, 4), err => {
+		if (err) throw err;
+		debug('The file has been saved!');
+	});
 	getConfig();
+};
+
+const isItPlugin = line => {
+	if (line[0] === '#') {
+		debug(`${line} COMMENT`);
+	} else if (
+		line[0] !== '*' &&
+		`${line[line.length - 3]}${line[line.length - 2]}${line[line.length - 1]}` === 'esp'
+	) {
+		debug(`${line} PLUGIN, NOT ACTIVE`);
+		// eslint-disable-next-line no-use-before-define
+		newRightMenuEl(line, false);
+	} else if (
+		line[0] === '*' &&
+		`${line[line.length - 3]}${line[line.length - 2]}${line[line.length - 1]}` === 'esp'
+	) {
+		debug(`${line} PLUGIN, ACTIVE`);
+		// eslint-disable-next-line no-use-before-define
+		newRightMenuEl(line, true);
+	}
+};
+
+const getPlugins = () => {
+	rightMenu = document.getElementById('rightMenuList');
+	rightMenu.innerHTML = '';
+	// Get this from preload in relation to selected game
+	const skyrimSEid = 489830;
+	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
+	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+
+	debug(pluginsDir);
+	const pluginsFile = window.fs.readFileSync(`${pluginsDir}/Plugins.txt`, 'utf8');
+
+	lines = [];
+	pluginsFile.split(/\r?\n/).forEach(line => {
+		lines.push(line);
+	});
+	debug(lines);
+	for (i = 0; i < lines.length; i += 1) {
+		isItPlugin(lines[i]);
+	}
+};
+
+const writePlugins = arr => {
+	const skyrimSEid = 489830;
+	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
+	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+	debug(pluginsDir);
+	const pluginsFile = `${pluginsDir}/Plugins.txt`;
+
+	window.fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
+		debug(err ? `Error :${err}` : 'ok');
+	});
+	getPlugins();
 };
 
 const newRightMenuEl = (label, check) => {
@@ -64,65 +116,6 @@ const newRightMenuEl = (label, check) => {
 	rightMenu.appendChild(newListEl);
 };
 
-const isItPlugin = line => {
-	if (line[0] === '#') {
-		debug(`${line} COMMENT`);
-	} else if (
-		line[0] !== '*' &&
-		`${line[line.length - 3]}${line[line.length - 2]}${
-			line[line.length - 1]
-		}` === 'esp'
-	) {
-		debug(`${line} PLUGIN, NOT ACTIVE`);
-		newRightMenuEl(line, false);
-	} else if (
-		line[0] === '*' &&
-		`${line[line.length - 3]}${line[line.length - 2]}${
-			line[line.length - 1]
-		}` === 'esp'
-	) {
-		debug(`${line} PLUGIN, ACTIVE`);
-		newRightMenuEl(line, true);
-	}
-};
-
-const writePlugins = arr => {
-	const skyrimSEid = 489830;
-	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
-	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
-	debug(pluginsDir);
-	const pluginsFile = `${pluginsDir}/Plugins.txt`;
-
-	window.fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
-		console.log(err ? 'Error :' + err : 'ok');
-	});
-	getPlugins();
-};
-
-const getPlugins = () => {
-	rightMenu = document.getElementById('rightMenuList');
-	rightMenu.innerHTML = '';
-	// Get this from preload in relation to selected game
-	const skyrimSEid = 489830;
-	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
-	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
-
-	debug(pluginsDir);
-	const pluginsFile = window.fs.readFileSync(
-		`${pluginsDir}/Plugins.txt`,
-		'utf8'
-	);
-
-	lines = [];
-	pluginsFile.split(/\r?\n/).forEach(line => {
-		lines.push(line);
-	});
-	debug(lines);
-	for (i = 0; i < lines.length; i += 1) {
-		isItPlugin(lines[i]);
-	}
-};
-
 const newDropdownEl = (id, label) => {
 	const dropdownMenu = document.getElementById('dropdownMenu');
 	const dropdownEl = document.createElement('a');
@@ -132,7 +125,7 @@ const newDropdownEl = (id, label) => {
 	dropdownEl.onclick = () => {
 		document.getElementById('dropdownLabel').innerText = label;
 		getConfig();
-		config.dropdownMenuItems.lastSelected = { id: id, label: label };
+		config.dropdownMenuItems.lastSelected = { id, label };
 		writeConfig();
 	};
 	dropdownMenu.appendChild(dropdownEl);
@@ -153,7 +146,7 @@ const genRunScript = skse => {
 		return;
 	}
 
-	let runArr = [];
+	const runArr = [];
 	runArr[0] = '#!/bin/bash';
 	runArr[1] = '#Run game or given command in environment';
 	runArr[2] = '';
@@ -182,12 +175,12 @@ const genRunScript = skse => {
 	debug(runArr[17]);
 	if (skse === true) {
 		window.fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
-			console.log(err ? 'Error :' + err : 'ok');
+			debug(err ? `Error :${err}` : 'ok');
 		});
 		window.execSync('chmod +x runSKSE');
 	} else if (skse === false) {
 		window.fs.writeFileSync('runSkyrim', runArr.join('\n'), function(err) {
-			console.log(err ? 'Error :' + err : 'ok');
+			debug(err ? `Error :${err}` : 'ok');
 		});
 		window.execSync('chmod +x runSkyrim');
 	}
@@ -238,16 +231,13 @@ const genProtonMap = () => {
 				debug('The file has been saved!');
 			}
 		);
-		const map = window.fs.readFileSync(
-			`${dir}/${window.appName}/protonMap.json`,
-			'utf8'
-		);
+		const map = window.fs.readFileSync(`${dir}/${window.appName}/protonMap.json`, 'utf8');
 		debug(JSON.parse(map));
 	}
 };
 
 // First start
-//if (window.platform === 'linux') {
+// if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
 if (window.platform === 'darwin') {
 	dir = `/Users/${window.getUsername}/Library/Application Support`;
@@ -258,7 +248,7 @@ if (firstStart === true) {
 	debug('First time setup');
 	getConfig();
 	config.skseFound = false;
-	dirArr = window.fs.readdirSync(config['skyrimSE']);
+	const dirArr = window.fs.readdirSync(config.skyrimSE);
 	debug(config);
 
 	config.isSteam = true;
@@ -277,14 +267,14 @@ if (firstStart === true) {
 		debug(`skseFound: ${config.skseFound}`);
 		writeConfig();
 		config.dropdownMenuItems = {
-			skse: { id: 'launchSKSE', title: 'Launch SKSE' }
+			skse: { id: 'launchSKSE', title: 'Launch SKSE' },
 		};
 		writeConfig();
 		debug(config);
 	} else if (config.skseFound === false) {
 		writeConfig();
 		config.dropdownMenuItems = {
-			skse: { id: 'installSKSE', title: 'Install SKSE' }
+			skse: { id: 'installSKSE', title: 'Install SKSE' },
 		};
 		writeConfig();
 		debug(`skseFound: ${config.skseFound}`);
@@ -292,25 +282,21 @@ if (firstStart === true) {
 	}
 	config.dropdownMenuItems.lastSelected = {
 		id: config.dropdownMenuItems.skse.id,
-		label: config.dropdownMenuItems.skse.title
+		label: config.dropdownMenuItems.skse.title,
 	};
 
 	config.protonVersion = { location: null, text: null };
 	writeConfig();
 }
-//}
+// }
 
 // import dropdown menu items
 getConfig();
 getPlugins();
 
-document.getElementById('dropdownLabel').innerText =
-	config.dropdownMenuItems.lastSelected.label;
+document.getElementById('dropdownLabel').innerText = config.dropdownMenuItems.lastSelected.label;
 
-newDropdownEl(
-	config.dropdownMenuItems.skse.id,
-	config.dropdownMenuItems.skse.title
-);
+newDropdownEl(config.dropdownMenuItems.skse.id, config.dropdownMenuItems.skse.title);
 
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
 
@@ -341,9 +327,7 @@ document.getElementById('run').addEventListener('click', () => {
 			// TODO: Support for custom dropdown menu items
 			if (config.dropdownMenuItems.lastSelected.id === 'launchSKSE') {
 				child = window.spawn('./runSKSE', { stdio: 'inherit' });
-			} else if (
-				config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE'
-			) {
+			} else if (config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE') {
 				child = window.spawn('./runSkyrim', { stdio: 'inherit' });
 			}
 			debug(`Process PID: ${child.pid}`);
@@ -352,7 +336,7 @@ document.getElementById('run').addEventListener('click', () => {
 				debug(`isRunning: ${isRunning}`);
 			}
 
-			child.on('exit', function(code, signal) {
+			child.on('exit', function(code) {
 				debug(`Process finished with code: ${code}`);
 				isRunning = false;
 				debug(`isRunning: ${isRunning}`);
@@ -367,11 +351,11 @@ window.ipcRenderer.on('request-download', (event, obj) => {
 		const options = {
 			host: 'api.nexusmods.com',
 			port: 443,
-			path: `/v1/games/skyrimspecialedition/mods/${obj['modID']}`,
+			path: `/v1/games/skyrimspecialedition/mods/${obj.modID}`,
 			method: 'GET',
 			headers: {
-				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`)
-			}
+				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
+			},
 		};
 		window.https.get(options, resp => {
 			let data = '';
@@ -384,9 +368,6 @@ window.ipcRenderer.on('request-download', (event, obj) => {
 			});
 		});
 	} else {
-		window.dialog.showErrorBox(
-			"Couldn't find the api key",
-			'Please enter a api key from preferences'
-		);
+		window.dialog.showErrorBox("Couldn't find the api key", 'Please enter a api key from preferences');
 	}
 });

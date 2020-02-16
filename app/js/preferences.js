@@ -1,6 +1,8 @@
-debug = debugThis => window.globalDebug(debugThis);
+const debug = debugThis => window.globalDebug(debugThis);
 let dir;
 let rawConfig;
+let config;
+let i;
 
 if (window.platform === 'darwin') {
 	dir = `/Users/${window.getUsername}/Library/Application Support`;
@@ -8,10 +10,7 @@ if (window.platform === 'darwin') {
 	dir = `/home/${window.getUsername}/.local/share`;
 }
 
-const protonMap = window.fs.readFileSync(
-	`${dir}/${window.appName}/protonMap.json`,
-	'utf8'
-);
+const protonMap = window.fs.readFileSync(`${dir}/${window.appName}/protonMap.json`, 'utf8');
 
 const getConfig = () => {
 	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
@@ -19,14 +18,10 @@ const getConfig = () => {
 };
 
 const writeConfig = () => {
-	window.fs.writeFileSync(
-		`${dir}/${window.appName}/config.json`,
-		JSON.stringify(config, null, 4),
-		err => {
-			if (err) throw err;
-			debug('The file has been saved!');
-		}
-	);
+	window.fs.writeFileSync(`${dir}/${window.appName}/config.json`, JSON.stringify(config, null, 4), err => {
+		if (err) throw err;
+		debug('The file has been saved!');
+	});
 	getConfig();
 };
 
@@ -34,21 +29,17 @@ debug(JSON.parse(protonMap));
 
 const parseProton = obj => {
 	const arr = [];
-	debug(obj['common']);
-	for (i = 0; i <= Object.keys(obj['common']).length - 1; i += 1) {
-		debug(obj['common'][i]['name']);
-		arr.push({ prefix: 'common', label: obj['common'][i]['name'] });
+	debug(obj.common);
+	for (i = 0; i <= Object.keys(obj.common).length - 1; i += 1) {
+		debug(obj.common[i].name);
+		arr.push({ prefix: 'common', label: obj.common[i].name });
 	}
-	if (obj['compatibilitytools']) {
-		for (
-			i = 0;
-			i <= Object.keys(obj['compatibilitytools']).length - 1;
-			i += 1
-		) {
-			debug(obj['compatibilitytools'][i]['name']);
+	if (obj.compatibilitytools) {
+		for (i = 0; i <= Object.keys(obj.compatibilitytools).length - 1; i += 1) {
+			debug(obj.compatibilitytools[i].name);
 			arr.push({
 				prefix: 'compatibilitytools',
-				label: obj['compatibilitytools'][i]['name']
+				label: obj.compatibilitytools[i].name,
 			});
 		}
 	}
@@ -66,13 +57,7 @@ const cleanRightList = () => {
 const createBottomNav = () => {
 	const bottomNav = document.createElement('nav');
 	bottomNav.id = 'bottomNav';
-	bottomNav.classList.add(
-		'navbar',
-		'navbar-expand-sm',
-		'bg-dark',
-		'navbar-dark',
-		'fixed-bottom'
-	);
+	bottomNav.classList.add('navbar', 'navbar-expand-sm', 'bg-dark', 'navbar-dark', 'fixed-bottom');
 	const doneButtonA = document.createElement('a');
 	doneButtonA.classList.add('navbar-nav', 'ml-auto');
 	const doneButton = document.createElement('button');
@@ -85,7 +70,7 @@ const createBottomNav = () => {
 	document.body.appendChild(bottomNav);
 };
 
-removeBottomNav = () => {
+const removeBottomNav = () => {
 	const bottomNav = document.getElementById('bottomNav');
 	if (bottomNav) document.body.removeChild(bottomNav);
 };
@@ -129,14 +114,11 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 	selection.id = id;
 
 	for (i = 0; i <= obj.length - 1; i += 1) {
-		let option = document.createElement('option');
-		option.value = obj[i]['label'];
-		option.dataset.location = obj[i]['prefix'];
-		option.innerText = `${obj[i]['prefix']}: ${obj[i]['label']}`;
-		if (
-			(defaultValue['text'] === obj[i]['label']) &
-			(defaultValue['location'] === obj[i]['prefix'])
-		) {
+		const option = document.createElement('option');
+		option.value = obj[i].label;
+		option.dataset.location = obj[i].prefix;
+		option.innerText = `${obj[i].prefix}: ${obj[i].label}`;
+		if (defaultValue.text === obj[i].label && defaultValue.location === obj[i].prefix) {
 			option.selected = true;
 		}
 		selection.appendChild(option);
@@ -157,15 +139,10 @@ const protonMenu = () => {
 	removeBottomNav();
 	// Version Select
 	getConfig();
-	createSelect(
-		'protonVersions',
-		'Version',
-		parseProton(JSON.parse(protonMap)),
-		{
-			location: config.protonVersion.location,
-			text: config.protonVersion.version
-		}
-	);
+	createSelect('protonVersions', 'Version', parseProton(JSON.parse(protonMap)), {
+		location: config.protonVersion.location,
+		text: config.protonVersion.version,
+	});
 	createBottomNav();
 	document.getElementById('done').addEventListener('click', () => {
 		getConfig();
@@ -173,8 +150,7 @@ const protonMenu = () => {
 		debug(protonVersions.options[protonVersions.selectedIndex].value);
 		config.protonVersion = {
 			version: protonVersions.options[protonVersions.selectedIndex].value,
-			location:
-				protonVersions.options[protonVersions.selectedIndex].dataset.location
+			location: protonVersions.options[protonVersions.selectedIndex].dataset.location,
 		};
 		debug(config);
 		writeConfig();
@@ -207,12 +183,8 @@ const apiKeyMenu = () => {
 };
 
 // Menu event listeners
-document
-	.getElementById('protonMenu')
-	.addEventListener('click', () => protonMenu());
+document.getElementById('protonMenu').addEventListener('click', () => protonMenu());
 
-document
-	.getElementById('apiKeyMenu')
-	.addEventListener('click', () => apiKeyMenu());
+document.getElementById('apiKeyMenu').addEventListener('click', () => apiKeyMenu());
 // First item on menu
 protonMenu();

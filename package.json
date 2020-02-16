@@ -7,7 +7,9 @@
 		"start": "electron --disable-gpu .",
 		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu .",
 		"dist": "electron-builder",
-		"buildArch": "rm -f dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm"
+		"buildArch": "rm -f dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"repository": "https://github.com/Ashnwor/arcus",
 	"keywords": [
@@ -41,16 +43,23 @@
 		]
 	},
 	"devDependencies": {
-		"electron": "^7.1.12",
+		"babel-eslint": "^9.0.0",
 		"electron-builder": "^22.3.2",
 		"electron-icon-builder": "^1.0.2",
-		"eslint": "^6.8.0",
-		"eslint-config-airbnb-base": "^14.0.0",
-		"eslint-config-prettier": "^6.10.0",
+		"eslint": "^5.16.0",
+		"eslint-config-airbnb": "^17.1.1",
+		"eslint-config-prettier": "^4.3.0",
+		"eslint-config-wesbos": "0.0.19",
+		"eslint-plugin-html": "^5.0.5",
 		"eslint-plugin-import": "^2.20.1",
+		"eslint-plugin-jsx-a11y": "^6.2.3",
+		"eslint-plugin-prettier": "^3.1.2",
+		"eslint-plugin-react": "^7.18.3",
+		"eslint-plugin-react-hooks": "^1.7.0",
 		"prettier": "^1.19.1"
 	},
 	"dependencies": {
+		"electron": "^7.1.12",
 		"bootstrap": "^4.4.1",
 		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
