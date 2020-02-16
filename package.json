@@ -43,6 +43,7 @@
 		]
 	},
 	"devDependencies": {
+		"electron": "^7.1.12",
 		"babel-eslint": "^9.0.0",
 		"electron-builder": "^22.3.2",
 		"electron-icon-builder": "^1.0.2",
@@ -59,7 +60,6 @@
 		"prettier": "^1.19.1"
 	},
 	"dependencies": {
-		"electron": "^7.1.12",
 		"bootstrap": "^4.4.1",
 		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
