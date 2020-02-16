@@ -169,3 +169,11 @@ body {
 		transition: transform 0.5s ease-in;
 	}
 }
+
+.list-group-item:first-child {
+	border-radius: 0 !important;
+}
+
+.list-group-item:last-child {
+	border-radius: 0 !important;
+}
