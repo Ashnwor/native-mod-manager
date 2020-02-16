@@ -345,13 +345,17 @@ document.getElementById('run').addEventListener('click', () => {
 	}
 });
 
+const compareGame = game => {
+	if (game === 'SkyrimSE') return 'skyrimspecialedition';
+};
+
 window.ipcRenderer.on('request-download', (event, obj) => {
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
 		debug(obj);
 		const options = {
 			host: 'api.nexusmods.com',
 			port: 443,
-			path: `/v1/games/skyrimspecialedition/mods/${obj.modID}`,
+			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`,
 			method: 'GET',
 			headers: {
 				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
