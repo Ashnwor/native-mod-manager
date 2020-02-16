@@ -128,28 +128,17 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 	selection.classList.add('custom-select');
 	selection.id = id;
 
-	let optionDefault;
-	if (defaultValue) {
-		optionDefault = document.createElement('option');
-		optionDefault.selected = true;
-		optionDefault.value = defaultValue['text'];
-		try {
-			optionDefault.dataset.location = obj[i]['prefix'];
-		} catch {
-			optionDefault.dataset.location = 'common';
-		}
-		optionDefault.innerText = `${defaultValue['location']}: ${defaultValue['text']}`;
-		selection.appendChild(optionDefault);
-	}
-
 	for (i = 0; i <= obj.length - 1; i += 1) {
-		if (defaultValue & (optionDefault.value === obj[i]['label'])) {
-			continue;
-		}
 		let option = document.createElement('option');
 		option.value = obj[i]['label'];
 		option.dataset.location = obj[i]['prefix'];
 		option.innerText = `${obj[i]['prefix']}: ${obj[i]['label']}`;
+		if (
+			(defaultValue['text'] === obj[i]['label']) &
+			(defaultValue['location'] === obj[i]['prefix'])
+		) {
+			option.selected = true;
+		}
 		selection.appendChild(option);
 	}
 
