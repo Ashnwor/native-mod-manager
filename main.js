@@ -3,7 +3,6 @@ const path = require('path');
 const uname = require('username');
 const { dialog } = require('electron');
 const fs = require('fs');
-let download = {};
 let mainWindow = null;
 let selectWindow;
 let username;
@@ -15,6 +14,7 @@ if (deeplinkingUrl) console.log(deeplinkingUrl);
 let checkUrl;
 
 const parseNXM = url => {
+	let download;
 	try {
 		checkUrl = new URL(url);
 	} catch (err) {
