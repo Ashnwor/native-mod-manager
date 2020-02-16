@@ -362,5 +362,31 @@ document.getElementById('run').addEventListener('click', () => {
 });
 
 window.ipcRenderer.on('request-download', (event, obj) => {
-	debug(obj);
+	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
+		debug(obj);
+		const options = {
+			host: 'api.nexusmods.com',
+			port: 443,
+			path: `/v1/games/skyrimspecialedition/mods/${obj['modID']}`,
+			method: 'GET',
+			headers: {
+				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`)
+			}
+		};
+		window.https.get(options, resp => {
+			let data = '';
+			resp.on('data', chunk => {
+				data += chunk;
+			});
+
+			resp.on('end', () => {
+				debug(JSON.parse(data));
+			});
+		});
+	} else {
+		window.dialog.showErrorBox(
+			"Couldn't find the api key",
+			'Please enter a api key from preferences'
+		);
+	}
 });
