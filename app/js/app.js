@@ -360,3 +360,7 @@ document.getElementById('run').addEventListener('click', () => {
 		}
 	}
 });
+
+window.ipcRenderer.on('request-download', (event, obj) => {
+	debug(obj);
+});

@@ -3,87 +3,76 @@ const path = require('path');
 const uname = require('username');
 const { dialog } = require('electron');
 const fs = require('fs');
-const querystring = require('querystring');
+let download = {};
 let mainWindow = null;
 let selectWindow;
 let username;
 let dir;
 let firstStart = false;
-
-// Create folders that will be used in downloading process
-// might change this later
-if (process.platform === 'linux') {
-	if (!fs.existsSync('/tmp/arcus')) fs.mkdirSync('/tmp/arcus');
-} else if (process.platform === 'darwin') {
-	if (!fs.existsSync('/var/TMP/arcus')) fs.mkdirSync('/var/TMP/arcus');
-}
-
 let deeplinkingUrl = process.argv.slice(1);
 deeplinkingUrl = deeplinkingUrl[deeplinkingUrl.length - 1];
 if (deeplinkingUrl) console.log(deeplinkingUrl);
 let checkUrl;
 
-try {
-	checkUrl = new URL(deeplinkingUrl);
-} catch (err) {
-	console.log(`EITHER NO URL PROVIDED OR INVALID URL`);
-	checkUrl = null;
-}
-
-if (checkUrl !== null) {
-	if (checkUrl.protocol === 'nxm:') {
-		console.log('Valid');
-		const pathArr = checkUrl.pathname.split('/').filter(function(el) {
-			return el != '';
-		});
-		const game = checkUrl.host;
-		const modID = pathArr[1];
-		const fileID = pathArr[3];
-		let key;
-		let expires;
-		let userID;
-		console.log(`game: ${game}`);
-		console.log(`modID: ${modID}`);
-		console.log(`fileID: ${fileID}`);
-		checkUrl.searchParams.forEach((value, name, searchParams) => {
-			if (name === 'key') key = value;
-			if (name === 'expires') expires = value;
-			if (name === 'user_id') userID = value;
-		});
-		console.log(`key: ${key}`);
-		console.log(`expires: ${expires}`);
-		console.log(`user_id: ${userID}`);
-		console.log(pathArr);
-
-		const download = {
-			game: game,
-			modID: modID,
-			fileID: fileID,
-			key: key,
-			expires: expires,
-			userID: userID
-		};
-
-		fs.writeFileSync(
-			`/tmp/arcus/download_${game}_${modID}_${fileID}.json`,
-			JSON.stringify(download, null, 4),
-			err => {
-				if (err) throw err;
-				console.log('The file has been saved!');
-			}
-		);
+const parseNXM = url => {
+	try {
+		checkUrl = new URL(url);
+	} catch (err) {
+		console.log(`EITHER NO URL PROVIDED OR INVALID URL`);
+		checkUrl = null;
 	}
-}
+	if (checkUrl !== null) {
+		if (checkUrl.protocol === 'nxm:') {
+			console.log('Valid');
+			const pathArr = checkUrl.pathname.split('/').filter(function(el) {
+				return el != '';
+			});
+			const game = checkUrl.host;
+			const modID = pathArr[1];
+			const fileID = pathArr[3];
+			let key;
+			let expires;
+			let userID;
+			console.log(`game: ${game}`);
+			console.log(`modID: ${modID}`);
+			console.log(`fileID: ${fileID}`);
+			checkUrl.searchParams.forEach((value, name, searchParams) => {
+				if (name === 'key') key = value;
+				if (name === 'expires') expires = value;
+				if (name === 'user_id') userID = value;
+			});
+			console.log(`key: ${key}`);
+			console.log(`expires: ${expires}`);
+			console.log(`user_id: ${userID}`);
+			console.log(pathArr);
+
+			download = {
+				game: game,
+				modID: modID,
+				fileID: fileID,
+				key: key,
+				expires: expires,
+				userID: userID
+			};
+		}
+	}
+	return download;
+};
 
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
 	app.quit();
 } else {
-	app.on('second-instance', () => {
+	app.on('second-instance', (event, argv, workingDir) => {
+		console.log(argv[argv.length - 1]);
 		if (mainWindow) {
 			if (mainWindow.isMinimized()) mainWindow.restore();
 			mainWindow.focus();
+			mainWindow.webContents.send(
+				'request-download',
+				parseNXM(argv[argv.length - 1])
+			);
 		}
 	});
 }
@@ -158,6 +147,20 @@ let createMainWindow = () => {
 	mainWindow.on('closed', () => {
 		mainWindow = null;
 	});
+
+	try {
+		checkUrl = new URL(deeplinkingUrl);
+	} catch (err) {
+		console.log(`EITHER NO URL PROVIDED OR INVALID URL`);
+		checkUrl = null;
+	}
+	console.log(checkUrl);
+	if (checkUrl) {
+		console.log('HERE');
+		mainWindow.webContents.once('dom-ready', () => {
+			mainWindow.webContents.send('request-download', parseNXM(deeplinkingUrl));
+		});
+	}
 };
 
 app.on('window-all-closed', () => {
