@@ -11,9 +11,9 @@ const { ipcRenderer } = require('electron');
 const https = require('https');
 const { dialog } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
+const wget = require('wget-improved');
 
 let customTitlebar;
-let custTitlebar;
 const username = uname.sync();
 const globalDebug = debugThis => {
 	if (isDebugON === true) {
@@ -34,6 +34,7 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.wget = wget;
 window.https = https;
 window.spawn = spawn;
 window.execSync = execSync;
@@ -49,8 +50,8 @@ window.getUsername = username;
 window.titlebarFrame = () => {
 	customTitlebar = require('custom-electron-titlebar');
 
-	custTitlebar = new customTitlebar.Titlebar({
+	// eslint-disable-next-line no-unused-vars
+	const custTitlebar = new customTitlebar.Titlebar({
 		backgroundColor: customTitlebar.Color.fromHex('#444'),
 	});
-	custTitlebar();
 };

@@ -349,10 +349,10 @@ const compareGame = game => {
 	if (game === 'SkyrimSE') return 'skyrimspecialedition';
 };
 
-window.ipcRenderer.on('request-download', (event, obj) => {
+window.ipcRenderer.on('request-download', async (event, obj) => {
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
 		debug(obj);
-		const options = {
+		const optionsModInfo = {
 			host: 'api.nexusmods.com',
 			port: 443,
 			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`,
@@ -361,7 +361,8 @@ window.ipcRenderer.on('request-download', (event, obj) => {
 				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
 			},
 		};
-		window.https.get(options, resp => {
+		let parsedModInfo;
+		window.https.get(optionsModInfo, resp => {
 			let data = '';
 			resp.on('data', chunk => {
 				data += chunk;
@@ -369,6 +370,62 @@ window.ipcRenderer.on('request-download', (event, obj) => {
 
 			resp.on('end', () => {
 				debug(JSON.parse(data));
+				parsedModInfo = JSON.parse(data);
+			});
+		});
+		const optionsModFile = {
+			host: 'api.nexusmods.com',
+			port: 443,
+			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${obj.fileID}.json`,
+			method: 'GET',
+			headers: {
+				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
+			},
+		};
+		let fileName;
+		await window.https.get(optionsModFile, async resp => {
+			let data = '';
+			resp.on('data', chunk => {
+				data += chunk;
+			});
+			await resp.on('end', async () => {
+				const parsedData = JSON.parse(data);
+				debug(parsedData);
+				fileName = await parsedData.file_name;
+				debug(fileName);
+			});
+		});
+		const optionsModDownload = {
+			host: 'api.nexusmods.com',
+			port: 443,
+			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
+				obj.fileID
+			}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
+			method: 'GET',
+			headers: {
+				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
+			},
+		};
+
+		if (!window.fs.existsSync(`${dir}/${window.appName}/mods`))
+			window.fs.mkdirSync(`${dir}/${window.appName}/mods`);
+		window.https.get(optionsModDownload, resp => {
+			let data = '';
+			resp.on('data', chunk => {
+				data += chunk;
+			});
+
+			resp.on('end', () => {
+				const parsedData = JSON.parse(data);
+				debug(parsedData);
+				debug(`filename: ${fileName}`);
+				const download = window.wget.download(
+					parsedData[0].URI,
+					`${dir}/${window.appName}/mods/${fileName}`
+				);
+				download.on('progress', progress => {
+					console.log(progress);
+				});
 			});
 		});
 	} else {
