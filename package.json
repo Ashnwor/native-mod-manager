@@ -64,6 +64,7 @@
 		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
 		"popper.js": "^1.16.1",
+		"then-request": "^6.0.2",
 		"username": "^5.1.0",
 		"wget-improved": "^3.1.0"
 	}

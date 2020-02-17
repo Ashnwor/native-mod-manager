@@ -8,10 +8,10 @@ const uname = require('username');
 const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
 const { ipcRenderer } = require('electron');
-const https = require('https');
 const { dialog } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
 const wget = require('wget-improved');
+const request = require('then-request');
 
 let customTitlebar;
 const username = uname.sync();
@@ -34,8 +34,8 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.request = request;
 window.wget = wget;
-window.https = https;
 window.spawn = spawn;
 window.execSync = execSync;
 window.platform = process.platform;

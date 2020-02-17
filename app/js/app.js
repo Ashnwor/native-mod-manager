@@ -349,82 +349,64 @@ const compareGame = game => {
 	if (game === 'SkyrimSE') return 'skyrimspecialedition';
 };
 
+const createDownloadListItem = filename => {
+	const downloadList = document.getElementById('downloadList');
+	const downloadListItem = document.createElement('li');
+	downloadListItem.classList.add('list-group-item', 'downloadListItem', 'active');
+	downloadListItem.innerText = `${filename}`;
+	downloadList.appendChild(downloadListItem);
+};
+
 window.ipcRenderer.on('request-download', async (event, obj) => {
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
+		const apiKey = window.fs.readFileSync(`${dir}/${window.appName}/apikey`);
 		debug(obj);
-		const optionsModInfo = {
-			host: 'api.nexusmods.com',
-			port: 443,
-			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`,
-			method: 'GET',
-			headers: {
-				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
-			},
-		};
 		let parsedModInfo;
-		window.https.get(optionsModInfo, resp => {
-			let data = '';
-			resp.on('data', chunk => {
-				data += chunk;
-			});
+		let filename;
+		let downloadURL;
+		window.request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
+			headers: { apikey: apiKey },
+		}).done(resp0 => {
+			debug(JSON.parse(resp0.getBody().toString()));
+			parsedModInfo = JSON.parse(resp0.getBody().toString());
+			window.request(
+				'GET',
+				`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
+					obj.fileID
+				}.json`,
+				{
+					headers: { apikey: apiKey },
+				}
+			).done(resp1 => {
+				debug(JSON.parse(resp1.getBody().toString()));
+				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
+				filename = parsedFileInfo.file_name;
+				debug(filename);
+				window.request(
+					'GET',
+					`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${
+						obj.modID
+					}/files/${obj.fileID}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
+					{
+						headers: { apikey: apiKey },
+					}
+				).done(resp2 => {
+					debug(JSON.parse(resp2.getBody().toString()));
+					const parsedDownloadData = JSON.parse(resp2.getBody().toString());
+					downloadURL = parsedDownloadData[0].URI;
 
-			resp.on('end', () => {
-				debug(JSON.parse(data));
-				parsedModInfo = JSON.parse(data);
-			});
-		});
-		const optionsModFile = {
-			host: 'api.nexusmods.com',
-			port: 443,
-			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${obj.fileID}.json`,
-			method: 'GET',
-			headers: {
-				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
-			},
-		};
-		let fileName;
-		await window.https.get(optionsModFile, async resp => {
-			let data = '';
-			resp.on('data', chunk => {
-				data += chunk;
-			});
-			await resp.on('end', async () => {
-				const parsedData = JSON.parse(data);
-				debug(parsedData);
-				fileName = await parsedData.file_name;
-				debug(fileName);
-			});
-		});
-		const optionsModDownload = {
-			host: 'api.nexusmods.com',
-			port: 443,
-			path: `/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
-				obj.fileID
-			}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
-			method: 'GET',
-			headers: {
-				apikey: window.fs.readFileSync(`${dir}/${window.appName}/apikey`),
-			},
-		};
+					debug(downloadURL);
+					if (!window.fs.existsSync(`${dir}/${window.appName}/mods`))
+						window.fs.mkdirSync(`${dir}/${window.appName}/mods`);
 
-		if (!window.fs.existsSync(`${dir}/${window.appName}/mods`))
-			window.fs.mkdirSync(`${dir}/${window.appName}/mods`);
-		window.https.get(optionsModDownload, resp => {
-			let data = '';
-			resp.on('data', chunk => {
-				data += chunk;
-			});
-
-			resp.on('end', () => {
-				const parsedData = JSON.parse(data);
-				debug(parsedData);
-				debug(`filename: ${fileName}`);
-				const download = window.wget.download(
-					parsedData[0].URI,
-					`${dir}/${window.appName}/mods/${fileName}`
-				);
-				download.on('progress', progress => {
-					console.log(progress);
+					const download = window.wget.download(
+						downloadURL,
+						`${dir}/${window.appName}/mods/${filename}`
+					);
+					createDownloadListItem(filename);
+					download.on('progress', progress => {
+						console.log(progress);
+					});
 				});
 			});
 		});
