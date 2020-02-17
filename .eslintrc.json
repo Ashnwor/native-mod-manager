@@ -1,7 +1,17 @@
 {
+	"env": {
+		"node": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 11,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
 	"extends": ["wesbos"],
 	"rules": {
-		"no-console": 2,
+		"no-console": 1,
 		"prettier/prettier": [
 			"error",
 			{
