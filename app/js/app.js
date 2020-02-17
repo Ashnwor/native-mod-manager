@@ -349,12 +349,47 @@ const compareGame = game => {
 	if (game === 'SkyrimSE') return 'skyrimspecialedition';
 };
 
-const createDownloadListItem = filename => {
+const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
+	const container = document.createElement('div');
+	container.classList.add('container-fluid');
+	const row = document.createElement('div');
+	row.classList.add('row');
+	for (i = 1; i <= 3; i += 1) {
+		const column = document.createElement('div');
+		column.id = `${idPrefix}-${i}`;
+		column.classList.add('col-sm');
+		column.style = `overflow:hidden; text-overflow:ellipsis;`;
+		if (i === 1) column.appendChild(firstNode);
+		if (i === 2) column.appendChild(secondNode);
+		if (i === 3) column.appendChild(thirdNode);
+		row.appendChild(column);
+	}
+	container.appendChild(row);
+	return container;
+};
+
+const createDownloadListItem = (filename, fileid) => {
+	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
 	downloadListItem.classList.add('list-group-item', 'downloadListItem', 'active');
-	downloadListItem.innerText = `${filename}`;
+	downloadListItem.style = `max-height: 24px;`;
+	const filenameSpan = document.createElement('span');
+	filenameSpan.innerText = filename;
+	const progressOuterDiv = document.createElement('div');
+	progressOuterDiv.classList.add('progress');
+	const progressInnerDiv = document.createElement('div');
+	progressInnerDiv.id = 'prog-bar';
+	progressInnerDiv.classList.add('progress-bar', 'bg-success');
+	progressOuterDiv.appendChild(progressInnerDiv);
+	const tempNode = document.createElement('span');
+	tempNode.innerText = 'TEMP NODE';
+	downloadListItem.appendChild(createTripleColumn(fileid, filenameSpan, progressOuterDiv, tempNode));
 	downloadList.appendChild(downloadListItem);
+};
+
+const updateProgress = (id, value) => {
+	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
 };
 
 window.ipcRenderer.on('request-download', async (event, obj) => {
@@ -363,6 +398,7 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 		debug(obj);
 		let parsedModInfo;
 		let filename;
+		let fileid;
 		let downloadURL;
 		window.request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
 			headers: { apikey: apiKey },
@@ -381,6 +417,7 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 				debug(JSON.parse(resp1.getBody().toString()));
 				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
 				filename = parsedFileInfo.file_name;
+				fileid = parsedFileInfo.file_id;
 				debug(filename);
 				window.request(
 					'GET',
@@ -403,9 +440,9 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 						downloadURL,
 						`${dir}/${window.appName}/mods/${filename}`
 					);
-					createDownloadListItem(filename);
+					createDownloadListItem(filename, fileid);
 					download.on('progress', progress => {
-						console.log(progress);
+						updateProgress(`${fileid}-2`, progress * 100);
 					});
 				});
 			});
