@@ -368,23 +368,35 @@ const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
 	return container;
 };
 
-const createDownloadListItem = (filename, fileid) => {
+const createTextNode = text => {
+	const textNode = document.createElement('span');
+	textNode.innerText = text.toString().substr(0, 50);
+	return textNode;
+};
+const createDownloadListItem = (filename, fileid, filesize) => {
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
 	downloadListItem.classList.add('list-group-item', 'downloadListItem', 'active');
 	downloadListItem.style = `max-height: 24px;`;
-	const filenameSpan = document.createElement('span');
-	filenameSpan.innerText = filename;
 	const progressOuterDiv = document.createElement('div');
-	progressOuterDiv.classList.add('progress');
+	progressOuterDiv.classList.add('progress', 'h-100');
 	const progressInnerDiv = document.createElement('div');
 	progressInnerDiv.id = 'prog-bar';
 	progressInnerDiv.classList.add('progress-bar', 'bg-success');
 	progressOuterDiv.appendChild(progressInnerDiv);
-	const tempNode = document.createElement('span');
-	tempNode.innerText = 'TEMP NODE';
-	downloadListItem.appendChild(createTripleColumn(fileid, filenameSpan, progressOuterDiv, tempNode));
+	const tempNode1 = document.createElement('span');
+	tempNode1.innerText = 'TEMP NODE';
+	const tempNode2 = document.createElement('span');
+	tempNode2.innerText = 'TEMP NODE';
+	downloadListItem.appendChild(
+		createTripleColumn(
+			fileid,
+			createTextNode(filename),
+			progressOuterDiv,
+			createTripleColumn(`${fileid}-3`, createTextNode(filesize), tempNode1, tempNode2)
+		)
+	);
 	downloadList.appendChild(downloadListItem);
 };
 
@@ -440,7 +452,11 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 						downloadURL,
 						`${dir}/${window.appName}/mods/${filename}`
 					);
-					createDownloadListItem(filename, fileid);
+					download.on('start', function(filesize) {
+						const rounded = Math.round((filesize / 1000000) * 10) / 10;
+						createDownloadListItem(filename, fileid, `${rounded}MB`);
+					});
+
 					download.on('progress', progress => {
 						updateProgress(`${fileid}-2`, progress * 100);
 					});
