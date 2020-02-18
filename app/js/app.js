@@ -371,6 +371,7 @@ const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
 const createTextNode = text => {
 	const textNode = document.createElement('span');
 	textNode.innerText = text.toString().substr(0, 50);
+	textNode.classList.add('textNode');
 	return textNode;
 };
 const createDownloadListItem = (filename, fileid, filesize) => {
@@ -385,8 +386,6 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 	progressInnerDiv.id = 'prog-bar';
 	progressInnerDiv.classList.add('progress-bar', 'bg-success');
 	progressOuterDiv.appendChild(progressInnerDiv);
-	const tempNode1 = document.createElement('span');
-	tempNode1.innerText = 'TEMP NODE';
 	const tempNode2 = document.createElement('span');
 	tempNode2.innerText = 'TEMP NODE';
 	downloadListItem.appendChild(
@@ -394,7 +393,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 			fileid,
 			createTextNode(filename),
 			progressOuterDiv,
-			createTripleColumn(`${fileid}-3`, createTextNode(filesize), tempNode1, tempNode2)
+			createTripleColumn(`${fileid}-3`, createTextNode(filesize), createTextNode('speed'), tempNode2)
 		)
 	);
 	downloadList.appendChild(downloadListItem);
@@ -402,6 +401,10 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 
 const updateProgress = (id, value) => {
 	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
+};
+
+const updateProgressText = (id, value) => {
+	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
 };
 
 window.ipcRenderer.on('request-download', async (event, obj) => {
@@ -430,6 +433,7 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
 				filename = parsedFileInfo.file_name;
 				fileid = parsedFileInfo.file_id;
+				let fsize;
 				debug(filename);
 				window.request(
 					'GET',
@@ -457,8 +461,14 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 						createDownloadListItem(filename, fileid, `${rounded}MB`);
 					});
 
+					download.on('bytes', bytes => {
+						debug(bytes);
+					});
+
 					download.on('progress', progress => {
-						updateProgress(`${fileid}-2`, progress * 100);
+						const prog100 = progress * 100;
+						updateProgress(`${fileid}-2`, prog100.toFixed(0));
+						updateProgressText(`${fileid}-3-2`, prog100.toFixed(0));
 					});
 				});
 			});
