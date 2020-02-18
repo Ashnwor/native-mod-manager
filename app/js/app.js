@@ -374,6 +374,23 @@ const createTextNode = text => {
 	textNode.classList.add('textNode');
 	return textNode;
 };
+
+const createImgButtonNode = (id, title, img, hoverImg) => {
+	const imgNode = document.createElement('img');
+	imgNode.src = img;
+	imgNode.title = title;
+	if (hoverImg) {
+		imgNode.addEventListener('mouseover', () => {
+			imgNode.src = hoverImg;
+		});
+		imgNode.addEventListener('mouseleave', () => {
+			imgNode.src = img;
+		});
+	}
+	imgNode.classList.add('clickable');
+	return imgNode;
+};
+
 const createDownloadListItem = (filename, fileid, filesize) => {
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
@@ -393,7 +410,27 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 			fileid,
 			createTextNode(filename),
 			progressOuterDiv,
-			createTripleColumn(`${fileid}-3`, createTextNode(filesize), createTextNode('speed'), tempNode2)
+			createTripleColumn(
+				`${fileid}-3`,
+				createTextNode(filesize),
+				createTextNode('speed'),
+				createTripleColumn(
+					`${fileid}-3-3`,
+					createImgButtonNode(
+						null,
+						'Open Folder',
+						'../images/folder.svg',
+						'../images/folder-fill.svg'
+					),
+					createImgButtonNode(null, 'Install', '../images/wrench.svg', null),
+					createImgButtonNode(
+						null,
+						'Delete',
+						'../images/x-circle.svg',
+						'../images/x-circle-fill.svg'
+					)
+				)
+			)
 		)
 	);
 	downloadList.appendChild(downloadListItem);
@@ -433,7 +470,6 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
 				filename = parsedFileInfo.file_name;
 				fileid = parsedFileInfo.file_id;
-				let fsize;
 				debug(filename);
 				window.request(
 					'GET',

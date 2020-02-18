@@ -200,4 +200,8 @@ body {
 .list-group-item:last-child {
   border-radius: 0 !important;
 }
+
+.clickable {
+  cursor: pointer;
+}
 /*# sourceMappingURL=style.css.map */
