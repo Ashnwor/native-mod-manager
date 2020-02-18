@@ -395,10 +395,11 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
-	downloadListItem.classList.add('list-group-item', 'downloadListItem', 'active');
+	downloadListItem.classList.add('list-group-item', 'downloadListItem', 'position-relative', 'active');
 	downloadListItem.style = `max-height: 24px;`;
 	const progressOuterDiv = document.createElement('div');
-	progressOuterDiv.classList.add('progress', 'h-100');
+	progressOuterDiv.classList.add('progress', 'verticalCenter');
+	progressOuterDiv.style = `height: 80%; width: 100%; border-radius: 0 !important;`;
 	const progressInnerDiv = document.createElement('div');
 	progressInnerDiv.id = 'prog-bar';
 	progressInnerDiv.classList.add('progress-bar', 'bg-success');

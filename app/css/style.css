@@ -204,4 +204,8 @@ body {
 .clickable {
   cursor: pointer;
 }
+
+.position-relative {
+  position: relative;
+}
 /*# sourceMappingURL=style.css.map */
