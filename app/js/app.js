@@ -434,7 +434,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 			)
 		)
 	);
-	downloadList.appendChild(downloadListItem);
+	downloadList.insertBefore(downloadListItem, downloadList.firstChild);
 };
 
 const updateProgress = (id, value) => {
@@ -445,6 +445,26 @@ const updateProgressText = (id, value) => {
 	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
 };
 
+const getDownloadHistory = () => {
+	if (window.fs.existsSync(`${dir}/${window.appName}/downloadHistory.json`)) {
+		let history = window.fs.readFileSync(`${dir}/${window.appName}/downloadHistory.json`, 'utf8');
+		history = JSON.parse(history);
+		debug(history.length);
+		let index;
+		for (index = 0; index < history.length; index += 1) {
+			debug(index);
+			createDownloadListItem(
+				history[index].filename,
+				history[index].fileid,
+				`${history[index].roundedFilesizeInMB}MB`
+			);
+			updateProgress(`${history[index].fileid}-2`, 100);
+			updateProgressText(`${history[index].fileid}-3-2`, 100);
+		}
+	}
+};
+getDownloadHistory();
+
 window.ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
@@ -453,12 +473,16 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 		let parsedModInfo;
 		let filename;
 		let fileid;
+		let modid;
+		let modname;
 		let downloadURL;
 		window.request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
 			headers: { apikey: apiKey },
 		}).done(resp0 => {
 			debug(JSON.parse(resp0.getBody().toString()));
 			parsedModInfo = JSON.parse(resp0.getBody().toString());
+			modid = parsedModInfo.mod_id;
+			modname = parsedModInfo.name;
 			window.request(
 				'GET',
 				`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
@@ -485,28 +509,59 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 					debug(JSON.parse(resp2.getBody().toString()));
 					const parsedDownloadData = JSON.parse(resp2.getBody().toString());
 					downloadURL = parsedDownloadData[0].URI;
+					let roundedFilesizeInMB;
 
 					debug(downloadURL);
 					if (!window.fs.existsSync(`${dir}/${window.appName}/mods`))
 						window.fs.mkdirSync(`${dir}/${window.appName}/mods`);
-
+					// might switch to real wget or curl later
 					const download = window.wget.download(
 						downloadURL,
 						`${dir}/${window.appName}/mods/${filename}`
 					);
 					download.on('start', function(filesize) {
-						const rounded = Math.round((filesize / 1000000) * 10) / 10;
-						createDownloadListItem(filename, fileid, `${rounded}MB`);
-					});
-
-					download.on('bytes', bytes => {
-						debug(bytes);
+						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
+						createDownloadListItem(filename, fileid, `${roundedFilesizeInMB}MB`);
 					});
 
 					download.on('progress', progress => {
 						const prog100 = progress * 100;
 						updateProgress(`${fileid}-2`, prog100.toFixed(0));
 						updateProgressText(`${fileid}-3-2`, prog100.toFixed(0));
+					});
+
+					download.on('end', () => {
+						let downloadHistory;
+						if (
+							!window.fs.existsSync(
+								`${dir}/${window.appName}/downloadHistory.json`
+							)
+						) {
+							downloadHistory = [];
+						} else {
+							downloadHistory = window.fs.readFileSync(
+								`${dir}/${window.appName}/downloadHistory.json`,
+								'utf8'
+							);
+						}
+						downloadHistory = JSON.parse(downloadHistory);
+						debug('DOWNLOAD ENDED');
+						downloadHistory.push({
+							modid,
+							modname,
+							fileid,
+							filename,
+							roundedFilesizeInMB,
+						});
+						debug(downloadHistory);
+						window.fs.writeFileSync(
+							`${dir}/${window.appName}/downloadHistory.json`,
+							JSON.stringify(downloadHistory, null, 4),
+							err => {
+								if (err) throw err;
+								debug('The file has been saved!');
+							}
+						);
 					});
 				});
 			});
