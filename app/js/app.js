@@ -446,6 +446,7 @@ const updateProgressText = (id, value) => {
 };
 
 window.ipcRenderer.on('request-download', async (event, obj) => {
+	document.getElementById('collapseOne').classList.add('show');
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
 		const apiKey = window.fs.readFileSync(`${dir}/${window.appName}/apikey`);
 		debug(obj);
