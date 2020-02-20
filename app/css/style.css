@@ -182,7 +182,7 @@ body {
   position: absolute;
   height: 80%;
   float: right;
-  margin-left: 0.5vh;
+  padding: 0.5vh;
   display: none;
 }
 

@@ -465,19 +465,28 @@ const getDownloadHistory = () => {
 };
 getDownloadHistory();
 
+const showClearHistory = () => {
+	document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
+	document.getElementById('clearHistory').classList.add('display-initial');
+	document.getElementById('downloadsText').style = `margin-left: 5vh;`;
+};
+
+const hideClearHistory = () => {
+	document.getElementById('downloadsButton').classList.remove('downloadsBtn-clicked');
+	document.getElementById('clearHistory').classList.remove('display-initial');
+	document.getElementById('downloadsText').style = ``;
+};
+
 document.getElementById('downloadsButton').addEventListener('click', () => {
 	if (document.getElementById('collapseOne').classList[1] !== 'show') {
-		document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
-		document.getElementById('clearHistory').classList.add('display-initial');
-		document.getElementById('downloadsText').style = `margin-left: 5vh;`;
+		showClearHistory();
 	} else {
-		document.getElementById('downloadsButton').classList.remove('downloadsBtn-clicked');
-		document.getElementById('clearHistory').classList.add('display-initial');
-		document.getElementById('downloadsText').style = ``;
+		hideClearHistory();
 	}
 });
 window.ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
+	showClearHistory();
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
 		const apiKey = window.fs.readFileSync(`${dir}/${window.appName}/apikey`);
 		debug(obj);
