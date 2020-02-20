@@ -196,9 +196,9 @@ body {
 #clearHistory {
 	background-color: #343a40;
 	position: absolute;
-	height: 80%;
+	height: 100%;
 	float: right;
-	padding: 0.5vh;
+	padding: 1vh;
 	&:hover {
 		content: url('../images/trash-fill.svg');
 		cursor: pointer;
