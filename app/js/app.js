@@ -358,7 +358,7 @@ const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
 		const column = document.createElement('div');
 		column.id = `${idPrefix}-${i}`;
 		column.classList.add('col-sm');
-		column.style = `overflow:hidden; text-overflow:ellipsis;`;
+		column.style = `overflow:hidden;`;
 		if (i === 1) column.appendChild(firstNode);
 		if (i === 2) column.appendChild(secondNode);
 		if (i === 3) column.appendChild(thirdNode);
@@ -414,7 +414,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 			createTripleColumn(
 				`${fileid}-3`,
 				createTextNode(filesize),
-				createTextNode('speed'),
+				createTextNode(''),
 				createTripleColumn(
 					`${fileid}-3-3`,
 					createImgButtonNode(
