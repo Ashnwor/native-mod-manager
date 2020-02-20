@@ -173,6 +173,28 @@ body {
   color: white;
 }
 
+.downloadsBtn-clicked {
+  width: calc(100vw - 5vh) !important;
+}
+
+#clearHistory {
+  background-color: #343a40;
+  position: absolute;
+  height: 80%;
+  float: right;
+  margin-left: 0.5vh;
+  display: none;
+}
+
+#clearHistory:hover {
+  content: url("../images/trash-fill.svg");
+  cursor: pointer;
+}
+
+.display-initial {
+  display: initial !important;
+}
+
 .cardListWindow {
   max-height: 15vh;
 }

@@ -109,20 +109,28 @@
 			<div class="card" style="border: 0;">
 				<div
 					class="card-header"
-					style="padding: 0;"
+					style="padding: 0; position: relative; 	background-color: #343a40; border-radius: 0;"
 					role="button"
 					id="headingOne"
 				>
 					<button
+						id="downloadsButton"
 						class="btn downloadsBtn"
 						type="button"
 						data-toggle="collapse"
 						data-target="#collapseOne"
 						aria-expanded="false"
 						aria-controls="collapseOne"
+						style="position: relative;"
 					>
-						Downloads
+						<span id="downloadsText">Downloads</span>
 					</button>
+					<img
+						id="clearHistory"
+						title="Clear History"
+						class="verticalCenter"
+						src="../images/trash.svg"
+					/>
 				</div>
 
 				<div

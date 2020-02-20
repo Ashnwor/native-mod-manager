@@ -465,6 +465,17 @@ const getDownloadHistory = () => {
 };
 getDownloadHistory();
 
+document.getElementById('downloadsButton').addEventListener('click', () => {
+	if (document.getElementById('collapseOne').classList[1] !== 'show') {
+		document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
+		document.getElementById('clearHistory').classList.add('display-initial');
+		document.getElementById('downloadsText').style = `margin-left: 5vh;`;
+	} else {
+		document.getElementById('downloadsButton').classList.remove('downloadsBtn-clicked');
+		document.getElementById('clearHistory').classList.add('display-initial');
+		document.getElementById('downloadsText').style = ``;
+	}
+});
 window.ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
