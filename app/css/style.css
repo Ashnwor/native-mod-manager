@@ -209,6 +209,8 @@ body {
   background-color: #343a40;
   border-radius: 0;
   color: white;
+  -webkit-transition: width 250ms ease-in;
+  transition: width 250ms ease-in;
 }
 
 .downloadsBtn:hover {
@@ -217,6 +219,8 @@ body {
 
 .downloadsBtn-clicked {
   width: calc(100vw - 5vh) !important;
+  -webkit-transition: width 250ms ease-in;
+  transition: width 250ms ease-in;
 }
 
 #clearHistory {
@@ -225,7 +229,6 @@ body {
   height: 80%;
   float: right;
   padding: 0.5vh;
-  display: none;
 }
 
 #clearHistory:hover {

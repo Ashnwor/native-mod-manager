@@ -182,6 +182,7 @@ body {
 	background-color: #343a40;
 	border-radius: 0;
 	color: white;
+	transition: width 250ms ease-in;
 	&:hover {
 		color: white;
 	}
@@ -189,6 +190,7 @@ body {
 
 .downloadsBtn-clicked {
 	width: calc(100vw - 5vh) !important;
+	transition: width 250ms ease-in;
 }
 
 #clearHistory {
@@ -197,7 +199,6 @@ body {
 	height: 80%;
 	float: right;
 	padding: 0.5vh;
-	display: none;
 	&:hover {
 		content: url('../images/trash-fill.svg');
 		cursor: pointer;

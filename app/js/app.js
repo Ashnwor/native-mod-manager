@@ -468,13 +468,13 @@ getDownloadHistory();
 const showClearHistory = () => {
 	document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
 	document.getElementById('clearHistory').classList.add('display-initial');
-	document.getElementById('downloadsText').style = `margin-left: 5vh;`;
+	document.getElementById('downloadsText').style = `margin-left: 5vh; transition: margin-left 250ms ease-in;`;
 };
 
 const hideClearHistory = () => {
 	document.getElementById('downloadsButton').classList.remove('downloadsBtn-clicked');
 	document.getElementById('clearHistory').classList.remove('display-initial');
-	document.getElementById('downloadsText').style = ``;
+	document.getElementById('downloadsText').style = `transition: margin-left 250ms ease-in;`;
 };
 
 document.getElementById('downloadsButton').addEventListener('click', () => {
