@@ -4,7 +4,6 @@
 // It has the same sandbox as a Chrome extension.
 const isDebugON = true;
 const appName = 'arcus';
-const uname = require('username');
 const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
 const { ipcRenderer } = require('electron');
@@ -12,9 +11,9 @@ const { dialog } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
 const wget = require('wget-improved');
 const request = require('then-request');
+const os = require('os');
 
 let customTitlebar;
-const username = uname.sync();
 const globalDebug = debugThis => {
 	if (isDebugON === true) {
 		if (typeof debugThis === 'object') {
@@ -43,9 +42,8 @@ window.dialog = dialog;
 window.ipcRenderer = ipcRenderer;
 window.appName = appName;
 window.fs = fs;
+window.os = os;
 window.con = con;
-
-window.getUsername = username;
 
 window.titlebarFrame = () => {
 	customTitlebar = require('custom-electron-titlebar');

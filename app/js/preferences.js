@@ -1,13 +1,14 @@
 const debug = debugThis => window.globalDebug(debugThis);
+const { homedir } = window.os;
 let dir;
 let rawConfig;
 let config;
 let i;
 
 if (window.platform === 'darwin') {
-	dir = `/Users/${window.getUsername}/Library/Application Support`;
+	dir = `${homedir}/Library/Application Support`;
 } else if (window.platform === 'linux') {
-	dir = `/home/${window.getUsername}/.local/share`;
+	dir = `${homedir}/.local/share`;
 }
 
 const protonMap = window.fs.readFileSync(`${dir}/${window.appName}/protonMap.json`, 'utf8');

@@ -5,6 +5,7 @@ let lines;
 let config;
 let i;
 const debug = debugThis => window.globalDebug(debugThis);
+const { homedir } = window.os;
 
 const getConfig = () => {
 	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
@@ -135,9 +136,9 @@ const genRunScript = skse => {
 	getConfig();
 	let runnerPath;
 	if (config.protonVersion.location === 'common') {
-		runnerPath = `/home/${window.getUsername}/.steam/steam/steamapps/common/${config.protonVersion.version}`;
+		runnerPath = `${homedir}/.steam/steam/steamapps/common/${config.protonVersion.version}`;
 	} else if (config.protonVersion.location === 'compatibilitytools') {
-		runnerPath = `/home/${window.getUsername}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`;
+		runnerPath = `${homedir}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`;
 	} else if (config.protonVersion.location === 'null') {
 		window.dialog.showErrorBox(
 			'Proton',
@@ -158,18 +159,18 @@ const genRunScript = skse => {
 		// for false: generate for skyrim
 		runArr[4] = `DEF_CMD=("${config.skyrimSE}/SkyrimSE.exe")`;
 	}
-	runArr[5] = `PATH="${runnerPath}/dist/bin/:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/amd64/bin:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/amd64/usr/bin:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/bin" \\`;
+	runArr[5] = `PATH="${runnerPath}/dist/bin/:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/amd64/bin:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/amd64/usr/bin:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/bin" \\`;
 	runArr[6] = `TERM="xterm" \\`;
 	runArr[7] = `WINEDEBUG="-all" \\`;
-	runArr[8] = `        LD_PRELOAD="/usr/$LIB/libgamemodeauto.so.0::/home/${window.getUsername}/.steam/steam/ubuntu12_32/gameoverlayrenderer.so:/home/${window.getUsername}/.steam/steam/ubuntu12_64/gameoverlayrenderer.so" \\`;
+	runArr[8] = `        LD_PRELOAD="/usr/$LIB/libgamemodeauto.so.0::${homedir}/.steam/steam/ubuntu12_32/gameoverlayrenderer.so:${homedir}/.steam/steam/ubuntu12_64/gameoverlayrenderer.so" \\`;
 	runArr[9] = `        WINEDLLPATH="${runnerPath}/dist/lib64//wine:${runnerPath}/dist/lib//wine" \\`;
-	runArr[10] = `        LD_LIBRARY_PATH="${runnerPath}/dist/lib64/:${runnerPath}/dist/lib/:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_32:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib/libfakeroot:/usr/lib32:/usr/lib/openmpi:/usr/lib:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/lib:/home/${window.getUsername}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib:" \\`;
-	runArr[11] = `	      WINEPREFIX="/home/${window.getUsername}/.steam/steam/steamapps/compatdata/489830/pfx/" \\`;
+	runArr[10] = `        LD_LIBRARY_PATH="${runnerPath}/dist/lib64/:${runnerPath}/dist/lib/:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_32:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib/libfakeroot:/usr/lib32:/usr/lib/openmpi:/usr/lib:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/lib:${homedir}/.steam/steam/ubuntu12_32/steam-runtime/usr/lib:" \\`;
+	runArr[11] = `	      WINEPREFIX="${homedir}/.steam/steam/steamapps/compatdata/489830/pfx/" \\`;
 	runArr[12] = `	      WINEESYNC="1" \\`;
 	runArr[13] = `        SteamGameId="489830" \\`;
 	runArr[14] = `	      SteamAppId="489830" \\`;
 	runArr[15] = `	      WINEDLLOVERRIDES="xaudio2_7=n,b;steam.exe=b;mfplay=n;dxvk_config=n;d3d11=n;d3d10=n;d3d10core=n;d3d10_1=n" \\`;
-	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/${window.getUsername}/.steam/steam" \\`;
+	runArr[16] = `        STEAM_COMPAT_CLIENT_INSTALL_PATH="${homedir}/.steam/steam" \\`;
 	runArr[17] = `	      "${runnerPath}/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
@@ -191,21 +192,17 @@ const genProtonMap = () => {
 	const protonMap = {};
 	protonMap.common = {};
 	if (window.platform === 'linux') {
-		const steamAppsCommon = `/home/${window.getUsername}/.steam/steam/steamapps/common`;
+		const steamAppsCommon = `${homedir}/.steam/steam/steamapps/common`;
 		window.fs.readdirSync(steamAppsCommon).forEach(file => {
 			debug(file);
 			if (file.includes('Proton') === true) {
-				if (
-					window.fs.existsSync(
-						`/home/${window.getUsername}/.steam/steam/steamapps/common/${file}/proton`
-					)
-				) {
+				if (window.fs.existsSync(`${homedir}/.steam/steam/steamapps/common/${file}/proton`)) {
 					protonMap.common[id + 1] = { name: file };
 					id += 1;
 				}
 			}
 		});
-		const compatibilitytools = `/home/${window.getUsername}/.steam/steam/compatibilitytools.d`;
+		const compatibilitytools = `${homedir}/.steam/steam/compatibilitytools.d`;
 		if (window.fs.existsSync(compatibilitytools) === true) {
 			protonMap.compatibilitytools = {};
 			id = -1;
@@ -214,7 +211,7 @@ const genProtonMap = () => {
 				if (file.includes('Proton') === true) {
 					if (
 						window.fs.existsSync(
-							`/home/${window.getUsername}/.steam/steam/compatibilitytools.d/${file}/proton`
+							`${homedir}/.steam/steam/compatibilitytools.d/${file}/proton`
 						)
 					) {
 						protonMap.compatibilitytools[id + 1] = { name: file };
@@ -240,9 +237,9 @@ const genProtonMap = () => {
 // if (window.platform === 'linux') {
 const firstStart = window.ipcRenderer.sendSync('isFirstStart');
 if (window.platform === 'darwin') {
-	dir = `/Users/${window.getUsername}/Library/Application Support`;
+	dir = `${homedir}/Library/Application Support`;
 } else if (window.platform === 'linux') {
-	dir = `/home/${window.getUsername}/.local/share`;
+	dir = `${homedir}/.local/share`;
 }
 if (firstStart === true) {
 	debug('First time setup');
@@ -375,7 +372,7 @@ const createTextNode = text => {
 	return textNode;
 };
 
-const createImgButtonNode = (id, title, img, hoverImg) => {
+const createImgButtonNode = (id, title, img, hoverImg, func) => {
 	const imgNode = document.createElement('img');
 	imgNode.src = img;
 	imgNode.title = title;
@@ -388,7 +385,22 @@ const createImgButtonNode = (id, title, img, hoverImg) => {
 		});
 	}
 	imgNode.classList.add('clickable');
+	imgNode.addEventListener('click', () => {
+		func();
+	});
 	return imgNode;
+};
+
+const openFolder = () => {
+	debug('Open Folder');
+};
+
+const installMod = () => {
+	debug('Install Mod');
+};
+
+const deleteMod = () => {
+	debug('Delete Mod');
 };
 
 const createDownloadListItem = (filename, fileid, filesize) => {
@@ -421,14 +433,16 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						null,
 						'Open Folder',
 						'../images/folder.svg',
-						'../images/folder-fill.svg'
+						'../images/folder-fill.svg',
+						openFolder
 					),
-					createImgButtonNode(null, 'Install', '../images/wrench.svg', null),
+					createImgButtonNode(null, 'Install', '../images/wrench.svg', null, installMod),
 					createImgButtonNode(
 						null,
 						'Delete',
 						'../images/x-circle.svg',
-						'../images/x-circle-fill.svg'
+						'../images/x-circle-fill.svg',
+						deleteMod
 					)
 				)
 			)

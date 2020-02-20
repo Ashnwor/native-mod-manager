@@ -1,11 +1,13 @@
 const debug = debugThis => window.globalDebug(debugThis);
 const selectedGame = 'skyrimSE';
+const { homedir } = window.os;
+
 document.getElementById('browse').addEventListener('click', () => {
 	let defaultPath;
 	if (window.platform === 'darwin') {
-		defaultPath = `/Users/${window.getUsername}/Library/Application Support/Steam/steamapps/common/Skyrim Special Edition`;
+		defaultPath = `${homedir}/Library/Application Support/Steam/steamapps/common/Skyrim Special Edition`;
 	} else if (window.platform === 'linux') {
-		defaultPath = `/home/${window.getUsername}/.steam/steam/steamapps/common/Skyrim Special Edition`;
+		defaultPath = `${homedir}/.steam/steam/steamapps/common/Skyrim Special Edition`;
 	}
 	const selectedFolder = window.dialog.showOpenDialogSync({
 		properties: ['openDirectory', 'showHiddenFiles'],
@@ -23,9 +25,9 @@ document.getElementById('done').addEventListener('click', () => {
 		let dir;
 
 		if (window.platform === 'darwin') {
-			dir = `/Users/${window.getUsername}/Library/Application Support`;
+			dir = `${homedir}/Library/Application Support`;
 		} else if (window.platform === 'linux') {
-			dir = `/home/${window.getUsername}/.local/share`;
+			dir = `${homedir}/.local/share`;
 		}
 
 		window.fs.writeFileSync(`${dir}/${window.appName}/config.json`, JSON.stringify(game, null, 4), err => {

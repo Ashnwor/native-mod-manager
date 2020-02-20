@@ -1,11 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 const { join } = require('path');
-const { sync } = require('username');
 const { existsSync, mkdirSync } = require('fs');
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const os = require('os');
 
-const username = sync();
+const { homedir } = os;
 let mainWindow = null;
 let selectWindow;
 let prefWindow;
@@ -196,9 +196,9 @@ ipcMain.on('gen-run-script', () => {
 });
 
 if (process.platform === 'darwin') {
-	dir = `/Users/${username}/Library/Application Support`;
+	dir = `${homedir}/Library/Application Support`;
 } else if (process.platform === 'linux') {
-	dir = `/home/${username}/.local/share`;
+	dir = `${homedir}/.local/share`;
 }
 
 if (!existsSync(`${dir}/arcus`)) {
