@@ -12,7 +12,7 @@ if (platform === 'darwin') {
 	dir = join(`${homedir}/.local/share`);
 }
 
-const protonMap = fs.readFileSync(join(`${dir}/${appName}/protonMap.json`, 'utf8'));
+const protonMap = fs.readFileSync(join(`${dir}/${appName}/protonMap.json`), 'utf8');
 
 const getConfig = () => {
 	rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
