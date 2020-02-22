@@ -1,5 +1,5 @@
 const debug = debugThis => window.globalDebug(debugThis);
-const { platform, ipcRenderer, appName, fs, os } = window;
+const { platform, ipcRenderer, appName, fs, os, join } = window;
 const { homedir } = os;
 let dir;
 let rawConfig;
@@ -7,20 +7,20 @@ let config;
 let i;
 
 if (platform === 'darwin') {
-	dir = `${homedir}/Library/Application Support`;
+	dir = join(`${homedir}/Library/Application Support`);
 } else if (platform === 'linux') {
-	dir = `${homedir}/.local/share`;
+	dir = join(`${homedir}/.local/share`);
 }
 
-const protonMap = fs.readFileSync(`${dir}/${appName}/protonMap.json`, 'utf8');
+const protonMap = fs.readFileSync(join(`${dir}/${appName}/protonMap.json`, 'utf8'));
 
 const getConfig = () => {
-	rawConfig = fs.readFileSync(`${dir}/${appName}/config.json`);
+	rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
 	config = JSON.parse(rawConfig);
 };
 
 const writeConfig = () => {
-	fs.writeFileSync(`${dir}/${appName}/config.json`, JSON.stringify(config, null, 4), err => {
+	fs.writeFileSync(join(`${dir}/${appName}/config.json`), JSON.stringify(config, null, 4), err => {
 		if (err) throw err;
 		debug('The file has been saved!');
 	});
@@ -164,13 +164,13 @@ const apiKeyMenu = () => {
 	cleanRightList();
 	removeBottomNav();
 	createInput('apikey', 'Api Key', 'Api Key');
-	if (fs.existsSync(`${dir}/${appName}/apikey`)) {
-		document.getElementById('apikey').value = fs.readFileSync(`${dir}/${appName}/apikey`, 'utf8');
+	if (fs.existsSync(join(`${dir}/${appName}/apikey`))) {
+		document.getElementById('apikey').value = fs.readFileSync(join(`${dir}/${appName}/apikey`), 'utf8');
 	}
 	createBottomNav();
 	document.getElementById('done').addEventListener('click', () => {
 		debug(document.getElementById('apikey').value);
-		fs.writeFileSync(`${dir}/${appName}/apikey`, document.getElementById('apikey').value, err => {
+		fs.writeFileSync(join(`${dir}/${appName}/apikey`), document.getElementById('apikey').value, err => {
 			if (err) throw err;
 			debug('The file has been saved!');
 		});

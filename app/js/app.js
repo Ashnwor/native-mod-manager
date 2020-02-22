@@ -6,17 +6,17 @@ let config;
 let i;
 const debug = debugThis => window.globalDebug(debugThis);
 
-const { request, shell, wget, spawn, execSync, platform, dialog, ipcRenderer, appName, fs, os } = window;
+const { request, shell, wget, spawn, execSync, platform, dialog, ipcRenderer, appName, fs, os, join } = window;
 
 const { homedir } = os;
 
 const getConfig = () => {
-	rawConfig = fs.readFileSync(`${dir}/${appName}/config.json`);
+	rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
 	config = JSON.parse(rawConfig);
 };
 
 const writeConfig = () => {
-	fs.writeFileSync(`${dir}/${appName}/config.json`, JSON.stringify(config, null, 4), err => {
+	fs.writeFileSync(join(`${dir}/${appName}/config.json`), JSON.stringify(config, null, 4), err => {
 		if (err) throw err;
 		debug('The file has been saved!');
 	});
@@ -48,11 +48,13 @@ const getPlugins = () => {
 	rightMenu.innerHTML = '';
 	// Get this from preload in relation to selected game
 	const skyrimSEid = 489830;
-	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
-	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+	const pfx = join(`${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`);
+	const pluginsDir = join(
+		`${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`
+	);
 
 	debug(pluginsDir);
-	const pluginsFile = fs.readFileSync(`${pluginsDir}/Plugins.txt`, 'utf8');
+	const pluginsFile = fs.readFileSync(join(`${pluginsDir}/Plugins.txt`), 'utf8');
 
 	lines = [];
 	pluginsFile.split(/\r?\n/).forEach(line => {
@@ -66,10 +68,12 @@ const getPlugins = () => {
 
 const writePlugins = arr => {
 	const skyrimSEid = 489830;
-	const pfx = `${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`;
-	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
+	const pfx = join(`${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`);
+	const pluginsDir = join(
+		`${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`
+	);
 	debug(pluginsDir);
-	const pluginsFile = `${pluginsDir}/Plugins.txt`;
+	const pluginsFile = join(`${pluginsDir}/Plugins.txt`);
 
 	fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
 		debug(err ? `Error :${err}` : 'ok');
@@ -139,9 +143,9 @@ const genRunScript = skse => {
 	getConfig();
 	let runnerPath;
 	if (config.protonVersion.location === 'common') {
-		runnerPath = `${homedir}/.steam/steam/steamapps/common/${config.protonVersion.version}`;
+		runnerPath = join(`${homedir}/.steam/steam/steamapps/common/${config.protonVersion.version}`);
 	} else if (config.protonVersion.location === 'compatibilitytools') {
-		runnerPath = `${homedir}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`;
+		runnerPath = join(`${homedir}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`);
 	} else if (config.protonVersion.location === 'null') {
 		dialog.showErrorBox(
 			'Proton',
@@ -195,17 +199,17 @@ const genProtonMap = () => {
 	const protonMap = {};
 	protonMap.common = {};
 	if (platform === 'linux') {
-		const steamAppsCommon = `${homedir}/.steam/steam/steamapps/common`;
+		const steamAppsCommon = join(`${homedir}/.steam/steam/steamapps/common`);
 		fs.readdirSync(steamAppsCommon).forEach(file => {
 			debug(file);
 			if (file.includes('Proton') === true) {
-				if (fs.existsSync(`${homedir}/.steam/steam/steamapps/common/${file}/proton`)) {
+				if (fs.existsSync(join(`${homedir}/.steam/steam/steamapps/common/${file}/proton`))) {
 					protonMap.common[id + 1] = { name: file };
 					id += 1;
 				}
 			}
 		});
-		const compatibilitytools = `${homedir}/.steam/steam/compatibilitytools.d`;
+		const compatibilitytools = join(`${homedir}/.steam/steam/compatibilitytools.d`);
 		if (fs.existsSync(compatibilitytools) === true) {
 			protonMap.compatibilitytools = {};
 			id = -1;
@@ -214,7 +218,9 @@ const genProtonMap = () => {
 				if (file.includes('Proton') === true) {
 					if (
 						fs.existsSync(
-							`${homedir}/.steam/steam/compatibilitytools.d/${file}/proton`
+							join(
+								`${homedir}/.steam/steam/compatibilitytools.d/${file}/proton`
+							)
 						)
 					) {
 						protonMap.compatibilitytools[id + 1] = { name: file };
@@ -223,11 +229,11 @@ const genProtonMap = () => {
 				}
 			});
 		}
-		fs.writeFileSync(`${dir}/${appName}/protonMap.json`, JSON.stringify(protonMap, null, 4), err => {
+		fs.writeFileSync(join(`${dir}/${appName}/protonMap.json`), JSON.stringify(protonMap, null, 4), err => {
 			if (err) throw err;
 			debug('The file has been saved!');
 		});
-		const map = fs.readFileSync(`${dir}/${appName}/protonMap.json`, 'utf8');
+		const map = fs.readFileSync(join(`${dir}/${appName}/protonMap.json`), 'utf8');
 		debug(JSON.parse(map));
 	}
 };
@@ -394,7 +400,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, func) => {
 };
 
 const openFolder = filename => {
-	shell.showItemInFolder(`${dir}/${appName}/mods/${filename}`);
+	shell.showItemInFolder(join(`${dir}/${appName}/mods/${filename}`));
 	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
@@ -435,15 +441,15 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 					createImgButtonNode(
 						null,
 						'Open Folder',
-						'../images/folder.svg',
-						'../images/folder-fill.svg',
+						join('../images/folder.svg'),
+						join('../images/folder-fill.svg'),
 						filename,
 						openFolder
 					),
 					createImgButtonNode(
 						null,
 						'Install',
-						'../images/wrench.svg',
+						join('../images/wrench.svg'),
 						null,
 						null,
 						installMod
@@ -451,8 +457,8 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 					createImgButtonNode(
 						null,
 						'Delete',
-						'../images/x-circle.svg',
-						'../images/x-circle-fill.svg',
+						join('../images/x-circle.svg'),
+						join('../images/x-circle-fill.svg'),
 						null,
 						deleteMod
 					)
@@ -472,8 +478,8 @@ const updateProgressText = (id, value) => {
 };
 
 const getDownloadHistory = () => {
-	if (fs.existsSync(`${dir}/${appName}/downloadHistory.json`)) {
-		let history = fs.readFileSync(`${dir}/${appName}/downloadHistory.json`, 'utf8');
+	if (fs.existsSync(join(`${dir}/${appName}/downloadHistory.json`))) {
+		let history = fs.readFileSync(join(`${dir}/${appName}/downloadHistory.json`), 'utf8');
 		history = JSON.parse(history);
 		debug(history.length);
 		let index;
@@ -513,8 +519,8 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	showClearHistory();
-	if (fs.existsSync(`${dir}/${appName}/apikey`)) {
-		const apiKey = fs.readFileSync(`${dir}/${appName}/apikey`);
+	if (join(fs.existsSync(`${dir}/${appName}/apikey`))) {
+		const apiKey = fs.readFileSync(join(`${dir}/${appName}/apikey`));
 		debug(obj);
 		let parsedModInfo;
 		let filename;
@@ -558,12 +564,12 @@ ipcRenderer.on('request-download', async (event, obj) => {
 					let roundedFilesizeInMB;
 
 					debug(downloadURL);
-					if (!fs.existsSync(`${dir}/${appName}/mods`))
-						fs.mkdirSync(`${dir}/${appName}/mods`);
+					if (!fs.existsSync(join(`${dir}/${appName}/mods`)))
+						fs.mkdirSync(join(`${dir}/${appName}/mods`));
 					// might switch to real wget or curl later
 					const download = wget.download(
 						downloadURL,
-						`${dir}/${appName}/mods/${filename}`
+						join(`${dir}/${appName}/mods/${filename}`)
 					);
 					download.on('start', function(filesize) {
 						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
@@ -578,11 +584,11 @@ ipcRenderer.on('request-download', async (event, obj) => {
 
 					download.on('end', () => {
 						let downloadHistory;
-						if (!fs.existsSync(`${dir}/${appName}/downloadHistory.json`)) {
+						if (!fs.existsSync(join(`${dir}/${appName}/downloadHistory.json`))) {
 							downloadHistory = [];
 						} else {
 							downloadHistory = fs.readFileSync(
-								`${dir}/${appName}/downloadHistory.json`,
+								join(`${dir}/${appName}/downloadHistory.json`),
 								'utf8'
 							);
 						}
@@ -597,7 +603,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 						});
 						debug(downloadHistory);
 						fs.writeFileSync(
-							`${dir}/${appName}/downloadHistory.json`,
+							join(`${dir}/${appName}/downloadHistory.json`),
 							JSON.stringify(downloadHistory, null, 4),
 							err => {
 								if (err) throw err;

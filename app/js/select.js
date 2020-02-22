@@ -1,14 +1,16 @@
 const debug = debugThis => window.globalDebug(debugThis);
-const { platform, dialog, ipcRenderer, appName, fs, os } = window;
+const { platform, dialog, ipcRenderer, appName, fs, os, join } = window;
 const selectedGame = 'skyrimSE';
 const { homedir } = os;
 
 document.getElementById('browse').addEventListener('click', () => {
 	let defaultPath;
 	if (platform === 'darwin') {
-		defaultPath = `${homedir}/Library/Application Support/Steam/steamapps/common/Skyrim Special Edition`;
+		defaultPath = join(
+			`${homedir}/Library/Application Support/Steam/steamapps/common/Skyrim Special Edition`
+		);
 	} else if (platform === 'linux') {
-		defaultPath = `${homedir}/.steam/steam/steamapps/common/Skyrim Special Edition`;
+		defaultPath = join(`${homedir}/.steam/steam/steamapps/common/Skyrim Special Edition`);
 	}
 
 	const selectedFolder = dialog.showOpenDialogSync({
@@ -27,16 +29,16 @@ document.getElementById('done').addEventListener('click', () => {
 		let dir;
 
 		if (platform === 'darwin') {
-			dir = `${homedir}/Library/Application Support`;
+			dir = join(`${homedir}/Library/Application Support`);
 		} else if (platform === 'linux') {
-			dir = `${homedir}/.local/share`;
+			dir = join(`${homedir}/.local/share`);
 		}
 
-		fs.writeFileSync(`${dir}/${appName}/config.json`, JSON.stringify(game, null, 4), err => {
+		fs.writeFileSync(join(`${dir}/${appName}/config.json`), JSON.stringify(game, null, 4), err => {
 			if (err) throw err;
 			debug('The file has been saved!');
 		});
-		const conf = fs.readFileSync(`${dir}/${appName}/config.json`, 'utf8');
+		const conf = fs.readFileSync(join(`${dir}/${appName}/config.json`), 'utf8');
 		debug(JSON.parse(conf));
 
 		ipcRenderer.send('show-main');
