@@ -372,7 +372,7 @@ const createTextNode = text => {
 	return textNode;
 };
 
-const createImgButtonNode = (id, title, img, hoverImg, func) => {
+const createImgButtonNode = (id, title, img, hoverImg, filename, func) => {
 	const imgNode = document.createElement('img');
 	imgNode.src = img;
 	imgNode.title = title;
@@ -384,15 +384,19 @@ const createImgButtonNode = (id, title, img, hoverImg, func) => {
 			imgNode.src = img;
 		});
 	}
-	imgNode.classList.add('clickable');
-	imgNode.addEventListener('click', () => {
-		func();
-	});
+	if (filename) {
+		imgNode.classList.add('clickable');
+		imgNode.addEventListener('click', () => {
+			func(filename);
+		});
+	}
+
 	return imgNode;
 };
 
-const openFolder = () => {
-	debug('Open Folder');
+const openFolder = filename => {
+	window.shell.showItemInFolder(`${dir}/${window.appName}/mods/${filename}`);
+	debug(`${dir}/${window.appName}/mods/${filename}`);
 };
 
 const installMod = () => {
@@ -434,14 +438,23 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						'Open Folder',
 						'../images/folder.svg',
 						'../images/folder-fill.svg',
+						filename,
 						openFolder
 					),
-					createImgButtonNode(null, 'Install', '../images/wrench.svg', null, installMod),
+					createImgButtonNode(
+						null,
+						'Install',
+						'../images/wrench.svg',
+						null,
+						null,
+						installMod
+					),
 					createImgButtonNode(
 						null,
 						'Delete',
 						'../images/x-circle.svg',
 						'../images/x-circle-fill.svg',
+						null,
 						deleteMod
 					)
 				)
