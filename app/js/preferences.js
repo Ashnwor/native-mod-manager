@@ -1,25 +1,26 @@
 const debug = debugThis => window.globalDebug(debugThis);
-const { homedir } = window.os;
+const { platform, ipcRenderer, appName, fs, os } = window;
+const { homedir } = os;
 let dir;
 let rawConfig;
 let config;
 let i;
 
-if (window.platform === 'darwin') {
+if (platform === 'darwin') {
 	dir = `${homedir}/Library/Application Support`;
-} else if (window.platform === 'linux') {
+} else if (platform === 'linux') {
 	dir = `${homedir}/.local/share`;
 }
 
-const protonMap = window.fs.readFileSync(`${dir}/${window.appName}/protonMap.json`, 'utf8');
+const protonMap = fs.readFileSync(`${dir}/${appName}/protonMap.json`, 'utf8');
 
 const getConfig = () => {
-	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
+	rawConfig = fs.readFileSync(`${dir}/${appName}/config.json`);
 	config = JSON.parse(rawConfig);
 };
 
 const writeConfig = () => {
-	window.fs.writeFileSync(`${dir}/${window.appName}/config.json`, JSON.stringify(config, null, 4), err => {
+	fs.writeFileSync(`${dir}/${appName}/config.json`, JSON.stringify(config, null, 4), err => {
 		if (err) throw err;
 		debug('The file has been saved!');
 	});
@@ -155,7 +156,7 @@ const protonMenu = () => {
 		};
 		debug(config);
 		writeConfig();
-		window.ipcRenderer.send('gen-run-script');
+		ipcRenderer.send('gen-run-script');
 	});
 };
 
@@ -163,23 +164,16 @@ const apiKeyMenu = () => {
 	cleanRightList();
 	removeBottomNav();
 	createInput('apikey', 'Api Key', 'Api Key');
-	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
-		document.getElementById('apikey').value = window.fs.readFileSync(
-			`${dir}/${window.appName}/apikey`,
-			'utf8'
-		);
+	if (fs.existsSync(`${dir}/${appName}/apikey`)) {
+		document.getElementById('apikey').value = fs.readFileSync(`${dir}/${appName}/apikey`, 'utf8');
 	}
 	createBottomNav();
 	document.getElementById('done').addEventListener('click', () => {
 		debug(document.getElementById('apikey').value);
-		window.fs.writeFileSync(
-			`${dir}/${window.appName}/apikey`,
-			document.getElementById('apikey').value,
-			err => {
-				if (err) throw err;
-				debug('The file has been saved!');
-			}
-		);
+		fs.writeFileSync(`${dir}/${appName}/apikey`, document.getElementById('apikey').value, err => {
+			if (err) throw err;
+			debug('The file has been saved!');
+		});
 	});
 };
 

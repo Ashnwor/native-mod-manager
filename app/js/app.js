@@ -5,15 +5,18 @@ let lines;
 let config;
 let i;
 const debug = debugThis => window.globalDebug(debugThis);
-const { homedir } = window.os;
+
+const { request, shell, wget, spawn, execSync, platform, dialog, ipcRenderer, appName, fs, os } = window;
+
+const { homedir } = os;
 
 const getConfig = () => {
-	rawConfig = window.fs.readFileSync(`${dir}/${window.appName}/config.json`);
+	rawConfig = fs.readFileSync(`${dir}/${appName}/config.json`);
 	config = JSON.parse(rawConfig);
 };
 
 const writeConfig = () => {
-	window.fs.writeFileSync(`${dir}/${window.appName}/config.json`, JSON.stringify(config, null, 4), err => {
+	fs.writeFileSync(`${dir}/${appName}/config.json`, JSON.stringify(config, null, 4), err => {
 		if (err) throw err;
 		debug('The file has been saved!');
 	});
@@ -49,7 +52,7 @@ const getPlugins = () => {
 	const pluginsDir = `${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`;
 
 	debug(pluginsDir);
-	const pluginsFile = window.fs.readFileSync(`${pluginsDir}/Plugins.txt`, 'utf8');
+	const pluginsFile = fs.readFileSync(`${pluginsDir}/Plugins.txt`, 'utf8');
 
 	lines = [];
 	pluginsFile.split(/\r?\n/).forEach(line => {
@@ -68,7 +71,7 @@ const writePlugins = arr => {
 	debug(pluginsDir);
 	const pluginsFile = `${pluginsDir}/Plugins.txt`;
 
-	window.fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
+	fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
 		debug(err ? `Error :${err}` : 'ok');
 	});
 	getPlugins();
@@ -140,7 +143,7 @@ const genRunScript = skse => {
 	} else if (config.protonVersion.location === 'compatibilitytools') {
 		runnerPath = `${homedir}/.steam/steam/compatibilitytools.d/${config.protonVersion.version}`;
 	} else if (config.protonVersion.location === 'null') {
-		window.dialog.showErrorBox(
+		dialog.showErrorBox(
 			'Proton',
 			'No proton version selected. Please select a proton version from preferences'
 		);
@@ -175,15 +178,15 @@ const genRunScript = skse => {
 	debug(runArr);
 	debug(runArr[17]);
 	if (skse === true) {
-		window.fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
+		fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
 			debug(err ? `Error :${err}` : 'ok');
 		});
-		window.execSync('chmod +x runSKSE');
+		execSync('chmod +x runSKSE');
 	} else if (skse === false) {
-		window.fs.writeFileSync('runSkyrim', runArr.join('\n'), function(err) {
+		fs.writeFileSync('runSkyrim', runArr.join('\n'), function(err) {
 			debug(err ? `Error :${err}` : 'ok');
 		});
-		window.execSync('chmod +x runSkyrim');
+		execSync('chmod +x runSkyrim');
 	}
 };
 
@@ -191,26 +194,26 @@ const genProtonMap = () => {
 	let id = -1;
 	const protonMap = {};
 	protonMap.common = {};
-	if (window.platform === 'linux') {
+	if (platform === 'linux') {
 		const steamAppsCommon = `${homedir}/.steam/steam/steamapps/common`;
-		window.fs.readdirSync(steamAppsCommon).forEach(file => {
+		fs.readdirSync(steamAppsCommon).forEach(file => {
 			debug(file);
 			if (file.includes('Proton') === true) {
-				if (window.fs.existsSync(`${homedir}/.steam/steam/steamapps/common/${file}/proton`)) {
+				if (fs.existsSync(`${homedir}/.steam/steam/steamapps/common/${file}/proton`)) {
 					protonMap.common[id + 1] = { name: file };
 					id += 1;
 				}
 			}
 		});
 		const compatibilitytools = `${homedir}/.steam/steam/compatibilitytools.d`;
-		if (window.fs.existsSync(compatibilitytools) === true) {
+		if (fs.existsSync(compatibilitytools) === true) {
 			protonMap.compatibilitytools = {};
 			id = -1;
-			window.fs.readdirSync(compatibilitytools).forEach(file => {
+			fs.readdirSync(compatibilitytools).forEach(file => {
 				debug(file);
 				if (file.includes('Proton') === true) {
 					if (
-						window.fs.existsSync(
+						fs.existsSync(
 							`${homedir}/.steam/steam/compatibilitytools.d/${file}/proton`
 						)
 					) {
@@ -220,32 +223,28 @@ const genProtonMap = () => {
 				}
 			});
 		}
-		window.fs.writeFileSync(
-			`${dir}/${window.appName}/protonMap.json`,
-			JSON.stringify(protonMap, null, 4),
-			err => {
-				if (err) throw err;
-				debug('The file has been saved!');
-			}
-		);
-		const map = window.fs.readFileSync(`${dir}/${window.appName}/protonMap.json`, 'utf8');
+		fs.writeFileSync(`${dir}/${appName}/protonMap.json`, JSON.stringify(protonMap, null, 4), err => {
+			if (err) throw err;
+			debug('The file has been saved!');
+		});
+		const map = fs.readFileSync(`${dir}/${appName}/protonMap.json`, 'utf8');
 		debug(JSON.parse(map));
 	}
 };
 
 // First start
-// if (window.platform === 'linux') {
-const firstStart = window.ipcRenderer.sendSync('isFirstStart');
-if (window.platform === 'darwin') {
+// if (platform === 'linux') {
+const firstStart = ipcRenderer.sendSync('isFirstStart');
+if (platform === 'darwin') {
 	dir = `${homedir}/Library/Application Support`;
-} else if (window.platform === 'linux') {
+} else if (platform === 'linux') {
 	dir = `${homedir}/.local/share`;
 }
 if (firstStart === true) {
 	debug('First time setup');
 	getConfig();
 	config.skseFound = false;
-	const dirArr = window.fs.readdirSync(config.skyrimSE);
+	const dirArr = fs.readdirSync(config.skyrimSE);
 	debug(config);
 
 	config.isSteam = true;
@@ -297,11 +296,11 @@ newDropdownEl(config.dropdownMenuItems.skse.id, config.dropdownMenuItems.skse.ti
 
 newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
 
-if (window.platform === 'linux') {
+if (platform === 'linux') {
 	// TODO: Will change the way of genRunScript works later
 	genRunScript(true); // generate run script for skse
 	genRunScript(false); // generate run script for skyrimse
-	window.ipcRenderer.on('gen-run-script', () => {
+	ipcRenderer.on('gen-run-script', () => {
 		genRunScript();
 	});
 }
@@ -310,7 +309,7 @@ genProtonMap();
 let isRunning = false;
 
 document.getElementById('preferences').addEventListener('click', () => {
-	window.ipcRenderer.send('open-prefs');
+	ipcRenderer.send('open-prefs');
 });
 
 document.getElementById('run').addEventListener('click', () => {
@@ -319,13 +318,13 @@ document.getElementById('run').addEventListener('click', () => {
 		debug('Already running');
 	}
 	if (isRunning === false) {
-		if (window.platform === 'linux') {
+		if (platform === 'linux') {
 			let child;
 			// TODO: Support for custom dropdown menu items
 			if (config.dropdownMenuItems.lastSelected.id === 'launchSKSE') {
-				child = window.spawn('./runSKSE', { stdio: 'inherit' });
+				child = spawn('./runSKSE', { stdio: 'inherit' });
 			} else if (config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE') {
-				child = window.spawn('./runSkyrim', { stdio: 'inherit' });
+				child = spawn('./runSkyrim', { stdio: 'inherit' });
 			}
 			debug(`Process PID: ${child.pid}`);
 			if (child.pid !== null) {
@@ -395,8 +394,8 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, func) => {
 };
 
 const openFolder = filename => {
-	window.shell.showItemInFolder(`${dir}/${window.appName}/mods/${filename}`);
-	debug(`${dir}/${window.appName}/mods/${filename}`);
+	shell.showItemInFolder(`${dir}/${appName}/mods/${filename}`);
+	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
 const installMod = () => {
@@ -473,8 +472,8 @@ const updateProgressText = (id, value) => {
 };
 
 const getDownloadHistory = () => {
-	if (window.fs.existsSync(`${dir}/${window.appName}/downloadHistory.json`)) {
-		let history = window.fs.readFileSync(`${dir}/${window.appName}/downloadHistory.json`, 'utf8');
+	if (fs.existsSync(`${dir}/${appName}/downloadHistory.json`)) {
+		let history = fs.readFileSync(`${dir}/${appName}/downloadHistory.json`, 'utf8');
 		history = JSON.parse(history);
 		debug(history.length);
 		let index;
@@ -511,11 +510,11 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 		hideClearHistory();
 	}
 });
-window.ipcRenderer.on('request-download', async (event, obj) => {
+ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	showClearHistory();
-	if (window.fs.existsSync(`${dir}/${window.appName}/apikey`)) {
-		const apiKey = window.fs.readFileSync(`${dir}/${window.appName}/apikey`);
+	if (fs.existsSync(`${dir}/${appName}/apikey`)) {
+		const apiKey = fs.readFileSync(`${dir}/${appName}/apikey`);
 		debug(obj);
 		let parsedModInfo;
 		let filename;
@@ -523,14 +522,14 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 		let modid;
 		let modname;
 		let downloadURL;
-		window.request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
+		request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
 			headers: { apikey: apiKey },
 		}).done(resp0 => {
 			debug(JSON.parse(resp0.getBody().toString()));
 			parsedModInfo = JSON.parse(resp0.getBody().toString());
 			modid = parsedModInfo.mod_id;
 			modname = parsedModInfo.name;
-			window.request(
+			request(
 				'GET',
 				`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
 					obj.fileID
@@ -544,7 +543,7 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 				filename = parsedFileInfo.file_name;
 				fileid = parsedFileInfo.file_id;
 				debug(filename);
-				window.request(
+				request(
 					'GET',
 					`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${
 						obj.modID
@@ -559,12 +558,12 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 					let roundedFilesizeInMB;
 
 					debug(downloadURL);
-					if (!window.fs.existsSync(`${dir}/${window.appName}/mods`))
-						window.fs.mkdirSync(`${dir}/${window.appName}/mods`);
+					if (!fs.existsSync(`${dir}/${appName}/mods`))
+						fs.mkdirSync(`${dir}/${appName}/mods`);
 					// might switch to real wget or curl later
-					const download = window.wget.download(
+					const download = wget.download(
 						downloadURL,
-						`${dir}/${window.appName}/mods/${filename}`
+						`${dir}/${appName}/mods/${filename}`
 					);
 					download.on('start', function(filesize) {
 						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
@@ -579,15 +578,11 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 
 					download.on('end', () => {
 						let downloadHistory;
-						if (
-							!window.fs.existsSync(
-								`${dir}/${window.appName}/downloadHistory.json`
-							)
-						) {
+						if (!fs.existsSync(`${dir}/${appName}/downloadHistory.json`)) {
 							downloadHistory = [];
 						} else {
-							downloadHistory = window.fs.readFileSync(
-								`${dir}/${window.appName}/downloadHistory.json`,
+							downloadHistory = fs.readFileSync(
+								`${dir}/${appName}/downloadHistory.json`,
 								'utf8'
 							);
 						}
@@ -601,8 +596,8 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 							roundedFilesizeInMB,
 						});
 						debug(downloadHistory);
-						window.fs.writeFileSync(
-							`${dir}/${window.appName}/downloadHistory.json`,
+						fs.writeFileSync(
+							`${dir}/${appName}/downloadHistory.json`,
 							JSON.stringify(downloadHistory, null, 4),
 							err => {
 								if (err) throw err;
@@ -614,6 +609,6 @@ window.ipcRenderer.on('request-download', async (event, obj) => {
 			});
 		});
 	} else {
-		window.dialog.showErrorBox("Couldn't find the api key", 'Please enter a api key from preferences');
+		dialog.showErrorBox("Couldn't find the api key", 'Please enter a api key from preferences');
 	}
 });
