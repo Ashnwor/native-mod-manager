@@ -519,7 +519,7 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	showClearHistory();
-	if (join(fs.existsSync(`${dir}/${appName}/apikey`))) {
+	if (fs.existsSync(join(`${dir}/${appName}/apikey`))) {
 		const apiKey = fs.readFileSync(join(`${dir}/${appName}/apikey`));
 		debug(obj);
 		let parsedModInfo;
