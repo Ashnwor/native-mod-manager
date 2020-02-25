@@ -462,6 +462,7 @@ const installMod = (filename, modname) => {
 					execSync(
 						`cp -R "${os.tmpdir()}/arcus-extract/${filename}" "${dir}/${appName}/mods/${modname}"`
 					);
+					execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
 				}
 			} else {
 				// Make user select data dir
