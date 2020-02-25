@@ -43,8 +43,8 @@
 		]
 	},
 	"devDependencies": {
-		"electron": "^7.1.12",
 		"babel-eslint": "^9.0.0",
+		"electron": "^7.1.13",
 		"electron-builder": "^22.3.2",
 		"electron-icon-builder": "^1.0.2",
 		"eslint": "^5.16.0",
@@ -67,6 +67,6 @@
 		"popper.js": "^1.16.1",
 		"then-request": "^6.0.2",
 		"username": "^5.1.0",
-		"wget-improved": "^3.1.0"
+		"wget-improved": "^3.2.0"
 	}
 }
