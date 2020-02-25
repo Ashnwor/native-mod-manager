@@ -7,7 +7,7 @@ const appName = 'arcus';
 const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
 const { ipcRenderer, shell } = require('electron');
-const { join } = require('path');
+const { join, extname } = require('path');
 const { dialog } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
 const wget = require('wget-improved');
@@ -37,6 +37,7 @@ window.addEventListener('load', () => {
 window.globalDebug = debugThis => globalDebug(debugThis);
 window.sevenz = sevenz;
 window.join = join;
+window.extname = extname;
 window.request = request;
 window.shell = shell;
 window.wget = wget;
