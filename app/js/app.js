@@ -392,7 +392,7 @@ const createTextNode = text => {
 	return textNode;
 };
 
-const createImgButtonNode = (id, title, img, hoverImg, filename, func) => {
+const createImgButtonNode = (id, title, img, hoverImg, filename, modname, func) => {
 	const imgNode = document.createElement('img');
 	imgNode.src = img;
 	imgNode.title = title;
@@ -407,7 +407,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, func) => {
 	if (filename) {
 		imgNode.classList.add('clickable');
 		imgNode.addEventListener('click', () => {
-			func(filename);
+			func(filename, modname);
 		});
 	}
 
@@ -419,7 +419,7 @@ const openFolder = filename => {
 	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
-const installMod = filename => {
+const installMod = (filename, modname) => {
 	const isFomod = directory => directory.includes('Fomod');
 	const modsFolder = `${dir}/${appName}/mods`;
 	const promise = new Promise(function(resolve, reject) {
@@ -458,6 +458,11 @@ const installMod = filename => {
 
 			if (isDataDir) {
 				debug(`isDataDir: ${isDataDir}`);
+				if (platform === 'linux' || platform === 'darwin') {
+					execSync(
+						`cp -R "${os.tmpdir()}/arcus-extract/${filename}" "${dir}/${appName}/mods/${modname}"`
+					);
+				}
 			} else {
 				// Make user select data dir
 				debug(`isDataDir: ${isDataDir}`);
@@ -470,7 +475,7 @@ const deleteMod = () => {
 	debug('Delete Mod');
 };
 
-const createDownloadListItem = (filename, fileid, filesize) => {
+const createDownloadListItem = (filename, fileid, filesize, modname) => {
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
@@ -502,6 +507,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						join('../images/folder.svg'),
 						join('../images/folder-fill.svg'),
 						filename,
+						null,
 						openFolder
 					),
 					createImgButtonNode(
@@ -510,6 +516,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						join('../images/wrench.svg'),
 						null,
 						filename,
+						modname,
 						installMod
 					),
 					createImgButtonNode(
@@ -517,6 +524,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						'Delete',
 						join('../images/x-circle.svg'),
 						join('../images/x-circle-fill.svg'),
+						null,
 						null,
 						deleteMod
 					)
@@ -546,7 +554,8 @@ const getDownloadHistory = () => {
 			createDownloadListItem(
 				history[index].filename,
 				history[index].fileid,
-				`${history[index].roundedFilesizeInMB}MB`
+				`${history[index].roundedFilesizeInMB}MB`,
+				history[index].modname
 			);
 			updateProgress(`${history[index].fileid}-2`, 100);
 			updateProgressText(`${history[index].fileid}-3-2`, 100);
@@ -631,7 +640,12 @@ ipcRenderer.on('request-download', async (event, obj) => {
 					);
 					download.on('start', function(filesize) {
 						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
-						createDownloadListItem(filename, fileid, `${roundedFilesizeInMB}MB`);
+						createDownloadListItem(
+							filename,
+							fileid,
+							`${roundedFilesizeInMB}MB`,
+							modname
+						);
 					});
 
 					download.on('progress', progress => {
