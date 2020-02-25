@@ -12,6 +12,7 @@ const { dialog } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
 const wget = require('wget-improved');
 const request = require('then-request');
+const sevenz = require('node-7z');
 const os = require('os');
 
 let customTitlebar;
@@ -34,6 +35,7 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.sevenz = sevenz;
 window.join = join;
 window.request = request;
 window.shell = shell;

@@ -6,7 +6,7 @@ let config;
 let i;
 const debug = debugThis => window.globalDebug(debugThis);
 
-const { request, shell, wget, spawn, execSync, platform, dialog, ipcRenderer, appName, fs, os, join } = window;
+const { request, shell, wget, spawn, execSync, platform, dialog, ipcRenderer, appName, fs, os, join, sevenz } = window;
 
 const { homedir } = os;
 
@@ -404,8 +404,34 @@ const openFolder = filename => {
 	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
-const installMod = () => {
-	debug('Install Mod');
+const installMod = filename => {
+	const isDirectory = attributes => {
+		if (attributes[0] === 'D') return true;
+	};
+
+	/* Unfinished
+	const searchDataFolder = arr => {
+		const dataFolder = ['textures', 'meshes'];
+		for (i = 1; i <= arr.length; i += 1) {
+			if (dataFolder.includes());
+		}
+	};
+    */
+
+	debug(`${dir}/${appName}/mods/${filename}`);
+	const list = sevenz.list(join(`${dir}/${appName}/mods/${filename}`));
+	const dataArr = [];
+	list.on('data', data => {
+		dataArr.push(data);
+	});
+
+	list.on('end', () => {
+		// debug(dataArr);
+		// lists all files in zip folder
+		for (i = 1; i <= dataArr.length; i += 1) debug(dataArr[i].file);
+		debug(isDirectory(dataArr[0].attributes));
+		if (isDirectory(dataArr[0].attributes)) debug('dir');
+	});
 };
 
 const deleteMod = () => {
@@ -451,7 +477,7 @@ const createDownloadListItem = (filename, fileid, filesize) => {
 						'Install',
 						join('../images/wrench.svg'),
 						null,
-						null,
+						filename,
 						installMod
 					),
 					createImgButtonNode(
