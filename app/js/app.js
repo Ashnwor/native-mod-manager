@@ -566,6 +566,8 @@ const getDownloadHistory = () => {
 				);
 				updateProgress(`${history[index].fileid}-2`, 100);
 				updateProgressText(`${history[index].fileid}-3-2`, 100);
+			} else {
+				debug(`Ignoring invalid history entry: ${history[index].fileid}`);
 			}
 		}
 	}
