@@ -21,6 +21,7 @@ const {
 	join,
 	extname,
 	sevenz,
+	getCurrentWindow,
 } = window;
 
 const { homedir } = os;
@@ -442,7 +443,7 @@ const installMod = (filename, modname) => {
 			// TODO: Add fomod support
 			dialog.showErrorBox('Fomod', 'Fomod is not supported yet');
 		} else {
-			const dataDirs = ['textures', 'meshes'];
+			const dataDirs = ['textures', 'meshes', 'sound'];
 			const dataFiles = ['.esp', '.esl', '.bsa'];
 			let isDataDir = false;
 
@@ -469,6 +470,35 @@ const installMod = (filename, modname) => {
 			} else {
 				// Make user select data dir
 				debug(`isDataDir: ${isDataDir}`);
+				const defaultPath = `${os.tmpdir()}/arcus-extract/${filename}`;
+				const selectedPath = dialog.showOpenDialogSync(getCurrentWindow(), {
+					properties: ['openDirectory', 'showHiddenFiles'],
+					defaultPath,
+				})[0];
+				debug(selectedPath);
+				const selectedDir = fs.readdirSync(selectedPath);
+
+				for (i = 0; i <= selectedDir.length - 1; i += 1) {
+					if (
+						dataFiles.includes(extname(selectedDir[i])) ||
+						dataDirs.includes(selectedDir[i].toLowerCase())
+					) {
+						isDataDir = true;
+						break;
+					}
+				}
+
+				if (isDataDir) {
+					debug(`isDataDir: ${isDataDir}`);
+					if (platform === 'linux' || platform === 'darwin') {
+						if (fs.existsSync(`${dir}/${appName}/mods/${modname}`))
+							execSync(`rm -rf "${dir}/${appName}/mods/${modname}"`);
+						execSync(`cp -R "${selectedPath}" "${dir}/${appName}/mods/${modname}"`);
+						execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
+					}
+				} else {
+					dialog.showErrorBox('Error', 'Selected directory is not data folder');
+				}
 			}
 		}
 	});

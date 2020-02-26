@@ -8,7 +8,7 @@ const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
 const { ipcRenderer, shell } = require('electron');
 const { join, extname } = require('path');
-const { dialog } = require('electron').remote;
+const { dialog, getCurrentWindow } = require('electron').remote;
 const { execSync, spawn } = require('child_process');
 const wget = require('wget-improved');
 const request = require('then-request');
@@ -35,6 +35,7 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.getCurrentWindow = getCurrentWindow;
 window.sevenz = sevenz;
 window.join = join;
 window.extname = extname;
