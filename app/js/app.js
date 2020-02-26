@@ -459,6 +459,8 @@ const installMod = (filename, modname) => {
 			if (isDataDir) {
 				debug(`isDataDir: ${isDataDir}`);
 				if (platform === 'linux' || platform === 'darwin') {
+					if (fs.existsSync(`${dir}/${appName}/mods/${modname}`))
+						execSync(`rm -rf "${dir}/${appName}/mods/${modname}"`);
 					execSync(
 						`cp -R "${os.tmpdir()}/arcus-extract/${filename}" "${dir}/${appName}/mods/${modname}"`
 					);
