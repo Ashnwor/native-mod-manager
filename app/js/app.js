@@ -550,16 +550,23 @@ const getDownloadHistory = () => {
 		history = JSON.parse(history);
 		debug(history.length);
 		let index;
+		const fileList = [];
 		for (index = 0; index < history.length; index += 1) {
-			debug(index);
-			createDownloadListItem(
-				history[index].filename,
-				history[index].fileid,
-				`${history[index].roundedFilesizeInMB}MB`,
-				history[index].modname
-			);
-			updateProgress(`${history[index].fileid}-2`, 100);
-			updateProgressText(`${history[index].fileid}-3-2`, 100);
+			if (
+				fs.existsSync(`${dir}/${appName}/mods/${history[index].filename}`) &&
+				!fileList.includes(history[index].fileid)
+			) {
+				fileList.push(history[index].fileid);
+				debug(index);
+				createDownloadListItem(
+					history[index].filename,
+					history[index].fileid,
+					`${history[index].roundedFilesizeInMB}MB`,
+					history[index].modname
+				);
+				updateProgress(`${history[index].fileid}-2`, 100);
+				updateProgressText(`${history[index].fileid}-3-2`, 100);
+			}
 		}
 	}
 };
