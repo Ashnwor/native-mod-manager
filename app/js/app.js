@@ -110,7 +110,7 @@ const newRightMenuEl = (label, check) => {
 	checkboxEl.checked = check;
 	checkboxEl.addEventListener('click', () => {
 		debug(`${checkboxEl.id}: ${checkboxEl.checked}`);
-		if (checkboxEl.checked === false) {
+		if (!checkboxEl.checked) {
 			debug(`${checkboxEl.id}: disabled`);
 			for (i = 0; i < lines.length; i += 1) {
 				if (lines[i] === checkboxEl.id) {
@@ -155,7 +155,7 @@ const newDropdownEl = (id, label) => {
 	dropdownMenu.appendChild(dropdownEl);
 };
 
-const genRunScript = skse => {
+const genRunScript = isForSKSE => {
 	getConfig();
 	let runnerPath;
 	if (config.protonVersion.location === 'common') {
@@ -175,7 +175,7 @@ const genRunScript = skse => {
 	runArr[1] = '#Run game or given command in environment';
 	runArr[2] = '';
 	runArr[3] = `cd "${config.skyrimSE}"`;
-	if (skse) {
+	if (isForSKSE) {
 		// for true: generate for skse64
 		runArr[4] = `DEF_CMD=("${config.skyrimSE}/skse64_loader.exe")`;
 	} else {
@@ -197,12 +197,12 @@ const genRunScript = skse => {
 	runArr[17] = `	      "${runnerPath}/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
-	if (skse) {
+	if (isForSKSE) {
 		fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
 			debug(err ? `Error :${err}` : 'ok');
 		});
 		execSync('chmod +x runSKSE');
-	} else if (skse === false) {
+	} else {
 		fs.writeFileSync('runSkyrim', runArr.join('\n'), function(err) {
 			debug(err ? `Error :${err}` : 'ok');
 		});
@@ -289,7 +289,7 @@ if (firstStart) {
 		};
 		writeConfig();
 		debug(config);
-	} else if (config.skseFound === false) {
+	} else {
 		writeConfig();
 		config.dropdownMenuItems = {
 			skse: { id: 'installSKSE', title: 'Install SKSE' },
@@ -339,7 +339,7 @@ document.getElementById('run').addEventListener('click', () => {
 	if (isRunning) {
 		debug('Already running');
 	}
-	if (isRunning === false) {
+	if (!isRunning) {
 		if (platform === 'linux') {
 			let child;
 			// TODO: Support for custom dropdown menu items
