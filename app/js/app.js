@@ -175,7 +175,7 @@ const genRunScript = skse => {
 	runArr[1] = '#Run game or given command in environment';
 	runArr[2] = '';
 	runArr[3] = `cd "${config.skyrimSE}"`;
-	if (skse === true) {
+	if (skse) {
 		// for true: generate for skse64
 		runArr[4] = `DEF_CMD=("${config.skyrimSE}/skse64_loader.exe")`;
 	} else {
@@ -197,7 +197,7 @@ const genRunScript = skse => {
 	runArr[17] = `	      "${runnerPath}/dist/bin/wine" steam.exe "\${@:-\${DEF_CMD[@]}}"`;
 	debug(runArr);
 	debug(runArr[17]);
-	if (skse === true) {
+	if (skse) {
 		fs.writeFileSync('runSKSE', runArr.join('\n'), function(err) {
 			debug(err ? `Error :${err}` : 'ok');
 		});
@@ -218,7 +218,7 @@ const genProtonMap = () => {
 		const steamAppsCommon = join(`${homedir}/.steam/steam/steamapps/common`);
 		fs.readdirSync(steamAppsCommon).forEach(file => {
 			debug(file);
-			if (file.includes('Proton') === true) {
+			if (file.includes('Proton')) {
 				if (fs.existsSync(join(`${homedir}/.steam/steam/steamapps/common/${file}/proton`))) {
 					protonMap.common[id + 1] = { name: file };
 					id += 1;
@@ -226,12 +226,12 @@ const genProtonMap = () => {
 			}
 		});
 		const compatibilitytools = join(`${homedir}/.steam/steam/compatibilitytools.d`);
-		if (fs.existsSync(compatibilitytools) === true) {
+		if (fs.existsSync(compatibilitytools)) {
 			protonMap.compatibilitytools = {};
 			id = -1;
 			fs.readdirSync(compatibilitytools).forEach(file => {
 				debug(file);
-				if (file.includes('Proton') === true) {
+				if (file.includes('Proton')) {
 					if (
 						fs.existsSync(
 							join(
@@ -262,7 +262,7 @@ if (platform === 'darwin') {
 } else if (platform === 'linux') {
 	dir = `${homedir}/.local/share`;
 }
-if (firstStart === true) {
+if (firstStart) {
 	debug('First time setup');
 	getConfig();
 	config.skseFound = false;
@@ -281,7 +281,7 @@ if (firstStart === true) {
 		}
 	}
 
-	if (config.skseFound === true) {
+	if (config.skseFound) {
 		debug(`skseFound: ${config.skseFound}`);
 		writeConfig();
 		config.dropdownMenuItems = {
@@ -336,7 +336,7 @@ document.getElementById('preferences').addEventListener('click', () => {
 
 document.getElementById('run').addEventListener('click', () => {
 	getConfig();
-	if (isRunning === true) {
+	if (isRunning) {
 		debug('Already running');
 	}
 	if (isRunning === false) {
@@ -422,11 +422,15 @@ const openFolder = filename => {
 
 const installMod = (filename, modname) => {
 	const isFomod = directory => directory.includes('Fomod');
-	const modsFolder = `${dir}/${appName}/mods`;
+	const modsFolder = join(`${dir}/${appName}/mods`);
 	const promise = new Promise(function(resolve, reject) {
-		sevenz.extractFull(`${modsFolder}/${filename}`, `${os.tmpdir()}/arcus-extract/${filename}`, {
-			$progress: true,
-		})
+		sevenz.extractFull(
+			join(`${modsFolder}/${filename}`),
+			join(`${os.tmpdir()}/arcus-extract/${filename}`),
+			{
+				$progress: true,
+			}
+		)
 			.on('progress', progress => {
 				debug(progress.percent);
 			})
@@ -434,19 +438,23 @@ const installMod = (filename, modname) => {
 			.on('end', () => resolve('done'))
 			.on('error', err => reject(err));
 	});
-
+	// Couldn't find another way to execute codes after async function
+	// probably will change it when found a better way
 	promise.then(respond => {
 		debug(respond);
-		const directory = fs.readdirSync(`${os.tmpdir()}/arcus-extract/${filename}`);
+		// point extracted files
+		const directory = fs.readdirSync(join(`${os.tmpdir()}/arcus-extract/${filename}`));
 		debug(directory);
 		if (isFomod(directory)) {
 			// TODO: Add fomod support
 			dialog.showErrorBox('Fomod', 'Fomod is not supported yet');
 		} else {
+			// data files contents
 			const dataDirs = ['textures', 'meshes', 'sound'];
 			const dataFiles = ['.esp', '.esl', '.bsa'];
 			let isDataDir = false;
 
+			// check if selected folder contents include one of typical contents of data folder
 			for (i = 0; i <= directory.length - 1; i += 1) {
 				if (
 					dataFiles.includes(extname(directory[i])) ||
@@ -468,7 +476,8 @@ const installMod = (filename, modname) => {
 					execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
 				}
 			} else {
-				// Make user select data dir
+				// if initial files are not data contents
+				// make the user select a folder
 				debug(`isDataDir: ${isDataDir}`);
 				const defaultPath = `${os.tmpdir()}/arcus-extract/${filename}`;
 				const selectedPath = dialog.showOpenDialogSync(getCurrentWindow(), {
@@ -478,6 +487,7 @@ const installMod = (filename, modname) => {
 				debug(selectedPath);
 				const selectedDir = fs.readdirSync(selectedPath);
 
+				// check if selected folder contents include one of typical contents of data folder
 				for (i = 0; i <= selectedDir.length - 1; i += 1) {
 					if (
 						dataFiles.includes(extname(selectedDir[i])) ||
@@ -487,7 +497,9 @@ const installMod = (filename, modname) => {
 						break;
 					}
 				}
-
+				// if selected directory contains data files
+				// move to mods folder
+				// probably will make this a function, it looks confusing
 				if (isDataDir) {
 					debug(`isDataDir: ${isDataDir}`);
 					if (platform === 'linux' || platform === 'darwin') {
@@ -521,8 +533,6 @@ const createDownloadListItem = (filename, fileid, filesize, modname) => {
 	progressInnerDiv.id = 'prog-bar';
 	progressInnerDiv.classList.add('progress-bar', 'bg-success');
 	progressOuterDiv.appendChild(progressInnerDiv);
-	const tempNode2 = document.createElement('span');
-	tempNode2.innerText = 'TEMP NODE';
 	downloadListItem.appendChild(
 		createTripleColumn(
 			fileid,
@@ -568,10 +578,12 @@ const createDownloadListItem = (filename, fileid, filesize, modname) => {
 	downloadList.insertBefore(downloadListItem, downloadList.firstChild);
 };
 
+// update progress bar of download
 const updateProgress = (id, value) => {
 	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
 };
 
+// update progress text of download
 const updateProgressText = (id, value) => {
 	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
 };
@@ -584,6 +596,7 @@ const getDownloadHistory = () => {
 		let index;
 		const fileList = [];
 		for (index = 0; index < history.length; index += 1) {
+			// check if entry's file existing in mods directory and not a duplicate entry
 			if (
 				fs.existsSync(`${dir}/${appName}/mods/${history[index].filename}`) &&
 				!fileList.includes(history[index].fileid)
