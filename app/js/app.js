@@ -76,6 +76,7 @@ const getPlugins = () => {
 	pluginsFile.split(/\r?\n/).forEach(line => {
 		lines.push(line);
 	});
+	lines = lines.filter(value => value !== '');
 	debug(lines);
 	for (i = 0; i < lines.length; i += 1) {
 		isItPlugin(lines[i]);
@@ -95,6 +96,14 @@ const writePlugins = arr => {
 		debug(err ? `Error :${err}` : 'ok');
 	});
 	getPlugins();
+};
+
+const addPlugin = espArr => {
+	getPlugins();
+	espArr.forEach(value => {
+		lines[lines.length] = value;
+	});
+	debug(lines);
 };
 
 const newRightMenuEl = (label, check) => {
@@ -433,7 +442,47 @@ const installMod = (filename, modname) => {
 		}
 	};
 
-	const promise = new Promise(function(resolve, reject) {
+	const registerMod = modFolder => {
+		const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
+		let installedMods;
+		const findEsp = directory => {
+			const arr = fs.readdirSync(directory);
+			const esps = arr.filter(value => extname(value) === '.esp');
+			return esps;
+		};
+
+		const isExists = directory => {
+			if (fs.existsSync(directory)) return true;
+			if (!fs.existsSync(directory)) return false;
+		};
+
+		if (isExists(installedModsJSON)) {
+			installedMods = JSON.parse(
+				fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8')
+			);
+		} else {
+			installedMods = [];
+		}
+
+		const modObj = {
+			id: installedMods.length + 1,
+			modname,
+			enabled: 0,
+		};
+
+		installedMods.push(modObj);
+		fs.writeFileSync(
+			join(`${dir}/${appName}/mods/installedMods.json`),
+			JSON.stringify(installedMods, null, 4),
+			err => {
+				if (err) throw err;
+				debug('The file has been saved!');
+			}
+		);
+		addPlugin(findEsp(modFolder));
+	};
+
+	const promise = new Promise((resolve, reject) => {
 		sevenz.extractFull(
 			join(`${modsFolder}/${filename}`),
 			join(`${os.tmpdir()}/arcus-extract/${filename}`),
@@ -478,6 +527,7 @@ const installMod = (filename, modname) => {
 			if (isDataDir) {
 				debug(`isDataDir: ${isDataDir}`);
 				copyToModsFolder(`${os.tmpdir()}/arcus-extract/${filename}`);
+				registerMod(`${dir}/${appName}/mods/${modname}`);
 			} else {
 				// if initial files are not data contents
 				// make the user select a folder
@@ -505,6 +555,7 @@ const installMod = (filename, modname) => {
 				if (isDataDir) {
 					debug(`isDataDir: ${isDataDir}`);
 					copyToModsFolder(selectedPath);
+					registerMod(`${dir}/${appName}/mods/${modname}`);
 				} else {
 					dialog.showErrorBox('Error', 'Selected directory is not data folder');
 				}
