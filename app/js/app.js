@@ -423,6 +423,16 @@ const openFolder = filename => {
 const installMod = (filename, modname) => {
 	const isFomod = directory => directory.includes('Fomod');
 	const modsFolder = join(`${dir}/${appName}/mods`);
+
+	const copyToModsFolder = from => {
+		if (platform === 'linux' || platform === 'darwin') {
+			if (fs.existsSync(`${dir}/${appName}/mods/${modname}`))
+				execSync(`rm -rf "${dir}/${appName}/mods/${modname}"`);
+			execSync(`cp -R "${from}" "${dir}/${appName}/mods/${modname}"`);
+			execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
+		}
+	};
+
 	const promise = new Promise(function(resolve, reject) {
 		sevenz.extractFull(
 			join(`${modsFolder}/${filename}`),
@@ -467,14 +477,7 @@ const installMod = (filename, modname) => {
 
 			if (isDataDir) {
 				debug(`isDataDir: ${isDataDir}`);
-				if (platform === 'linux' || platform === 'darwin') {
-					if (fs.existsSync(`${dir}/${appName}/mods/${modname}`))
-						execSync(`rm -rf "${dir}/${appName}/mods/${modname}"`);
-					execSync(
-						`cp -R "${os.tmpdir()}/arcus-extract/${filename}" "${dir}/${appName}/mods/${modname}"`
-					);
-					execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
-				}
+				copyToModsFolder(`${os.tmpdir()}/arcus-extract/${filename}`);
 			} else {
 				// if initial files are not data contents
 				// make the user select a folder
@@ -499,15 +502,9 @@ const installMod = (filename, modname) => {
 				}
 				// if selected directory contains data files
 				// move to mods folder
-				// probably will make this a function, it looks confusing
 				if (isDataDir) {
 					debug(`isDataDir: ${isDataDir}`);
-					if (platform === 'linux' || platform === 'darwin') {
-						if (fs.existsSync(`${dir}/${appName}/mods/${modname}`))
-							execSync(`rm -rf "${dir}/${appName}/mods/${modname}"`);
-						execSync(`cp -R "${selectedPath}" "${dir}/${appName}/mods/${modname}"`);
-						execSync(`rm -rf "${os.tmpdir()}/arcus-extract/${filename}"`);
-					}
+					copyToModsFolder(selectedPath);
 				} else {
 					dialog.showErrorBox('Error', 'Selected directory is not data folder');
 				}
