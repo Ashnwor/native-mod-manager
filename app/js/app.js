@@ -101,7 +101,7 @@ const writePlugins = arr => {
 const addPlugin = espArr => {
 	getPlugins();
 	espArr.forEach(value => {
-		lines[lines.length] = value;
+		if (!lines.includes(value) && !lines.includes(`*${value}`)) lines[lines.length] = value;
 	});
 	debug(lines);
 };
@@ -424,6 +424,26 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, func) 
 	return imgNode;
 };
 
+const createModsListItem = (id, modname) => {
+	const modList = document.getElementById('modList');
+	const listItem = document.createElement('li');
+	listItem.classList.add('list-group-item');
+	const div = document.createElement('div');
+	div.classList.add('custom-control', 'custom-checkbox');
+	const input = document.createElement('input');
+	input.type = 'checkbox';
+	input.classList.add('custom-control-input');
+	input.id = modname;
+	const label = document.createElement('label');
+	label.classList.add('custom-control-label');
+	label.htmlFor = modname;
+	label.innerText = modname;
+	div.appendChild(input);
+	div.appendChild(label);
+	listItem.appendChild(div);
+	modList.appendChild(listItem);
+};
+
 const openFolder = filename => {
 	shell.showItemInFolder(join(`${dir}/${appName}/mods/${filename}`));
 	debug(`${dir}/${appName}/mods/${filename}`);
@@ -480,6 +500,8 @@ const installMod = (filename, modname) => {
 			}
 		);
 		addPlugin(findEsp(modFolder));
+		writePlugins(lines);
+		createModsListItem(null, modname);
 	};
 
 	const promise = new Promise((resolve, reject) => {
@@ -686,6 +708,7 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 		hideClearHistory();
 	}
 });
+
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	showClearHistory();
