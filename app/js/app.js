@@ -450,6 +450,28 @@ const openFolder = filename => {
 };
 
 const installMod = (filename, modname) => {
+	const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
+	let installedMods;
+
+	const isExists = directory => {
+		if (fs.existsSync(directory)) return true;
+		if (!fs.existsSync(directory)) return false;
+	};
+
+	if (isExists(installedModsJSON)) {
+		installedMods = JSON.parse(fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8'));
+	} else {
+		installedMods = [];
+	}
+	// Exit function if mod already installed
+	for (i = 0; i - 1 <= installedMods.length; i += 1) {
+		// TODO: 'Do you want to reinstall?' dialog
+		// TODO: Check whether the mod installed or not with mod id rather than mod name
+		if (installedMods[i].modname === modname) {
+			dialog.showErrorBox('Error', 'Mod already installed');
+			return;
+		}
+	}
 	const isFomod = directory => directory.includes('Fomod');
 	const modsFolder = join(`${dir}/${appName}/mods`);
 
@@ -463,26 +485,11 @@ const installMod = (filename, modname) => {
 	};
 
 	const registerMod = modFolder => {
-		const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
-		let installedMods;
 		const findEsp = directory => {
 			const arr = fs.readdirSync(directory);
 			const esps = arr.filter(value => extname(value) === '.esp');
 			return esps;
 		};
-
-		const isExists = directory => {
-			if (fs.existsSync(directory)) return true;
-			if (!fs.existsSync(directory)) return false;
-		};
-
-		if (isExists(installedModsJSON)) {
-			installedMods = JSON.parse(
-				fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8')
-			);
-		} else {
-			installedMods = [];
-		}
 
 		const modObj = {
 			id: installedMods.length + 1,
