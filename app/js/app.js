@@ -495,6 +495,7 @@ const installMod = (filename, modname) => {
 			id: installedMods.length + 1,
 			modname,
 			enabled: 0,
+			submods: {},
 		};
 
 		installedMods.push(modObj);
