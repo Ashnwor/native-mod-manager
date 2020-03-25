@@ -449,14 +449,27 @@ const openFolder = filename => {
 	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
-const installMod = (filename, modname) => {
-	const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
-	let installedMods;
+const isExists = directory => {
+	if (fs.existsSync(directory)) return true;
+	if (!fs.existsSync(directory)) return false;
+};
 
-	const isExists = directory => {
-		if (fs.existsSync(directory)) return true;
-		if (!fs.existsSync(directory)) return false;
-	};
+const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
+const retrieveMods = () => {
+	let installedMods;
+	if (isExists(installedModsJSON)) {
+		installedMods = JSON.parse(fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8'));
+	} else {
+		installedMods = [];
+	}
+	for (i = 0; i < installedMods.length; i += 1) {
+		debug(installedMods[i]);
+		createModsListItem(null, installedMods[i].modname);
+	}
+};
+
+const installMod = (filename, modname) => {
+	let installedMods;
 
 	if (isExists(installedModsJSON)) {
 		installedMods = JSON.parse(fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8'));
@@ -695,7 +708,6 @@ const getDownloadHistory = () => {
 		}
 	}
 };
-getDownloadHistory();
 
 const showClearHistory = () => {
 	document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
@@ -716,6 +728,9 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 		hideClearHistory();
 	}
 });
+
+getDownloadHistory();
+retrieveMods();
 
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
