@@ -101,7 +101,7 @@ const writePlugins = arr => {
 const addPlugin = espArr => {
 	getPlugins();
 	espArr.forEach(value => {
-		lines[lines.length] = value;
+		if (!lines.includes(value) && !lines.includes(`*${value}`)) lines[lines.length] = value;
 	});
 	debug(lines);
 };
@@ -424,12 +424,67 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, func) 
 	return imgNode;
 };
 
+const createModsListItem = (id, modname) => {
+	const modList = document.getElementById('modList');
+	const listItem = document.createElement('li');
+	listItem.classList.add('list-group-item');
+	const div = document.createElement('div');
+	div.classList.add('custom-control', 'custom-checkbox');
+	const input = document.createElement('input');
+	input.type = 'checkbox';
+	input.classList.add('custom-control-input');
+	input.id = modname;
+	const label = document.createElement('label');
+	label.classList.add('custom-control-label');
+	label.htmlFor = modname;
+	label.innerText = modname;
+	div.appendChild(input);
+	div.appendChild(label);
+	listItem.appendChild(div);
+	modList.appendChild(listItem);
+};
+
 const openFolder = filename => {
 	shell.showItemInFolder(join(`${dir}/${appName}/mods/${filename}`));
 	debug(`${dir}/${appName}/mods/${filename}`);
 };
 
+const isExists = directory => {
+	if (fs.existsSync(directory)) return true;
+	if (!fs.existsSync(directory)) return false;
+};
+
+const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
+const retrieveMods = () => {
+	let installedMods;
+	if (isExists(installedModsJSON)) {
+		installedMods = JSON.parse(fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8'));
+	} else {
+		installedMods = [];
+	}
+	for (i = 0; i < installedMods.length; i += 1) {
+		debug(installedMods[i]);
+		createModsListItem(null, installedMods[i].modname);
+	}
+};
+
 const installMod = (filename, modname) => {
+	let installedMods;
+
+	if (isExists(installedModsJSON)) {
+		installedMods = JSON.parse(fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8'));
+	} else {
+		installedMods = [];
+	}
+	// Exit function if mod already installed
+	for (i = 0; i - 1 <= installedMods.length; i += 1) {
+		// TODO: 'Do you want to reinstall?' dialog
+		// TODO: Check whether the mod installed or not with mod id rather than mod name
+		if (installedMods[i].modname === modname) {
+			dialog.showErrorBox('Error', 'Mod already installed');
+			return;
+		}
+	}
 	const isFomod = directory => directory.includes('Fomod');
 	const modsFolder = join(`${dir}/${appName}/mods`);
 
@@ -443,31 +498,17 @@ const installMod = (filename, modname) => {
 	};
 
 	const registerMod = modFolder => {
-		const installedModsJSON = `${dir}/${appName}/mods/installedMods.json`;
-		let installedMods;
 		const findEsp = directory => {
 			const arr = fs.readdirSync(directory);
 			const esps = arr.filter(value => extname(value) === '.esp');
 			return esps;
 		};
 
-		const isExists = directory => {
-			if (fs.existsSync(directory)) return true;
-			if (!fs.existsSync(directory)) return false;
-		};
-
-		if (isExists(installedModsJSON)) {
-			installedMods = JSON.parse(
-				fs.readFileSync(join(`${dir}/${appName}/mods/installedMods.json`), 'utf8')
-			);
-		} else {
-			installedMods = [];
-		}
-
 		const modObj = {
 			id: installedMods.length + 1,
 			modname,
 			enabled: 0,
+			submods: {},
 		};
 
 		installedMods.push(modObj);
@@ -480,6 +521,8 @@ const installMod = (filename, modname) => {
 			}
 		);
 		addPlugin(findEsp(modFolder));
+		writePlugins(lines);
+		createModsListItem(null, modname);
 	};
 
 	const promise = new Promise((resolve, reject) => {
@@ -665,7 +708,6 @@ const getDownloadHistory = () => {
 		}
 	}
 };
-getDownloadHistory();
 
 const showClearHistory = () => {
 	document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
@@ -686,6 +728,10 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 		hideClearHistory();
 	}
 });
+
+getDownloadHistory();
+retrieveMods();
+
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
 	showClearHistory();
