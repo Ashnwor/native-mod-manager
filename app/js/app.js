@@ -402,7 +402,7 @@ const createTextNode = text => {
 	return textNode;
 };
 
-const createImgButtonNode = (id, title, img, hoverImg, filename, modname, func) => {
+const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modversion, func) => {
 	const imgNode = document.createElement('img');
 	imgNode.src = img;
 	imgNode.title = title;
@@ -417,7 +417,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, func) 
 	if (filename) {
 		imgNode.classList.add('clickable');
 		imgNode.addEventListener('click', () => {
-			func(filename, modname);
+			func(filename, modname, modversion);
 		});
 	}
 
@@ -468,7 +468,8 @@ const retrieveMods = () => {
 	}
 };
 
-const installMod = (filename, modname) => {
+const installMod = (filename, modname, modversion) => {
+	debug(`mod version: ${modversion}`);
 	let installedMods;
 
 	if (isExists(installedModsJSON)) {
@@ -509,6 +510,7 @@ const installMod = (filename, modname) => {
 			id: installedMods.length + 1,
 			modname,
 			enabled: 0,
+			version: modversion,
 			submods: {},
 		};
 
@@ -612,7 +614,8 @@ const deleteMod = () => {
 	debug('Delete Mod');
 };
 
-const createDownloadListItem = (filename, fileid, filesize, modname) => {
+const createDownloadListItem = (filename, fileid, filesize, modname, modversion) => {
+	debug(`dlist modversion: ${modversion}`);
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
@@ -643,6 +646,7 @@ const createDownloadListItem = (filename, fileid, filesize, modname) => {
 						join('../images/folder-fill.svg'),
 						filename,
 						null,
+						null,
 						openFolder
 					),
 					createImgButtonNode(
@@ -652,6 +656,7 @@ const createDownloadListItem = (filename, fileid, filesize, modname) => {
 						null,
 						filename,
 						modname,
+						modversion,
 						installMod
 					),
 					createImgButtonNode(
@@ -659,6 +664,7 @@ const createDownloadListItem = (filename, fileid, filesize, modname) => {
 						'Delete',
 						join('../images/x-circle.svg'),
 						join('../images/x-circle-fill.svg'),
+						null,
 						null,
 						null,
 						deleteMod
@@ -699,7 +705,8 @@ const getDownloadHistory = () => {
 					history[index].filename,
 					history[index].fileid,
 					`${history[index].roundedFilesizeInMB}MB`,
-					history[index].modname
+					history[index].modname,
+					history[index].modversion
 				);
 				updateProgress(`${history[index].fileid}-2`, 100);
 				updateProgressText(`${history[index].fileid}-3-2`, 100);
@@ -747,6 +754,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 		let parsedModInfo;
 		let filename;
 		let fileid;
+		let modversion;
 		let modid;
 		let modname;
 		let downloadURL;
@@ -770,6 +778,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
 				filename = parsedFileInfo.file_name;
 				fileid = parsedFileInfo.file_id;
+				modversion = parsedFileInfo.mod_version;
 				debug(filename);
 				request(
 					'GET',
@@ -795,11 +804,13 @@ ipcRenderer.on('request-download', async (event, obj) => {
 					);
 					download.on('start', function(filesize) {
 						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
+						debug(`download start: m_version: ${modversion}`);
 						createDownloadListItem(
 							filename,
 							fileid,
 							`${roundedFilesizeInMB}MB`,
-							modname
+							modname,
+							modversion
 						);
 					});
 
@@ -824,6 +835,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 						downloadHistory.push({
 							modid,
 							modname,
+							modversion,
 							fileid,
 							filename,
 							roundedFilesizeInMB,
