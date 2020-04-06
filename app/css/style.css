@@ -99,10 +99,18 @@ body {
   text-decoration: none;
 }
 
-.dropdownStyle {
-  border-radius: 0 !important;
+.vh-8 {
   height: 8vh;
-  background-color: #6c757d;
+}
+
+.btn-circle {
+  width: 5vh;
+  height: 5vh;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 2.5vh;
 }
 
 .nav-item-sq {
