@@ -711,7 +711,8 @@ const getDownloadHistory = () => {
 
 const showClearHistory = () => {
 	document.getElementById('downloadsButton').classList.add('downloadsBtn-clicked');
-	document.getElementById('clearHistory').classList.add('display-initial');
+	document.getElementById('clearHistory').classList.remove('d-none');
+	document.getElementById('clearHistory').classList.add('d-initial');
 	document.getElementById('downloadsText').style = `margin-left: 5vh; transition: margin-left 250ms ease-in;`;
 };
 
@@ -719,6 +720,10 @@ const hideClearHistory = () => {
 	document.getElementById('downloadsButton').classList.remove('downloadsBtn-clicked');
 	document.getElementById('clearHistory').classList.remove('display-initial');
 	document.getElementById('downloadsText').style = `transition: margin-left 250ms ease-in;`;
+	setTimeout(() => {
+		document.getElementById('clearHistory').classList.remove('d-initial');
+		document.getElementById('clearHistory').classList.add('d-none');
+	}, 250);
 };
 
 document.getElementById('downloadsButton').addEventListener('click', () => {
