@@ -69,13 +69,6 @@ body {
   height: 7vh;
 }
 
-#leftList {
-  position: absolute;
-  float: left;
-  width: 70%;
-  height: calc((100vh - 7vh) - 30px);
-}
-
 #leftListPreferences {
   position: absolute;
   float: left;
@@ -90,13 +83,6 @@ body {
   width: 75%;
   height: calc((100vh - 7vh) - 30px);
   margin-top: calc(7vh);
-}
-
-#rightList {
-  float: right;
-  width: 30%;
-  height: calc((100vh - 30px) - 7vh);
-  border-left: 1px solid #6c757d;
 }
 
 .robotoCondensed-700 {
@@ -140,10 +126,6 @@ body {
   background-color: #5a6268;
   -webkit-transition: background-color 0.15s ease-in-out;
   transition: background-color 0.15s ease-in-out;
-}
-
-.navPadding {
-  padding: 0;
 }
 
 .navTextCenter {

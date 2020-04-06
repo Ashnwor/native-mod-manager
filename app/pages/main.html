@@ -17,44 +17,47 @@
 				><img src="../images/settings.svg"
 			/></a>
 		</nav>
-		<span id="leftList">
-			<ul id="modList" class="list-group">
-				<li
-					class="list-group-item"
-					style="background-color: #007bff!important; color: #fff;"
-				>
-					<label>No Installed Mod Was Found</label>
-				</li>
-			</ul> </span
-		><span id="rightList">
-			<nav class="navbar navbar-expand-sm bg-dark navbar-dark navPadding">
-				<div class="dropdown">
-					<button
-						class="btn btn-secondary dropdown-toggle dropdownStyle"
-						type="button"
-						id="dropdownMenuButton"
-						data-toggle="dropdown"
-						aria-haspopup="true"
-						aria-expanded="false"
+		<div class="row">
+			<div id="leftList" class="col-sm-8 p-0">
+				<ul id="modList" class="list-group">
+					<li
+						class="list-group-item"
+						style="background-color: #007bff!important; color: #fff;"
 					>
-						<span id="dropdownLabel"></span>
-					</button>
-					<div
-						id="dropdownMenu"
-						class="dropdown-menu"
-						aria-labelledby="dropdownMenuButton"
-					></div>
-				</div>
+						<label>No Installed Mod Was Found</label>
+					</li>
+				</ul>
+			</div>
+			<div id="rightList" class="col-sm p-0">
+				<nav class="navbar navbar-expand-sm bg-dark navbar-dark pl-0 py-0">
+					<div class="dropdown">
+						<button
+							class="btn btn-secondary dropdown-toggle dropdownStyle"
+							type="button"
+							id="dropdownMenuButton"
+							data-toggle="dropdown"
+							aria-haspopup="true"
+							aria-expanded="false"
+						>
+							<span id="dropdownLabel"></span>
+						</button>
+						<div
+							id="dropdownMenu"
+							class="dropdown-menu"
+							aria-labelledby="dropdownMenuButton"
+						></div>
+					</div>
+					<ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
 
-				<a
-					id="run"
-					class="navbar-nav robotoCondensed-700 colorWhite nav-item-sq ml-auto"
-					href="#"
-					><span class="hover-1p1p">RUN</span></a
-				>
-			</nav>
-			<ul id="rightMenuList" class="list-group"></ul>
-		</span>
+					<button id="run" type="button" class="btn btn-dark ">
+						Run
+					</button>
+				</nav>
+
+				<ul id="rightMenuList" class="list-group"></ul>
+			</div>
+		</div>
+
 		<div class="accordion fixed-bottom" id="accordionExample">
 			<div class="card" style="border: 0;">
 				<div
