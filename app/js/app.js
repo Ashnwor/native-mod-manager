@@ -477,14 +477,15 @@ const installMod = (filename, modname) => {
 		installedMods = [];
 	}
 	// Exit function if mod already installed
-	for (i = 0; i - 1 <= installedMods.length; i += 1) {
-		// TODO: 'Do you want to reinstall?' dialog
-		// TODO: Check whether the mod installed or not with mod id rather than mod name
-		if (installedMods[i].modname === modname) {
-			dialog.showErrorBox('Error', 'Mod already installed');
-			return;
+	if (isExists(installedModsJSON))
+		for (i = 0; i - 1 <= installedMods.length; i += 1) {
+			// TODO: 'Do you want to reinstall?' dialog
+			// TODO: Check whether the mod installed or not with mod id rather than mod name
+			if (installedMods[i].modname === modname) {
+				dialog.showErrorBox('Error', 'Mod already installed');
+				return;
+			}
 		}
-	}
 	const isFomod = directory => directory.includes('Fomod');
 	const modsFolder = join(`${dir}/${appName}/mods`);
 
@@ -817,8 +818,8 @@ ipcRenderer.on('request-download', async (event, obj) => {
 								join(`${dir}/${appName}/downloadHistory.json`),
 								'utf8'
 							);
+							downloadHistory = JSON.parse(downloadHistory);
 						}
-						downloadHistory = JSON.parse(downloadHistory);
 						debug('DOWNLOAD ENDED');
 						downloadHistory.push({
 							modid,
