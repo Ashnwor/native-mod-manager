@@ -15,6 +15,9 @@ const request = require('then-request');
 const sevenz = require('node-7z');
 const os = require('os');
 
+const layoutPreferences = require('./app/js/layoutPreferences');
+const protonSupport = require('./app/js/protonSupport');
+
 let customTitlebar;
 const globalDebug = debugThis => {
 	if (isDebugON === true) {
@@ -35,6 +38,8 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.layoutPreferences = layoutPreferences;
+window.protonSupport = protonSupport;
 window.getCurrentWindow = getCurrentWindow;
 window.sevenz = sevenz;
 window.join = join;
