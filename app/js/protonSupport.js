@@ -1,21 +1,14 @@
 const fs = require('fs');
 const { join } = require('path');
 
-const appName = 'arcus';
-const os = require('os');
+const globalVariables = require('./globalVariables');
 
-const { homedir } = os;
-
-let dir;
-
-if (process.platform === 'darwin') {
-	dir = join(`${homedir}/Library/Application Support`);
-} else if (process.platform === 'linux') {
-	dir = join(`${homedir}/.local/share`);
-}
 // const { fs, join, dir, appName } = window;
 
-const protonMap = fs.readFileSync(join(`${dir}/${appName}/protonMap.json`), 'utf8');
+const protonMap = fs.readFileSync(
+	join(`${globalVariables.appDataDir()}/${globalVariables.appName}/protonMap.json`),
+	'utf8'
+);
 
 const parseProton = obj => {
 	const arr = [];

@@ -17,6 +17,8 @@ const os = require('os');
 
 const layoutPreferences = require('./app/js/layoutPreferences');
 const protonSupport = require('./app/js/protonSupport');
+const configFunctions = require('./app/js/configFunctions');
+const globalVariables = require('./app/js/globalVariables');
 
 let customTitlebar;
 const globalDebug = debugThis => {
@@ -38,6 +40,8 @@ window.addEventListener('load', () => {
 });
 
 window.globalDebug = debugThis => globalDebug(debugThis);
+window.configFunctions = configFunctions;
+window.globalVariables = globalVariables;
 window.layoutPreferences = layoutPreferences;
 window.protonSupport = protonSupport;
 window.getCurrentWindow = getCurrentWindow;

@@ -1,5 +1,4 @@
 let dir;
-let rawConfig;
 let rightMenu;
 let lines;
 let config;
@@ -24,20 +23,9 @@ const {
 	getCurrentWindow,
 } = window;
 
+const { configFunctions } = window;
+
 const { homedir } = os;
-
-const getConfig = () => {
-	rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
-	config = JSON.parse(rawConfig);
-};
-
-const writeConfig = () => {
-	fs.writeFileSync(join(`${dir}/${appName}/config.json`), JSON.stringify(config, null, 4), err => {
-		if (err) throw err;
-		debug('The file has been saved!');
-	});
-	getConfig();
-};
 
 const isItPlugin = line => {
 	if (line[0] === '#') {
@@ -157,15 +145,16 @@ const newDropdownEl = (id, label) => {
 	dropdownEl.innerText = label;
 	dropdownEl.onclick = () => {
 		document.getElementById('dropdownLabel').innerText = label;
-		getConfig();
+		config = configFunctions.getConfig();
 		config.dropdownMenuItems.lastSelected = { id, label };
-		writeConfig();
+		configFunctions.writeConfig(config);
+		config = configFunctions.getConfig();
 	};
 	dropdownMenu.appendChild(dropdownEl);
 };
 
 const genRunScript = isForSKSE => {
-	getConfig();
+	config = configFunctions.getConfig();
 	let runnerPath;
 	if (config.protonVersion.location === 'common') {
 		runnerPath = join(`${homedir}/.steam/steam/steamapps/common/${config.protonVersion.version}`);
@@ -273,7 +262,7 @@ if (platform === 'darwin') {
 }
 if (firstStart) {
 	debug('First time setup');
-	getConfig();
+	config = configFunctions.getConfig();
 	config.skseFound = false;
 	const dirArr = fs.readdirSync(config.skyrimSE);
 	debug(config);
@@ -292,18 +281,18 @@ if (firstStart) {
 
 	if (config.skseFound) {
 		debug(`skseFound: ${config.skseFound}`);
-		writeConfig();
+		configFunctions.writeConfig(config);
 		config.dropdownMenuItems = {
 			skse: { id: 'launchSKSE', title: 'Launch SKSE' },
 		};
-		writeConfig();
+		configFunctions.writeConfig(config);
 		debug(config);
 	} else {
-		writeConfig();
+		configFunctions.writeConfig(config);
 		config.dropdownMenuItems = {
 			skse: { id: 'installSKSE', title: 'Install SKSE' },
 		};
-		writeConfig();
+		configFunctions.writeConfig(config);
 		debug(`skseFound: ${config.skseFound}`);
 		debug(config);
 	}
@@ -313,12 +302,12 @@ if (firstStart) {
 	};
 
 	config.protonVersion = { location: null, text: null };
-	writeConfig();
+	configFunctions.writeConfig(config);
 }
 // }
 
 // import dropdown menu items
-getConfig();
+config = configFunctions.getConfig();
 getPlugins();
 
 document.getElementById('dropdownLabel').innerText = config.dropdownMenuItems.lastSelected.label;
@@ -344,7 +333,7 @@ document.getElementById('preferences').addEventListener('click', () => {
 });
 
 document.getElementById('run').addEventListener('click', () => {
-	getConfig();
+	config = configFunctions.getConfig();
 	if (isRunning) {
 		debug('Already running');
 	}
