@@ -5,10 +5,13 @@ const globalVariables = require('./globalVariables');
 
 // const { fs, join, dir, appName } = window;
 
-const protonMap = fs.readFileSync(
-	join(`${globalVariables.appDataDir()}/${globalVariables.appName}/protonMap.json`),
-	'utf8'
-);
+const protonMap = () => {
+	if (fs.existsSync(join(`${globalVariables.appDataDir()}/${globalVariables.appName}/protonMap.json`)))
+		return fs.readFileSync(
+			join(`${globalVariables.appDataDir()}/${globalVariables.appName}/protonMap.json`),
+			'utf8'
+		);
+};
 
 const parseProton = obj => {
 	const arr = [];
