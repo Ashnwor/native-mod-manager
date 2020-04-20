@@ -1,5 +1,5 @@
 const debug = debugThis => window.globalDebug(debugThis);
-const { platform, dialog, ipcRenderer, appName, fs, os, join, getCurrentWindow } = window;
+const { platform, dialog, ipcRenderer, appName, fs, os, join,} = window;
 const selectedGame = 'skyrimSE';
 const { homedir } = os;
 
@@ -13,7 +13,7 @@ document.getElementById('browse').addEventListener('click', () => {
 		defaultPath = join(`${homedir}/.steam/steam/steamapps/common/Skyrim Special Edition`);
 	}
 
-	const selectedFolder = dialog.showOpenDialogSync(getCurrentWindow, {
+	const selectedFolder = dialog.showOpenDialogSync({
 		properties: ['openDirectory', 'showHiddenFiles'],
 		defaultPath,
 	})[0];
