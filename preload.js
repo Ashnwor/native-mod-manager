@@ -44,7 +44,6 @@ window.configFunctions = configFunctions;
 window.globalVariables = globalVariables;
 window.layoutPreferences = layoutPreferences;
 window.protonSupport = protonSupport;
-window.getCurrentWindow = getCurrentWindow;
 window.sevenz = sevenz;
 window.join = join;
 window.extname = extname;
