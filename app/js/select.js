@@ -1,5 +1,5 @@
 const debug = debugThis => window.globalDebug(debugThis);
-const { platform, dialog, ipcRenderer, appName, fs, os, join,} = window;
+const { platform, dialog, ipcRenderer, appName, fs, os, join } = window;
 const selectedGame = 'skyrimSE';
 const { homedir } = os;
 
