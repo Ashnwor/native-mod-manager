@@ -270,4 +270,12 @@ body {
   max-height: 15vh;
   overflow-y: scroll;
 }
+
+#prefsLeftList {
+  height: calc(100% - 6vh);
+}
+
+.prefs-bottom-navbar {
+  height: 6vh;
+}
 /*# sourceMappingURL=style.css.map */

@@ -21,7 +21,7 @@ const protonMenu = () => {
 			text: config.protonVersion.version,
 		}
 	);
-	layoutPreferences.createBottomNav();
+	layoutPreferences.createBottomNav(true);
 	document.getElementById('done').addEventListener('click', () => {
 		config = configFunctions.getConfig();
 		const protonVersions = document.getElementById('protonVersions');
@@ -47,7 +47,7 @@ const apiKeyMenu = () => {
 			'utf8'
 		);
 	}
-	layoutPreferences.createBottomNav();
+	layoutPreferences.createBottomNav(true);
 	document.getElementById('done').addEventListener('click', () => {
 		debug(document.getElementById('apikey').value);
 		fs.writeFileSync(
@@ -61,9 +61,19 @@ const apiKeyMenu = () => {
 	});
 };
 
+const aboutMenu = () => {
+	layoutPreferences.cleanRightList();
+	layoutPreferences.removeBottomNav();
+	layoutPreferences.createAllText(fs.readFileSync('license.txt', 'utf8'));
+	layoutPreferences.createBottomNav();
+};
+
 // Menu event listeners
 document.getElementById('protonMenu').addEventListener('click', () => protonMenu());
 
 document.getElementById('apiKeyMenu').addEventListener('click', () => apiKeyMenu());
+
+document.getElementById('aboutMenu').addEventListener('click', () => aboutMenu());
+
 // First item on menu
 protonMenu();

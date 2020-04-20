@@ -2,6 +2,8 @@
 $topNavbarHeight: 7vh;
 $navBtnBgColor: #6c757d;
 $navBtnBgColorHov: #5a6268;
+$prefsBottomNavHeight: 6vh;
+
 html {
 	scrollbar-face-color: #646464;
 	scrollbar-base-color: #646464;
@@ -234,4 +236,12 @@ body {
 #collapseOne {
 	max-height: 15vh;
 	overflow-y: scroll;
+}
+
+#prefsLeftList {
+	height: calc(100% - #{$prefsBottomNavHeight});
+}
+
+.prefs-bottom-navbar {
+	height: $prefsBottomNavHeight;
 }

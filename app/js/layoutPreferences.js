@@ -1,18 +1,27 @@
 // Preferences
 
-const createBottomNav = () => {
+const createBottomNav = done => {
 	const bottomNav = document.createElement('nav');
 	bottomNav.id = 'bottomNav';
-	bottomNav.classList.add('navbar', 'navbar-expand-sm', 'bg-dark', 'navbar-dark', 'fixed-bottom');
-	const doneButtonA = document.createElement('a');
-	doneButtonA.classList.add('navbar-nav', 'ml-auto');
-	const doneButton = document.createElement('button');
-	doneButton.id = 'done';
-	doneButton.type = 'button';
-	doneButton.classList.add('btn', 'btn-primary');
-	doneButton.innerText = 'DONE';
-	doneButtonA.appendChild(doneButton);
-	bottomNav.appendChild(doneButtonA);
+	bottomNav.classList.add(
+		'navbar',
+		'navbar-expand-sm',
+		'bg-dark',
+		'navbar-dark',
+		'fixed-bottom',
+		'prefs-bottom-navbar'
+	);
+	if (done) {
+		const doneButtonA = document.createElement('a');
+		doneButtonA.classList.add('navbar-nav', 'ml-auto');
+		const doneButton = document.createElement('button');
+		doneButton.id = 'done';
+		doneButton.type = 'button';
+		doneButton.classList.add('btn', 'btn-primary');
+		doneButton.innerText = 'Done';
+		doneButtonA.appendChild(doneButton);
+		bottomNav.appendChild(doneButtonA);
+	}
 	document.body.appendChild(bottomNav);
 };
 
@@ -85,8 +94,19 @@ const createSelect = (id, lbl, obj, defaultValue) => {
 	rightList.appendChild(listItem);
 };
 
+const createAllText = text => {
+	const listItem = document.createElement('li');
+	listItem.classList.add('list-group-item');
+	listItem.style = 'overflow-y: scroll; margin-bottom: 6vh;';
+	listItem.innerText = text;
+	const rightList = document.getElementById('rightMenuList');
+	rightList.classList.add('h-100');
+	rightList.appendChild(listItem);
+};
+
 exports.createBottomNav = createBottomNav;
 exports.cleanRightList = cleanRightList;
 exports.removeBottomNav = removeBottomNav;
 exports.createInput = createInput;
 exports.createSelect = createSelect;
+exports.createAllText = createAllText;

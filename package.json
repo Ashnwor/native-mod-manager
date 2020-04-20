@@ -7,7 +7,8 @@
 		"start": "electron --disable-gpu .",
 		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu .",
 		"dist": "electron-builder",
-		"buildArch": "rm -f dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm",
+		"buildArch": "npm run genLicenseFile && rm -rf dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm",
+		"genLicenseFile": "npx nlf > license.txt",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
@@ -56,7 +57,8 @@
 		"eslint-plugin-prettier": "^3.1.3",
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^1.7.0",
-		"prettier": "^1.19.1"
+		"prettier": "^1.19.1",
+		"nlf": "^2.1.1"
 	},
 	"dependencies": {
 		"bootstrap": "^4.4.1",
