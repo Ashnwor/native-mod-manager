@@ -3,9 +3,9 @@ const { ipcRenderer, fs, join } = window;
 const { configFunctions, layoutPreferences, protonSupport, globalVariables } = window;
 let config;
 
-debug(JSON.parse(protonSupport.protonMap));
+debug(JSON.parse(protonSupport.protonMap()));
 
-debug(protonSupport.parseProton(JSON.parse(protonSupport.protonMap)));
+debug(protonSupport.parseProton(JSON.parse(protonSupport.protonMap())));
 
 const protonMenu = () => {
 	layoutPreferences.cleanRightList();
@@ -15,7 +15,7 @@ const protonMenu = () => {
 	layoutPreferences.createSelect(
 		'protonVersions',
 		'Version',
-		protonSupport.parseProton(JSON.parse(protonSupport.protonMap)),
+		protonSupport.parseProton(JSON.parse(protonSupport.protonMap())),
 		{
 			location: config.protonVersion.location,
 			text: config.protonVersion.version,
