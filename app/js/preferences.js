@@ -64,7 +64,13 @@ const apiKeyMenu = () => {
 const aboutMenu = () => {
 	layoutPreferences.cleanRightList();
 	layoutPreferences.removeBottomNav();
-	layoutPreferences.createAllText(fs.readFileSync('license.txt', 'utf8'));
+	if (fs.existsSync('license.txt')) {
+		layoutPreferences.createAllText(fs.readFileSync('license.txt', 'utf8'));
+	} else {
+		layoutPreferences.createAllText(
+			'license.txt couldn\'t found. If you are in development version please execute "npm run genLicenseFile"'
+		);
+	}
 	layoutPreferences.createBottomNav();
 };
 
