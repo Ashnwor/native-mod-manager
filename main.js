@@ -201,7 +201,7 @@ if (process.platform === 'darwin') {
 	dir = `${homedir}/.local/share`;
 }
 
-if (!existsSync(`${dir}/arcus`)) {
+if (!existsSync(`${dir}/arcus/config.json`)) {
 	console.log('First time setup');
 	mkdirSync(`${dir}/arcus`);
 	app.on('ready', createSelectWindow);
