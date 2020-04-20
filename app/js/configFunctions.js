@@ -13,9 +13,11 @@ if (process.platform === 'darwin') {
 }
 
 const getConfig = () => {
-	const rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
-	const config = JSON.parse(rawConfig);
-	return config;
+	if (fs.existsSync(join(`${dir}/${appName}/config.json`))) {
+		const rawConfig = fs.readFileSync(join(`${dir}/${appName}/config.json`));
+		const config = JSON.parse(rawConfig);
+		return config;
+	}
 };
 
 const writeConfig = config => {
