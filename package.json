@@ -63,7 +63,7 @@
 	"dependencies": {
 		"bootstrap": "^4.4.1",
 		"custom-electron-titlebar": "^3.2.2",
-		"jquery": "^3.5.0",
+		"jquery": "^3.4.1",
 		"node-7z": "^2.1.1",
 		"popper.js": "^1.16.1",
 		"then-request": "^6.0.2",
