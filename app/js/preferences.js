@@ -41,9 +41,9 @@ const apiKeyMenu = () => {
 	layoutPreferences.cleanRightList();
 	layoutPreferences.removeBottomNav();
 	layoutPreferences.createInput('apikey', 'Api Key', 'Api Key');
-	if (fs.existsSync(join(`${globalVariables.dir}/${globalVariables.appName}/apikey`))) {
+	if (fs.existsSync(join(`${globalVariables.appDataDir()}/${globalVariables.appName}/apikey`))) {
 		document.getElementById('apikey').value = fs.readFileSync(
-			join(`${globalVariables.dir}/${globalVariables.appName}/apikey`),
+			join(`${globalVariables.appDataDir()}/${globalVariables.appName}/apikey`),
 			'utf8'
 		);
 	}
@@ -51,7 +51,7 @@ const apiKeyMenu = () => {
 	document.getElementById('done').addEventListener('click', () => {
 		debug(document.getElementById('apikey').value);
 		fs.writeFileSync(
-			join(`${globalVariables.dir}/${globalVariables.appName}/apikey`),
+			join(`${globalVariables.appDataDir()}/${globalVariables.appName}/apikey`),
 			document.getElementById('apikey').value,
 			err => {
 				if (err) throw err;
