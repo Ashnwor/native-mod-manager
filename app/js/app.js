@@ -361,10 +361,6 @@ document.getElementById('run').addEventListener('click', () => {
 	}
 });
 
-const compareGame = game => {
-	if (game === 'SkyrimSE') return 'skyrimspecialedition';
-};
-
 const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
 	const container = document.createElement('div');
 	container.classList.add('container-fluid');
@@ -747,7 +743,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 		let modid;
 		let modname;
 		let downloadURL;
-		request('GET', `https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}`, {
+		request('GET', `https://api.nexusmods.com/v1/games/${obj.game}/mods/${obj.modID}`, {
 			headers: { apikey: apiKey },
 		}).done(resp0 => {
 			debug(JSON.parse(resp0.getBody().toString()));
@@ -756,9 +752,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 			modname = parsedModInfo.name;
 			request(
 				'GET',
-				`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${obj.modID}/files/${
-					obj.fileID
-				}.json`,
+				`https://api.nexusmods.com/v1/games/${obj.game}/mods/${obj.modID}/files/${obj.fileID}.json`,
 				{
 					headers: { apikey: apiKey },
 				}
@@ -771,9 +765,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 				debug(filename);
 				request(
 					'GET',
-					`https://api.nexusmods.com/v1/games/${compareGame(obj.game)}/mods/${
-						obj.modID
-					}/files/${obj.fileID}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
+					`https://api.nexusmods.com/v1/games/${obj.game}/mods/${obj.modID}/files/${obj.fileID}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
 					{
 						headers: { apikey: apiKey },
 					}
