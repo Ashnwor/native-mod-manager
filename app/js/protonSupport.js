@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { join } = require('path');
 const { homedir } = require('os');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { dialog } = require('electron').remote;
 const { execSync } = require('child_process');
 
