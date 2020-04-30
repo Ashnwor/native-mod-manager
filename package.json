@@ -45,7 +45,6 @@
 	},
 	"devDependencies": {
 		"babel-eslint": "^9.0.0",
-		"electron": "^7.2.4",
 		"electron-builder": "^22.6.0",
 		"eslint": "^5.16.0",
 		"eslint-config-airbnb": "^17.1.1",
@@ -61,6 +60,7 @@
 		"prettier": "^1.19.1"
 	},
 	"dependencies": {
+		"electron": "^7.2.4",
 		"bootstrap": "^4.4.1",
 		"custom-electron-titlebar": "^3.2.2",
 		"jquery": "^3.4.1",
