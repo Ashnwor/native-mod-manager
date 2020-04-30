@@ -409,7 +409,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modver
 	return imgNode;
 };
 
-const createModsListItem = (id, modname) => {
+const createModsListItem = (id, modname, version) => {
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
@@ -425,7 +425,8 @@ const createModsListItem = (id, modname) => {
 	label.innerText = modname;
 	div.appendChild(input);
 	div.appendChild(label);
-	listItem.appendChild(div);
+	const columns = createTripleColumn(null, div, createTextNode(`v: ${version}`), createTextNode('d: date'));
+	listItem.appendChild(columns);
 	modList.appendChild(listItem);
 };
 
@@ -449,7 +450,7 @@ const retrieveMods = () => {
 	}
 	for (i = 0; i < installedMods.length; i += 1) {
 		debug(installedMods[i]);
-		createModsListItem(null, installedMods[i].modname);
+		createModsListItem(null, installedMods[i].modname, installedMods[i].version);
 	}
 };
 
