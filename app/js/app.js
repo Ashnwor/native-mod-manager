@@ -206,17 +206,6 @@ if (firstStart) {
 	config.protonVersion = { location: null, text: null };
 	configFunctions.writeConfig(config);
 }
-// }
-
-// import dropdown menu items
-config = configFunctions.getConfig();
-getPlugins();
-
-document.getElementById('dropdownLabel').innerText = config.dropdownMenuItems.lastSelected.label;
-
-newDropdownEl(config.dropdownMenuItems.skse.id, config.dropdownMenuItems.skse.title);
-
-newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
 
 if (platform === 'linux') {
 	// TODO: Will change the way of genRunScript works later
@@ -630,8 +619,22 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 	}
 });
 
-getDownloadHistory();
-retrieveMods();
+const initDropdown = () => {
+	document.getElementById('dropdownLabel').innerText = config.dropdownMenuItems.lastSelected.label;
+
+	newDropdownEl(config.dropdownMenuItems.skse.id, config.dropdownMenuItems.skse.title);
+
+	newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
+};
+
+// TODO?: seperate js file for init
+const init = () => {
+	getDownloadHistory();
+	retrieveMods();
+	config = configFunctions.getConfig();
+	getPlugins();
+	initDropdown();
+};
 
 ipcRenderer.on('request-download', async (event, obj) => {
 	document.getElementById('collapseOne').classList.add('show');
@@ -741,3 +744,5 @@ ipcRenderer.on('request-download', async (event, obj) => {
 		dialog.showErrorBox("Couldn't find the api key", 'Please enter a api key from preferences');
 	}
 });
+
+init();
