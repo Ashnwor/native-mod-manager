@@ -7,7 +7,7 @@
 		"start": "electron --disable-gpu .",
 		"devStart": "rm -rf ~/.local/share/arcus && electron --disable-gpu .",
 		"dist": "electron-builder",
-		"buildArch": "npm run genLicenseFile && rm -rf dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcus-*.pacman --noconfirm",
+		"buildArch": "npm run genLicenseFile && rm -rf dist/*.pacman && npx electron-builder --linux pacman&& pacman -U dist/arcusmm-*.pacman --noconfirm",
 		"genLicenseFile": "npx nlf > license.txt",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
