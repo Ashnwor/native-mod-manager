@@ -308,8 +308,9 @@ const createModsListItem = (id, modname, version) => {
 	const innerList = document.createElement('ul');
 	innerList.classList.add('list-group', 'list-group-horizontal-sm');
 	innerList.style.width = '100%';
-	const createInnerListItem = node => {
+	const createInnerListItem = (node, marginLeft) => {
 		const el = document.createElement('li');
+		if (marginLeft) el.classList.add('ml-auto');
 		el.classList.add('list-group-item', 'list-item-seperate');
 		el.style.border = 0;
 		el.appendChild(node);
@@ -331,6 +332,7 @@ const createModsListItem = (id, modname, version) => {
 	innerList.appendChild(createInnerListItem(div));
 	innerList.appendChild(createInnerListItem(createTextNode(`v: ${version}`)));
 	innerList.appendChild(createInnerListItem(createTextNode(`d: date`)));
+	innerList.appendChild(createInnerListItem(createTextNode('1'), true)); // priority
 	listItem.appendChild(innerList);
 	modList.appendChild(listItem);
 };
