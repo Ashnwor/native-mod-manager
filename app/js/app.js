@@ -304,6 +304,17 @@ const createModsListItem = (id, modname, version) => {
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
+	const innerList = document.createElement('ul');
+	innerList.classList.add('list-group', 'list-group-horizontal-sm');
+	innerList.style.width = '100%';
+	const createInnerListItem = node => {
+		const el = document.createElement('li');
+		el.classList.add('list-group-item');
+		el.style.border = 0;
+		el.appendChild(node);
+		return el;
+	};
+
 	const div = document.createElement('div');
 	div.classList.add('custom-control', 'custom-checkbox');
 	const input = document.createElement('input');
@@ -316,8 +327,10 @@ const createModsListItem = (id, modname, version) => {
 	label.innerText = modname;
 	div.appendChild(input);
 	div.appendChild(label);
-	const columns = createTripleColumn(null, div, createTextNode(`v: ${version}`), createTextNode('d: date'));
-	listItem.appendChild(columns);
+	innerList.appendChild(createInnerListItem(div));
+	innerList.appendChild(createInnerListItem(createTextNode(`v: ${version}`)));
+	innerList.appendChild(createInnerListItem(createTextNode(`d: date`)));
+	listItem.appendChild(innerList);
 	modList.appendChild(listItem);
 };
 
