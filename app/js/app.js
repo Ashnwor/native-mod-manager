@@ -304,12 +304,13 @@ const createModsListItem = (id, modname, version) => {
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
+	listItem.style.padding = 0;
 	const innerList = document.createElement('ul');
 	innerList.classList.add('list-group', 'list-group-horizontal-sm');
 	innerList.style.width = '100%';
 	const createInnerListItem = node => {
 		const el = document.createElement('li');
-		el.classList.add('list-group-item');
+		el.classList.add('list-group-item', 'list-item-seperate');
 		el.style.border = 0;
 		el.appendChild(node);
 		return el;

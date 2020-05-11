@@ -278,4 +278,12 @@ body {
 .prefs-bottom-navbar {
   height: 6vh;
 }
+
+.list-item-seperate {
+  border-left: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.list-item-seperate:first-child {
+  border-left: none !important;
+}
 /*# sourceMappingURL=style.css.map */
