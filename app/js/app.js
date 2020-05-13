@@ -485,16 +485,6 @@ const createDownloadListItem = (filename, fileid, filesize, modname, modversion)
 	downloadList.insertBefore(downloadListItem, downloadList.firstChild);
 };
 
-// update progress bar of download
-const updateProgress = (id, value) => {
-	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
-};
-
-// update progress text of download
-const updateProgressText = (id, value) => {
-	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
-};
-
 const getDownloadHistory = () => {
 	if (fs.existsSync(join(`${dir}/${appName}/downloadHistory.json`))) {
 		let history = fs.readFileSync(join(`${dir}/${appName}/downloadHistory.json`), 'utf8');
@@ -517,8 +507,8 @@ const getDownloadHistory = () => {
 					history[index].modname,
 					history[index].modversion
 				);
-				updateProgress(`${history[index].fileid}-2`, 100);
-				updateProgressText(`${history[index].fileid}-3-2`, 100);
+				layoutApp.updateProgress(`${history[index].fileid}-2`, 100);
+				layoutApp.updateProgressText(`${history[index].fileid}-3-2`, 100);
 			} else {
 				debug(`Ignoring invalid history entry: ${history[index].fileid}`);
 			}
@@ -618,8 +608,8 @@ ipcRenderer.on('request-download', async (event, obj) => {
 
 					download.on('progress', progress => {
 						const prog100 = progress * 100;
-						updateProgress(`${fileid}-2`, prog100.toFixed(0));
-						updateProgressText(`${fileid}-3-2`, prog100.toFixed(0));
+						layoutApp.updateProgress(`${fileid}-2`, prog100.toFixed(0));
+						layoutApp.updateProgressText(`${fileid}-3-2`, prog100.toFixed(0));
 					});
 
 					download.on('end', () => {

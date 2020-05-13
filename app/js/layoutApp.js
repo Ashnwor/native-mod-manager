@@ -47,6 +47,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modver
 };
 
 const createModsListItem = (id, modname, version) => {
+	document.getElementById('noMods').style.display = 'none';
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
@@ -100,9 +101,21 @@ const hideClearHistory = () => {
 	}, 250);
 };
 
+// update progress bar of download
+const updateProgress = (id, value) => {
+	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
+};
+
+// update progress text of download
+const updateProgressText = (id, value) => {
+	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
+};
+
 exports.createTripleColumn = createTripleColumn;
 exports.createImgButtonNode = createImgButtonNode;
 exports.createModsListItem = createModsListItem;
 exports.createTextNode = createTextNode;
 exports.showClearHistory = showClearHistory;
 exports.hideClearHistory = hideClearHistory;
+exports.updateProgress = updateProgress;
+exports.updateProgressText = updateProgressText;
