@@ -51,6 +51,15 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modver
 	return imgNode;
 };
 
+const createInnerListItem = (node, marginLeft) => {
+	const el = document.createElement('li');
+	if (marginLeft) el.classList.add('ml-auto');
+	el.classList.add('list-group-item', 'list-item-seperate');
+	el.style.border = 0;
+	el.appendChild(node);
+	return el;
+};
+
 const createModsListItem = (id, modname, version) => {
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
@@ -59,14 +68,6 @@ const createModsListItem = (id, modname, version) => {
 	const innerList = document.createElement('ul');
 	innerList.classList.add('list-group', 'list-group-horizontal-sm');
 	innerList.style.width = '100%';
-	const createInnerListItem = (node, marginLeft) => {
-		const el = document.createElement('li');
-		if (marginLeft) el.classList.add('ml-auto');
-		el.classList.add('list-group-item', 'list-item-seperate');
-		el.style.border = 0;
-		el.appendChild(node);
-		return el;
-	};
 
 	const div = document.createElement('div');
 	div.classList.add('custom-control', 'custom-checkbox');
@@ -124,6 +125,7 @@ const createDropdownItem = (id, label) => {
 const createPluginsItem = (label, check) => {
 	const rightMenu = document.getElementById('rightMenuList');
 	const newListEl = document.createElement('li');
+	newListEl.style.padding = '0';
 	const newDiv = document.createElement('div');
 	const checkboxEl = document.createElement('input');
 	const text = document.createElement('label');
@@ -161,7 +163,11 @@ const createPluginsItem = (label, check) => {
 	newListEl.classList.add('list-group-item');
 	newDiv.appendChild(checkboxEl);
 	newDiv.appendChild(text);
-	newListEl.appendChild(newDiv);
+	const innerList = document.createElement('ul');
+	innerList.classList.add('list-group', 'list-group-horizontal-sm');
+	innerList.appendChild(createInnerListItem(newDiv));
+	innerList.appendChild(createInnerListItem(createTextNode('1'), true)); // priority
+	newListEl.appendChild(innerList);
 	rightMenu.appendChild(newListEl);
 };
 
