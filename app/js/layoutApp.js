@@ -1,3 +1,8 @@
+const globalVariables = require('./globalVariables');
+const configFunctions = require('./configFunctions');
+const utils = require('./utils');
+const plugins = require('./plugins');
+
 const createTripleColumn = (idPrefix, firstNode, secondNode, thirdNode) => {
 	const container = document.createElement('div');
 	container.classList.add('container-fluid');
@@ -46,8 +51,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modver
 	return imgNode;
 };
 
-const createModsListItem = (id, modname, version, priority) => {
-	document.getElementById('noMods').style.display = 'none';
+const createModsListItem = (id, modname, version) => {
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
@@ -79,7 +83,7 @@ const createModsListItem = (id, modname, version, priority) => {
 	innerList.appendChild(createInnerListItem(div));
 	innerList.appendChild(createInnerListItem(createTextNode(`v: ${version}`)));
 	innerList.appendChild(createInnerListItem(createTextNode(`d: date`)));
-	innerList.appendChild(createInnerListItem(createTextNode(priority), true)); // priority
+	innerList.appendChild(createInnerListItem(createTextNode('1'), true)); // priority
 	listItem.appendChild(innerList);
 	modList.appendChild(listItem);
 };
@@ -101,7 +105,66 @@ const hideClearHistory = () => {
 	}, 250);
 };
 
-// update progress bar of download
+const createDropdownItem = (id, label) => {
+	const dropdownMenu = document.getElementById('dropdownMenu');
+	const dropdownEl = document.createElement('a');
+	dropdownEl.id = id;
+	dropdownEl.classList.add('dropdown-item');
+	dropdownEl.innerText = label;
+	dropdownEl.onclick = () => {
+		document.getElementById('dropdownLabel').innerText = label;
+		globalVariables.config = configFunctions.getConfig();
+		globalVariables.config.dropdownMenuItems.lastSelected = { id, label };
+		configFunctions.writeConfig(globalVariables.config);
+		globalVariables.config = configFunctions.getConfig();
+	};
+	dropdownMenu.appendChild(dropdownEl);
+};
+
+const createPluginsItem = (label, check) => {
+	const rightMenu = document.getElementById('rightMenuList');
+	const newListEl = document.createElement('li');
+	const newDiv = document.createElement('div');
+	const checkboxEl = document.createElement('input');
+	const text = document.createElement('label');
+	newDiv.classList.add('custom-control');
+	newDiv.classList.add('custom-checkbox');
+	checkboxEl.type = 'checkbox';
+	checkboxEl.classList.add('custom-control-input');
+	checkboxEl.id = label;
+	checkboxEl.checked = check;
+	checkboxEl.addEventListener('click', () => {
+		utils.debug(`${checkboxEl.id}: ${checkboxEl.checked}`);
+		if (!checkboxEl.checked) {
+			utils.debug(`${checkboxEl.id}: disabled`);
+			for (let i = 0; i < globalVariables.lines.length; i += 1) {
+				if (globalVariables.lines[i] === checkboxEl.id) {
+					globalVariables.lines[i] = checkboxEl.id.replace('*', '');
+					plugins.writePlugins(globalVariables.lines);
+					break;
+				}
+			}
+		} else {
+			utils.debug(`${checkboxEl.id}: enabled`);
+			for (let i = 0; i < globalVariables.lines.length; i += 1) {
+				if (globalVariables.lines[i] === checkboxEl.id) {
+					globalVariables.lines[i] = `*${checkboxEl.id}`;
+					plugins.writePlugins(globalVariables.lines);
+					break;
+				}
+			}
+		}
+	});
+	text.classList.add('custom-control-label');
+	text.htmlFor = label;
+	text.innerText = label.replace('*', '').replace('.esp', '');
+	newListEl.classList.add('list-group-item');
+	newDiv.appendChild(checkboxEl);
+	newDiv.appendChild(text);
+	newListEl.appendChild(newDiv);
+	rightMenu.appendChild(newListEl);
+};
+
 const updateProgress = (id, value) => {
 	document.getElementById(id).getElementsByClassName('progress-bar')[0].style.width = `${value}%`;
 };
@@ -111,6 +174,8 @@ const updateProgressText = (id, value) => {
 	document.getElementById(id).getElementsByClassName('textNode')[0].innerText = `${value}%`;
 };
 
+exports.createPluginsItem = createPluginsItem;
+exports.createDropdownItem = createDropdownItem;
 exports.createTripleColumn = createTripleColumn;
 exports.createImgButtonNode = createImgButtonNode;
 exports.createModsListItem = createModsListItem;

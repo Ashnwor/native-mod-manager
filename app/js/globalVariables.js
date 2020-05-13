@@ -14,5 +14,10 @@ const appDataDir = () => {
 	}
 };
 
+let config;
+const lines = [];
+
 exports.appName = appName;
 exports.appDataDir = appDataDir;
+exports.config = config;
+exports.lines = lines;

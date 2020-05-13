@@ -1,5 +1,5 @@
-const debug = debugThis => window.globalDebug(debugThis);
 const { platform, dialog, ipcRenderer, appName, fs, os, join } = window;
+const { utils } = window;
 const selectedGame = 'skyrimSE';
 const { homedir } = os;
 
@@ -36,10 +36,10 @@ document.getElementById('done').addEventListener('click', () => {
 
 		fs.writeFileSync(join(`${dir}/${appName}/config.json`), JSON.stringify(game, null, 4), err => {
 			if (err) throw err;
-			debug('The file has been saved!');
+			utils.debug('The file has been saved!');
 		});
 		const conf = fs.readFileSync(join(`${dir}/${appName}/config.json`), 'utf8');
-		debug(JSON.parse(conf));
+		utils.debug(JSON.parse(conf));
 
 		ipcRenderer.send('show-main');
 		ipcRenderer.send('close-select');

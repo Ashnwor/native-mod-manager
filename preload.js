@@ -2,7 +2,6 @@
 /* eslint-disable global-require */
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
-const isDebugON = true;
 const appName = 'arcus';
 const fs = require('fs');
 const con = require('electron').remote.getGlobal('console');
@@ -20,18 +19,10 @@ const layoutApp = require('./app/js/layoutApp');
 const protonSupport = require('./app/js/protonSupport');
 const configFunctions = require('./app/js/configFunctions');
 const globalVariables = require('./app/js/globalVariables');
+const plugins = require('./app/js/plugins');
+const utils = require('./app/js/utils');
 
 let customTitlebar;
-const globalDebug = debugThis => {
-	if (isDebugON === true) {
-		if (typeof debugThis === 'object') {
-			window.con.log(`\x1b[31mDEBUG:\x1b[0m`);
-			window.con.log(debugThis);
-		} else {
-			window.con.log(`\x1b[31mDEBUG:\x1b[0m ${debugThis}`);
-		}
-	}
-};
 
 window.addEventListener('load', () => {
 	// eslint-disable-next-line no-multi-assign
@@ -40,7 +31,8 @@ window.addEventListener('load', () => {
 	require('bootstrap');
 });
 
-window.globalDebug = debugThis => globalDebug(debugThis);
+window.plugins = plugins;
+window.utils = utils;
 window.configFunctions = configFunctions;
 window.globalVariables = globalVariables;
 window.layoutPreferences = layoutPreferences;

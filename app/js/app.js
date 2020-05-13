@@ -1,9 +1,4 @@
 let dir;
-let rightMenu;
-let lines;
-let config;
-let i;
-const debug = debugThis => window.globalDebug(debugThis);
 
 const {
 	request,
@@ -24,135 +19,9 @@ const {
 } = window;
 
 // TODO: Import protonSupport only on linux
-const { configFunctions, protonSupport, layoutApp } = window;
+const { configFunctions, globalVariables, protonSupport, layoutApp, plugins, utils } = window;
 
 const { homedir } = os;
-
-const isItPlugin = line => {
-	if (line[0] === '#') {
-		debug(`${line} COMMENT`);
-	} else if (
-		line[0] !== '*' &&
-		`${line[line.length - 3]}${line[line.length - 2]}${line[line.length - 1]}` === 'esp'
-	) {
-		debug(`${line} PLUGIN, NOT ACTIVE`);
-		// eslint-disable-next-line no-use-before-define
-		newRightMenuEl(line, false);
-	} else if (
-		line[0] === '*' &&
-		`${line[line.length - 3]}${line[line.length - 2]}${line[line.length - 1]}` === 'esp'
-	) {
-		debug(`${line} PLUGIN, ACTIVE`);
-		// eslint-disable-next-line no-use-before-define
-		newRightMenuEl(line, true);
-	}
-};
-
-const getPlugins = () => {
-	rightMenu = document.getElementById('rightMenuList');
-	rightMenu.innerHTML = '';
-	// Get this from preload in relation to selected game
-	const skyrimSEid = 489830;
-	const pfx = join(`${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`);
-	const pluginsDir = join(
-		`${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`
-	);
-
-	debug(pluginsDir);
-	const pluginsFile = fs.readFileSync(join(`${pluginsDir}/Plugins.txt`), 'utf8');
-
-	lines = [];
-	pluginsFile.split(/\r?\n/).forEach(line => {
-		lines.push(line);
-	});
-	lines = lines.filter(value => value !== '');
-	debug(lines);
-	for (i = 0; i < lines.length; i += 1) {
-		isItPlugin(lines[i]);
-	}
-};
-
-const writePlugins = arr => {
-	const skyrimSEid = 489830;
-	const pfx = join(`${config.skyrimSE}/../../compatdata/${skyrimSEid}/pfx`);
-	const pluginsDir = join(
-		`${pfx}/drive_c/users/steamuser/Local Settings/Application Data/Skyrim Special Edition`
-	);
-	debug(pluginsDir);
-	const pluginsFile = join(`${pluginsDir}/Plugins.txt`);
-
-	fs.writeFileSync(pluginsFile, arr.join('\n'), function(err) {
-		debug(err ? `Error :${err}` : 'ok');
-	});
-	getPlugins();
-};
-
-const addPlugin = espArr => {
-	getPlugins();
-	espArr.forEach(value => {
-		if (!lines.includes(value) && !lines.includes(`*${value}`)) lines[lines.length] = value;
-	});
-	debug(lines);
-};
-
-const newRightMenuEl = (label, check) => {
-	const newListEl = document.createElement('li');
-	const newDiv = document.createElement('div');
-	const checkboxEl = document.createElement('input');
-	const text = document.createElement('label');
-	newDiv.classList.add('custom-control');
-	newDiv.classList.add('custom-checkbox');
-	checkboxEl.type = 'checkbox';
-	checkboxEl.classList.add('custom-control-input');
-	checkboxEl.id = label;
-	checkboxEl.checked = check;
-	checkboxEl.addEventListener('click', () => {
-		debug(`${checkboxEl.id}: ${checkboxEl.checked}`);
-		if (!checkboxEl.checked) {
-			debug(`${checkboxEl.id}: disabled`);
-			for (i = 0; i < lines.length; i += 1) {
-				if (lines[i] === checkboxEl.id) {
-					lines[i] = checkboxEl.id.replace('*', '');
-					writePlugins(lines);
-					break;
-				}
-			}
-		} else {
-			debug(`${checkboxEl.id}: enabled`);
-			for (i = 0; i < lines.length; i += 1) {
-				if (lines[i] === checkboxEl.id) {
-					lines[i] = `*${checkboxEl.id}`;
-					writePlugins(lines);
-					break;
-				}
-			}
-		}
-	});
-	text.classList.add('custom-control-label');
-	text.htmlFor = label;
-	text.innerText = label.replace('*', '').replace('.esp', '');
-	newListEl.classList.add('list-group-item');
-	newDiv.appendChild(checkboxEl);
-	newDiv.appendChild(text);
-	newListEl.appendChild(newDiv);
-	rightMenu.appendChild(newListEl);
-};
-
-const newDropdownEl = (id, label) => {
-	const dropdownMenu = document.getElementById('dropdownMenu');
-	const dropdownEl = document.createElement('a');
-	dropdownEl.id = id;
-	dropdownEl.classList.add('dropdown-item');
-	dropdownEl.innerText = label;
-	dropdownEl.onclick = () => {
-		document.getElementById('dropdownLabel').innerText = label;
-		config = configFunctions.getConfig();
-		config.dropdownMenuItems.lastSelected = { id, label };
-		configFunctions.writeConfig(config);
-		config = configFunctions.getConfig();
-	};
-	dropdownMenu.appendChild(dropdownEl);
-};
 
 // First start
 // if (platform === 'linux') {
@@ -163,48 +32,48 @@ if (platform === 'darwin') {
 	dir = `${homedir}/.local/share`;
 }
 if (firstStart) {
-	debug('First time setup');
-	config = configFunctions.getConfig();
-	config.skseFound = false;
-	const dirArr = fs.readdirSync(config.skyrimSE);
-	debug(config);
+	utils.debug('First time setup');
+	globalVariables.config = configFunctions.getConfig();
+	globalVariables.config.skseFound = false;
+	const dirArr = fs.readdirSync(globalVariables.config.skyrimSE);
+	utils.debug(globalVariables.config);
 
-	config.isSteam = true;
+	globalVariables.config.isSteam = true;
 	// TODO: Check if the game is in steam folder
 	// This will needed when running the game
 
-	for (i = 0; i < dirArr.length; i += 1) {
+	for (let i = 0; i < dirArr.length; i += 1) {
 		if (dirArr[i].slice(0, 6) === 'skse64') {
-			config.skseFound = true;
+			globalVariables.config.skseFound = true;
 			// TODO: Add dropdown menu to start script extender
 			break;
 		}
 	}
 
-	if (config.skseFound) {
-		debug(`skseFound: ${config.skseFound}`);
-		configFunctions.writeConfig(config);
-		config.dropdownMenuItems = {
+	if (globalVariables.config.skseFound) {
+		utils.debug(`skseFound: ${globalVariables.config.skseFound}`);
+		configFunctions.writeConfig(globalVariables.config);
+		globalVariables.config.dropdownMenuItems = {
 			skse: { id: 'launchSKSE', title: 'Launch SKSE' },
 		};
-		configFunctions.writeConfig(config);
-		debug(config);
+		configFunctions.writeConfig(globalVariables.config);
+		utils.debug(globalVariables.config);
 	} else {
-		configFunctions.writeConfig(config);
-		config.dropdownMenuItems = {
+		configFunctions.writeConfig(globalVariables.config);
+		globalVariables.config.dropdownMenuItems = {
 			skse: { id: 'installSKSE', title: 'Install SKSE' },
 		};
-		configFunctions.writeConfig(config);
-		debug(`skseFound: ${config.skseFound}`);
-		debug(config);
+		configFunctions.writeConfig(globalVariables.config);
+		utils.debug(`skseFound: ${globalVariables.config.skseFound}`);
+		utils.debug(globalVariables.config);
 	}
-	config.dropdownMenuItems.lastSelected = {
-		id: config.dropdownMenuItems.skse.id,
-		label: config.dropdownMenuItems.skse.title,
+	globalVariables.config.dropdownMenuItems.lastSelected = {
+		id: globalVariables.config.dropdownMenuItems.skse.id,
+		label: globalVariables.config.dropdownMenuItems.skse.title,
 	};
 
-	config.protonVersion = { location: null, text: null };
-	configFunctions.writeConfig(config);
+	globalVariables.config.protonVersion = { location: null, text: null };
+	configFunctions.writeConfig(globalVariables.config);
 }
 
 if (platform === 'linux') {
@@ -224,29 +93,29 @@ document.getElementById('preferences').addEventListener('click', () => {
 });
 
 document.getElementById('run').addEventListener('click', () => {
-	config = configFunctions.getConfig();
+	globalVariables.config = configFunctions.getConfig();
 	if (isRunning) {
-		debug('Already running');
+		utils.debug('Already running');
 	}
 	if (!isRunning) {
 		if (platform === 'linux') {
 			let child;
 			// TODO: Support for custom dropdown menu items
-			if (config.dropdownMenuItems.lastSelected.id === 'launchSKSE') {
+			if (globalVariables.config.dropdownMenuItems.lastSelected.id === 'launchSKSE') {
 				child = spawn('./runSKSE', { stdio: 'inherit' });
-			} else if (config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE') {
+			} else if (globalVariables.config.dropdownMenuItems.lastSelected.id === 'launchSkyrimSE') {
 				child = spawn('./runSkyrim', { stdio: 'inherit' });
 			}
-			debug(`Process PID: ${child.pid}`);
+			utils.debug(`Process PID: ${child.pid}`);
 			if (child.pid !== null) {
 				isRunning = true;
-				debug(`isRunning: ${isRunning}`);
+				utils.debug(`isRunning: ${isRunning}`);
 			}
 
 			child.on('exit', function(code) {
-				debug(`Process finished with code: ${code}`);
+				utils.debug(`Process finished with code: ${code}`);
 				isRunning = false;
-				debug(`isRunning: ${isRunning}`);
+				utils.debug(`isRunning: ${isRunning}`);
 			});
 		}
 	}
@@ -254,7 +123,7 @@ document.getElementById('run').addEventListener('click', () => {
 
 const openFolder = filename => {
 	shell.showItemInFolder(join(`${dir}/${appName}/mods/${filename}`));
-	debug(`${dir}/${appName}/mods/${filename}`);
+	utils.debug(`${dir}/${appName}/mods/${filename}`);
 };
 
 const isExists = directory => {
@@ -270,8 +139,8 @@ const retrieveMods = () => {
 	} else {
 		installedMods = [];
 	}
-	for (i = 0; i < installedMods.length; i += 1) {
-		debug(installedMods[i]);
+	for (let i = 0; i < installedMods.length; i += 1) {
+		utils.debug(installedMods[i]);
 		layoutApp.createModsListItem(
 			null,
 			installedMods[i].modname,
@@ -282,7 +151,7 @@ const retrieveMods = () => {
 };
 
 const installMod = (filename, modname, modversion) => {
-	debug(`mod version: ${modversion}`);
+	utils.debug(`mod version: ${modversion}`);
 	let installedMods;
 
 	if (isExists(installedModsJSON)) {
@@ -292,7 +161,7 @@ const installMod = (filename, modname, modversion) => {
 	}
 	// Exit function if mod already installed
 	if (isExists(installedModsJSON))
-		for (i = 0; i <= installedMods.length - 1; i += 1) {
+		for (let i = 0; i <= installedMods.length - 1; i += 1) {
 			// TODO: 'Do you want to reinstall?' dialog
 			// TODO: Check whether the mod installed or not with mod id rather than mod name
 			if (installedMods[i].modname === modname) {
@@ -334,11 +203,11 @@ const installMod = (filename, modname, modversion) => {
 			JSON.stringify(installedMods, null, 4),
 			err => {
 				if (err) throw err;
-				debug('The file has been saved!');
+				utils.debug('The file has been saved!');
 			}
 		);
-		addPlugin(findEsp(modFolder));
-		writePlugins(lines);
+		plugins.addPlugin(findEsp(modFolder));
+		plugins.writePlugins(globalVariables.lines);
 		layoutApp.createModsListItem(null, modname, modversion, modObj.priority);
 	};
 
@@ -351,7 +220,7 @@ const installMod = (filename, modname, modversion) => {
 			}
 		)
 			.on('progress', progress => {
-				debug(progress.percent);
+				utils.debug(progress.percent);
 			})
 
 			.on('end', () => resolve('done'))
@@ -360,10 +229,10 @@ const installMod = (filename, modname, modversion) => {
 	// Couldn't find another way to execute codes after async function
 	// probably will change it when found a better way
 	promise.then(respond => {
-		debug(respond);
+		utils.debug(respond);
 		// point extracted files
 		const directory = fs.readdirSync(join(`${os.tmpdir()}/arcus-extract/${filename}`));
-		debug(directory);
+		utils.debug(directory);
 		if (isFomod(directory)) {
 			// TODO: Add fomod support
 			dialog.showErrorBox('Fomod', 'Fomod is not supported yet');
@@ -374,7 +243,7 @@ const installMod = (filename, modname, modversion) => {
 			let isDataDir = false;
 
 			// check if selected folder contents include one of typical contents of data folder
-			for (i = 0; i <= directory.length - 1; i += 1) {
+			for (let i = 0; i <= directory.length - 1; i += 1) {
 				if (
 					dataFiles.includes(extname(directory[i])) ||
 					dataDirs.includes(directory[i].toLowerCase())
@@ -385,23 +254,23 @@ const installMod = (filename, modname, modversion) => {
 			}
 
 			if (isDataDir) {
-				debug(`isDataDir: ${isDataDir}`);
+				utils.debug(`isDataDir: ${isDataDir}`);
 				copyToModsFolder(`${os.tmpdir()}/arcus-extract/${filename}`);
 				registerMod(`${dir}/${appName}/mods/${modname}`);
 			} else {
 				// if initial files are not data contents
 				// make the user select a folder
-				debug(`isDataDir: ${isDataDir}`);
+				utils.debug(`isDataDir: ${isDataDir}`);
 				const defaultPath = `${os.tmpdir()}/arcus-extract/${filename}`;
 				const selectedPath = dialog.showOpenDialogSync(getCurrentWindow(), {
 					properties: ['openDirectory', 'showHiddenFiles'],
 					defaultPath,
 				})[0];
-				debug(selectedPath);
+				utils.debug(selectedPath);
 				const selectedDir = fs.readdirSync(selectedPath);
 
 				// check if selected folder contents include one of typical contents of data folder
-				for (i = 0; i <= selectedDir.length - 1; i += 1) {
+				for (let i = 0; i <= selectedDir.length - 1; i += 1) {
 					if (
 						dataFiles.includes(extname(selectedDir[i])) ||
 						dataDirs.includes(selectedDir[i].toLowerCase())
@@ -413,7 +282,7 @@ const installMod = (filename, modname, modversion) => {
 				// if selected directory contains data files
 				// move to mods folder
 				if (isDataDir) {
-					debug(`isDataDir: ${isDataDir}`);
+					utils.debug(`isDataDir: ${isDataDir}`);
 					copyToModsFolder(selectedPath);
 					registerMod(`${dir}/${appName}/mods/${modname}`);
 				} else {
@@ -425,12 +294,12 @@ const installMod = (filename, modname, modversion) => {
 };
 
 const deleteMod = () => {
-	debug('Delete Mod');
+	utils.debug('Delete Mod');
 };
 
 // TODO: Bad code, refactor
 const createDownloadListItem = (filename, fileid, filesize, modname, modversion) => {
-	debug(`dlist modversion: ${modversion}`);
+	utils.debug(`dlist modversion: ${modversion}`);
 	document.getElementById('noDownload').style = `display: none;`;
 	const downloadList = document.getElementById('downloadList');
 	const downloadListItem = document.createElement('li');
@@ -495,7 +364,7 @@ const getDownloadHistory = () => {
 	if (fs.existsSync(join(`${dir}/${appName}/downloadHistory.json`))) {
 		let history = fs.readFileSync(join(`${dir}/${appName}/downloadHistory.json`), 'utf8');
 		history = JSON.parse(history);
-		debug(history.length);
+		utils.debug(history.length);
 		let index;
 		const fileList = [];
 		for (index = 0; index < history.length; index += 1) {
@@ -505,7 +374,7 @@ const getDownloadHistory = () => {
 				!fileList.includes(history[index].fileid)
 			) {
 				fileList.push(history[index].fileid);
-				debug(index);
+				utils.debug(index);
 				createDownloadListItem(
 					history[index].filename,
 					history[index].fileid,
@@ -516,7 +385,7 @@ const getDownloadHistory = () => {
 				layoutApp.updateProgress(`${history[index].fileid}-2`, 100);
 				layoutApp.updateProgressText(`${history[index].fileid}-3-2`, 100);
 			} else {
-				debug(`Ignoring invalid history entry: ${history[index].fileid}`);
+				utils.debug(`Ignoring invalid history entry: ${history[index].fileid}`);
 			}
 		}
 	}
@@ -531,19 +400,21 @@ document.getElementById('downloadsButton').addEventListener('click', () => {
 });
 
 const initDropdown = () => {
-	document.getElementById('dropdownLabel').innerText = config.dropdownMenuItems.lastSelected.label;
-
-	newDropdownEl(config.dropdownMenuItems.skse.id, config.dropdownMenuItems.skse.title);
-
-	newDropdownEl('launchSkyrimSE', 'Launch Skyrim Special Edition');
+	document.getElementById('dropdownLabel').innerText =
+		globalVariables.config.dropdownMenuItems.lastSelected.label;
+	layoutApp.createDropdownItem(
+		globalVariables.config.dropdownMenuItems.skse.id,
+		globalVariables.config.dropdownMenuItems.skse.title
+	);
+	layoutApp.createDropdownItem('launchSkyrimSE', 'Launch Skyrim Special Edition');
 };
 
 // TODO?: seperate js file for init
 const init = () => {
 	getDownloadHistory();
 	retrieveMods();
-	config = configFunctions.getConfig();
-	getPlugins();
+	globalVariables.config = configFunctions.getConfig();
+	plugins.getPlugins();
 	initDropdown();
 };
 
@@ -552,7 +423,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 	layoutApp.showClearHistory();
 	if (fs.existsSync(join(`${dir}/${appName}/apikey`))) {
 		const apiKey = fs.readFileSync(join(`${dir}/${appName}/apikey`));
-		debug(obj);
+		utils.debug(obj);
 		let parsedModInfo;
 		let filename;
 		let fileid;
@@ -563,7 +434,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 		request('GET', `https://api.nexusmods.com/v1/games/${obj.game}/mods/${obj.modID}`, {
 			headers: { apikey: apiKey },
 		}).done(resp0 => {
-			debug(JSON.parse(resp0.getBody().toString()));
+			utils.debug(JSON.parse(resp0.getBody().toString()));
 			parsedModInfo = JSON.parse(resp0.getBody().toString());
 			modid = parsedModInfo.mod_id;
 			modname = parsedModInfo.name;
@@ -574,12 +445,12 @@ ipcRenderer.on('request-download', async (event, obj) => {
 					headers: { apikey: apiKey },
 				}
 			).done(resp1 => {
-				debug(JSON.parse(resp1.getBody().toString()));
+				utils.debug(JSON.parse(resp1.getBody().toString()));
 				const parsedFileInfo = JSON.parse(resp1.getBody().toString());
 				filename = parsedFileInfo.file_name;
 				fileid = parsedFileInfo.file_id;
 				modversion = parsedFileInfo.mod_version;
-				debug(filename);
+				utils.debug(filename);
 				request(
 					'GET',
 					`https://api.nexusmods.com/v1/games/${obj.game}/mods/${obj.modID}/files/${obj.fileID}/download_link.json?key=${obj.key}&expires=${obj.expires}`,
@@ -587,12 +458,12 @@ ipcRenderer.on('request-download', async (event, obj) => {
 						headers: { apikey: apiKey },
 					}
 				).done(resp2 => {
-					debug(JSON.parse(resp2.getBody().toString()));
+					utils.debug(JSON.parse(resp2.getBody().toString()));
 					const parsedDownloadData = JSON.parse(resp2.getBody().toString());
 					downloadURL = parsedDownloadData[0].URI;
 					let roundedFilesizeInMB;
 
-					debug(downloadURL);
+					utils.debug(downloadURL);
 					if (!fs.existsSync(join(`${dir}/${appName}/mods`)))
 						fs.mkdirSync(join(`${dir}/${appName}/mods`));
 					// might switch to real wget or curl later
@@ -602,7 +473,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 					);
 					download.on('start', function(filesize) {
 						roundedFilesizeInMB = Math.round((filesize / 1000000) * 10) / 10;
-						debug(`download start: m_version: ${modversion}`);
+						utils.debug(`download start: m_version: ${modversion}`);
 						createDownloadListItem(
 							filename,
 							fileid,
@@ -629,7 +500,7 @@ ipcRenderer.on('request-download', async (event, obj) => {
 							);
 							downloadHistory = JSON.parse(downloadHistory);
 						}
-						debug('DOWNLOAD ENDED');
+						utils.debug('DOWNLOAD ENDED');
 						downloadHistory.push({
 							modid,
 							modname,
@@ -638,13 +509,13 @@ ipcRenderer.on('request-download', async (event, obj) => {
 							filename,
 							roundedFilesizeInMB,
 						});
-						debug(downloadHistory);
+						utils.debug(downloadHistory);
 						fs.writeFileSync(
 							join(`${dir}/${appName}/downloadHistory.json`),
 							JSON.stringify(downloadHistory, null, 4),
 							err => {
 								if (err) throw err;
-								debug('The file has been saved!');
+								utils.debug('The file has been saved!');
 							}
 						);
 					});
