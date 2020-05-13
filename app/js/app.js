@@ -292,7 +292,7 @@ const installMod = (filename, modname, modversion) => {
 	}
 	// Exit function if mod already installed
 	if (isExists(installedModsJSON))
-		for (i = 0; i - 1 <= installedMods.length; i += 1) {
+		for (i = 0; i <= installedMods.length - 1; i += 1) {
 			// TODO: 'Do you want to reinstall?' dialog
 			// TODO: Check whether the mod installed or not with mod id rather than mod name
 			if (installedMods[i].modname === modname) {
