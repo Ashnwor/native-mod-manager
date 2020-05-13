@@ -16,6 +16,7 @@ const sevenz = require('node-7z');
 const os = require('os');
 
 const layoutPreferences = require('./app/js/layoutPreferences');
+const layoutApp = require('./app/js/layoutApp');
 const protonSupport = require('./app/js/protonSupport');
 const configFunctions = require('./app/js/configFunctions');
 const globalVariables = require('./app/js/globalVariables');
@@ -43,6 +44,7 @@ window.globalDebug = debugThis => globalDebug(debugThis);
 window.configFunctions = configFunctions;
 window.globalVariables = globalVariables;
 window.layoutPreferences = layoutPreferences;
+window.layoutApp = layoutApp;
 window.protonSupport = protonSupport;
 window.sevenz = sevenz;
 window.join = join;
