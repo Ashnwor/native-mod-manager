@@ -272,7 +272,12 @@ const retrieveMods = () => {
 	}
 	for (i = 0; i < installedMods.length; i += 1) {
 		debug(installedMods[i]);
-		layoutApp.createModsListItem(null, installedMods[i].modname, installedMods[i].version);
+		layoutApp.createModsListItem(
+			null,
+			installedMods[i].modname,
+			installedMods[i].version,
+			installedMods[i].priority
+		);
 	}
 };
 
@@ -319,6 +324,7 @@ const installMod = (filename, modname, modversion) => {
 			modname,
 			enabled: 0,
 			version: modversion,
+			priority: 0,
 			submods: {},
 		};
 
@@ -333,7 +339,7 @@ const installMod = (filename, modname, modversion) => {
 		);
 		addPlugin(findEsp(modFolder));
 		writePlugins(lines);
-		layoutApp.createModsListItem(null, modname, modversion);
+		layoutApp.createModsListItem(null, modname, modversion, modObj.priority);
 	};
 
 	const promise = new Promise((resolve, reject) => {

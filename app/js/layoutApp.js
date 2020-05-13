@@ -46,7 +46,7 @@ const createImgButtonNode = (id, title, img, hoverImg, filename, modname, modver
 	return imgNode;
 };
 
-const createModsListItem = (id, modname, version) => {
+const createModsListItem = (id, modname, version, priority) => {
 	document.getElementById('noMods').style.display = 'none';
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
@@ -79,7 +79,7 @@ const createModsListItem = (id, modname, version) => {
 	innerList.appendChild(createInnerListItem(div));
 	innerList.appendChild(createInnerListItem(createTextNode(`v: ${version}`)));
 	innerList.appendChild(createInnerListItem(createTextNode(`d: date`)));
-	innerList.appendChild(createInnerListItem(createTextNode('1'), true)); // priority
+	innerList.appendChild(createInnerListItem(createTextNode(priority), true)); // priority
 	listItem.appendChild(innerList);
 	modList.appendChild(listItem);
 };
