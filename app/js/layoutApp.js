@@ -61,6 +61,8 @@ const createInnerListItem = (node, marginLeft) => {
 };
 
 const createModsListItem = (id, modname, version) => {
+	document.getElementById('noMods').style.display = 'none';
+
 	const modList = document.getElementById('modList');
 	const listItem = document.createElement('li');
 	listItem.classList.add('list-group-item');
