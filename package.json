@@ -1,6 +1,6 @@
 {
 	"name": "arcusmm",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Native Mod Manager for Linux",
 	"main": "main.js",
 	"scripts": {
